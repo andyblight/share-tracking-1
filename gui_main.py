@@ -68,7 +68,7 @@ DEFAULT_APP_HEIGHT = 500
 root = tk.Tk()
 root.title("Share Tracker 1")
 # Set size
-root.geometry('{}x{}'.format(DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT))
+root.geometry("{}x{}".format(DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT))
 # Create simplest layout, grid of 1 x 1 using all of window.
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
@@ -87,7 +87,6 @@ entry_frame.grid(columnspan=5, rowspan=3)
 
 notebook.add(display_frame, text="Display")
 notebook.add(entry_frame, text="Entry")
-
 
 
 # Layout each tab
@@ -112,22 +111,31 @@ refresh_button.grid(column=0, row=4)
 data_entry_label_frame = ttk.LabelFrame(entry_frame, text="Enter new stock details")
 data_entry_label_frame.grid(column=0, row=0)
 
-ticker_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Ticker")
-ticker_entry = ttk.Entry(ticker_label_frame)
-ticker_entry.grid(column=0, row=0)
-
-# stock_name_label = ttk.Label(data_entry_label_frame, text="Stock Name")
-# stock_name_entry = ttk.Entry(data_entry_label_frame)
-# stock_quantity_label = ttk.Label(data_entry_label_frame, text="Stock Name")
-# stock_quantity_entry = ttk.Entry(data_entry_label_frame)
-# stock_price_label = ttk.Label(data_entry_label_frame, text="Stock Name")
-# stock_price_entry = ttk.Entry(data_entry_label_frame)
-
-ticker_label_frame.grid(column=0, row=0)
-# stock_name_label.grid(column=1, row=0)
-# stock_name_entry.grid(column=1, row=1)
+# Ticker label frame
+stock_ticker_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Ticker")
+stock_ticker_entry = ttk.Entry(stock_ticker_label_frame)
+stock_ticker_entry.grid(column=0, row=0)
+# Name label frame
+stock_name_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Name")
+stock_name_entry = ttk.Entry(stock_name_label_frame)
+stock_name_entry.grid(column=0, row=0)
+# Quantity label frame
+stock_quantity_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Quantity")
+stock_quantity_entry = ttk.Entry(stock_quantity_label_frame)
+stock_quantity_entry.grid(column=0, row=0)
+# Price label frame
+stock_price_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Price (GBX)")
+stock_price_entry = ttk.Entry(stock_price_label_frame)
+stock_price_entry.grid(column=0, row=0)
 
 add_new_button = tk.Button(data_entry_label_frame, text="Add", command=add_new)
-add_new_button.grid(column=0, row=2)
+
+# Position label frames
+stock_ticker_label_frame.grid(column=0, row=0)
+stock_name_label_frame.grid(column=1, row=0, columnspan=2)
+stock_quantity_label_frame.grid(column=3, row=0)
+stock_price_label_frame.grid(column=4, row=0)
+# Keep the button on the left.
+add_new_button.grid(column=0, row=2, sticky="w")
 
 root.mainloop()
