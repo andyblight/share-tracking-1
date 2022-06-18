@@ -78,39 +78,41 @@ notebook = ttk.Notebook(root)
 # Use sticky to ensure the tabs resize with the window.
 notebook.grid(sticky="nsew")
 
-
+# Create the frames for each page.
 display_frame = ttk.Frame(notebook)
-display_frame.grid(columnspan=4, rowspan=2)
+display_frame.grid(sticky="nsew")
 
 entry_frame = ttk.Frame(notebook)
-entry_frame.grid(columnspan=5, rowspan=3)
+entry_frame.grid(sticky="nsew")
 
+# Add frames to notebook.
 notebook.add(display_frame, text="Display")
 notebook.add(entry_frame, text="Entry")
 
-
-# Layout each tab
+# Display tab
 # The table list
-# treeview_frame = ttk.Frame(display_frame, borderwidth=2, relief="ridge")
-# tree = ttk.Treeview(treeview_frame, column=("c1", "c2", "c3", "c4"), show="headings")
-# tree.column("#1", anchor=tk.CENTER)
-# tree.heading("#1", text="Ticker")
-# tree.column("#2", anchor=tk.CENTER)
-# tree.heading("#2", text="Name")
-# tree.column("#3", anchor=tk.CENTER)
-# tree.heading("#3", text="Quantity")
-# tree.column("#4", anchor=tk.CENTER)
-# tree.heading("#4", text="Price")
-# # treeview_frame.grid(column=0, row=0, columnspan=4, rowspan=4)
+treeview_frame = ttk.Frame(display_frame, borderwidth=4, relief="ridge")
+# This shows the frame.
+treeview_frame.grid(column=0, row=0, rowspan=3)
+
+columns = ("ticker", "name", "quantity", "price")
+tree = ttk.Treeview(treeview_frame, columns=columns, show="tree headings")
+tree.grid(column=0, row=0)
+# # Define headings
+# tree.heading("ticker", text="Ticker")
+# tree.heading("name", text="Name")
+# tree.heading("quantity", text="Quantity")
+# tree.heading("price", text="Price")
 
 # The refresh button
-refresh_button = tk.Button(display_frame, text="Refresh", command=view)
-refresh_button.grid(column=0, row=4)
+add_button = tk.Button(treeview_frame, text="Add")
+add_button.grid(column=0, row=1)
+refresh_button = tk.Button(treeview_frame, text="Refresh", command=view)
+refresh_button.grid(column=0, row=2)
 
-# Data entry area
+# Data entry tab
 data_entry_label_frame = ttk.LabelFrame(entry_frame, text="Enter new stock details")
 data_entry_label_frame.grid(column=0, row=0)
-
 # Ticker label frame
 stock_ticker_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Ticker")
 stock_ticker_entry = ttk.Entry(stock_ticker_label_frame)
