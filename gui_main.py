@@ -2,46 +2,7 @@
 
 from tkinter import ttk
 import tkinter as tk
-import sqlite3
-from pathlib import Path
-
-
-class sqlite_wrapper:
-    def __init__(self):
-        self.file_name = "shares.db"
-        self.table_name = "shares"
-
-    def create(self):
-        con1 = sqlite3.connect(self.file_name)
-        cur1 = con1.cursor()
-        sql_query = "CREATE TABLE IF NOT EXISTS "
-        sql_query += self.table_name
-        sql_query += "(ticker text, name text, quantity real, price real)"
-        cur1.execute(sql_query)
-        con1.commit()
-        con1.close()
-
-    def add_rows(self):
-        con1 = sqlite3.connect(self.file_name)
-        cur = con1.cursor()
-        cur.execute("INSERT INTO shares VALUES ('FRED', 'Frederick', '12', '75.4')")
-        cur.execute("INSERT INTO shares VALUES ('BERT', 'Bertrand', '34', '175.4')")
-        cur.execute("INSERT INTO shares VALUES ('TOM', 'Thomas', '256', '275.4')")
-        con1.commit()
-        con1.close()
-
-    def get_all_rows(self):
-        con1 = sqlite3.connect(self.file_name)
-        cur1 = con1.cursor()
-        sql_query = "SELECT * FROM " + self.table_name
-        cur1.execute(sql_query)
-        rows = cur1.fetchall()
-        con1.close()
-        return rows
-
-    def is_present(self):
-        db_file = Path(self.file_name)
-        return db_file.is_file()
+from .securities_database import SecuritiesDatabase, create, add_rows, get_all_rows
 
 
 def view():
@@ -55,7 +16,7 @@ def add_new():
     pass
 
 
-database = sqlite_wrapper()
+database = SecuritiesDatabase()
 # Create database if not present
 if not database.is_present():
     database.create()
