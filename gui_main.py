@@ -48,7 +48,7 @@ def view():
     all_rows = database.get_all_rows()
     for row in all_rows:
         print(row)
-        # tree.insert("", tk.END, values=row)
+        tree.insert("", tk.END, values=row)
 
 
 def add_new():
@@ -93,22 +93,21 @@ notebook.add(entry_frame, text="Entry")
 # The table list
 treeview_frame = ttk.Frame(display_frame, borderwidth=4, relief="ridge")
 # This shows the frame.
-treeview_frame.grid(column=0, row=0, rowspan=3)
-
+treeview_frame.grid(column=0, row=0)
 columns = ("ticker", "name", "quantity", "price")
-tree = ttk.Treeview(treeview_frame, columns=columns, show="tree headings")
+tree = ttk.Treeview(treeview_frame, columns=columns, show="headings")
 tree.grid(column=0, row=0)
-# # Define headings
-# tree.heading("ticker", text="Ticker")
-# tree.heading("name", text="Name")
-# tree.heading("quantity", text="Quantity")
-# tree.heading("price", text="Price")
+# Define headings
+tree.heading("ticker", text="Ticker")
+tree.heading("name", text="Name")
+tree.heading("quantity", text="Quantity")
+tree.column("quantity", anchor="e")
+tree.heading("price", text="Price")
+tree.column("price", anchor="e")
 
 # The refresh button
-add_button = tk.Button(treeview_frame, text="Add")
-add_button.grid(column=0, row=1)
-refresh_button = tk.Button(treeview_frame, text="Refresh", command=view)
-refresh_button.grid(column=0, row=2)
+refresh_button = tk.Button(display_frame, text="Refresh", command=view)
+refresh_button.grid(column=0, row=1)
 
 # Data entry tab
 data_entry_label_frame = ttk.LabelFrame(entry_frame, text="Enter new stock details")
