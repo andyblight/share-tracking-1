@@ -99,11 +99,13 @@ tree = ttk.Treeview(treeview_frame, columns=columns, show="headings")
 tree.grid(column=0, row=0)
 # Define headings
 tree.heading("ticker", text="Ticker")
+tree.column("ticker", width=100)
 tree.heading("name", text="Name")
+tree.column("name", width=200)
 tree.heading("quantity", text="Quantity")
-tree.column("quantity", anchor="e")
+tree.column("quantity", width=100, anchor="e")
 tree.heading("price", text="Price")
-tree.column("price", anchor="e")
+tree.column("price", width=100, anchor="e")
 
 # The refresh button
 refresh_button = tk.Button(display_frame, text="Refresh", command=view)
