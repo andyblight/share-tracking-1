@@ -61,25 +61,36 @@ if not database.is_present():
     database.create()
     database.add_rows()
 
+DEFAULT_APP_WIDTH = 800
+DEFAULT_APP_HEIGHT = 500
+
 # The window?
 root = tk.Tk()
-root.geometry("600x400")
 root.title("Share Tracker 1")
+# Set size
+root.geometry('{}x{}'.format(DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT))
+# Create simplest layout, grid of 1 x 1 using all of window.
+root.grid_rowconfigure(0, weight=1)
+root.grid_columnconfigure(0, weight=1)
 
 # Use tabbed layout.
 notebook = ttk.Notebook(root)
-notebook.pack(pady=10, expand=True)
+# Use sticky to ensure the tabs resize with the window.
+notebook.grid(sticky="nsew")
 
-display_frame = ttk.Frame(notebook, width=600, height=380)
-display_frame.pack(fill='both', expand=True)
 
-entry_frame = ttk.Frame(notebook, width=600, height=380)
-entry_frame.pack(fill='both', expand=True)
+display_frame = ttk.Frame(notebook)
+display_frame.grid(columnspan=4, rowspan=2)
+
+entry_frame = ttk.Frame(notebook)
+entry_frame.grid(columnspan=5, rowspan=3)
 
 notebook.add(display_frame, text="Display")
 notebook.add(entry_frame, text="Entry")
 
-# The display frame
+
+
+# Layout each tab
 # The table list
 # treeview_frame = ttk.Frame(display_frame, borderwidth=2, relief="ridge")
 # tree = ttk.Treeview(treeview_frame, column=("c1", "c2", "c3", "c4"), show="headings")
@@ -91,32 +102,22 @@ notebook.add(entry_frame, text="Entry")
 # tree.heading("#3", text="Quantity")
 # tree.column("#4", anchor=tk.CENTER)
 # tree.heading("#4", text="Price")
-# # The update button
-# display_button = tk.Button(display_frame, text="Update", command=view)
+# # treeview_frame.grid(column=0, row=0, columnspan=4, rowspan=4)
 
-# # Data entry area
-# ticker_label_frame = ttk.LabelFrame(entry_frame, text="Ticker")
-# ticker_entry = ttk.Entry(ticker_label_frame)
-# stock_name_label_frame = ttk.LabelFrame(entry_frame, text="Name")
-# stock_name_entry = ttk.Entry(stock_name_label_frame)
-# quantity_label_frame = ttk.LabelFrame(entry_frame, text="Quantity")
-# quantity_entry = ttk.Entry(quantity_label_frame)
-# price_label_frame = ttk.LabelFrame(entry_frame, text="Price")
-# price_entry = ttk.Entry(price_label_frame)
-# add_new_button = tk.Button(entry_frame, text="Add", command=add_new)
+# The refresh button
+refresh_button = tk.Button(display_frame, text="Refresh", command=view)
+refresh_button.grid(column=0, row=4)
 
-# Layout items on the grid
-# Display frame
-# display_frame.grid(column=0, row=0)
-# treeview_frame.grid(column=0, row=0)
-# tree.grid(column=0, row=0, columnspan=5, rowspan=4)
-# display_button.grid(column=0, row=4)
-# # Entry frame
-# entry_frame.grid(column=0, row=5, columnspan=5, rowspan=3)
-# ticker_label_frame.grid(column=0, row=5)
-# stock_name_label_frame.grid(column=1, row=5, columnspan=2)
-# quantity_label_frame.grid(column=3, row=5)
-# price_label_frame.grid(column=4, row=5)
-# add_new_button.grid(column=2, row=7)
+# Data entry area
+data_entry_label_frame = ttk.LabelFrame(entry_frame, text="Enter new stock details")
+data_entry_label_frame.grid(column=0, row=0)
+
+ticker_label = ttk.Label(data_entry_label_frame, text="Ticker")
+ticker_label.grid(column=0, row=0)
+ticker_entry = ttk.Entry(data_entry_label_frame)
+ticker_entry.grid(column=0, row=1)
+
+add_new_button = tk.Button(data_entry_label_frame, text="Add", command=add_new)
+add_new_button.grid(column=0, row=2)
 
 root.mainloop()
