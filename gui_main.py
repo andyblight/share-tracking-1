@@ -51,6 +51,10 @@ def view():
         tree.insert("", tk.END, values=row)
 
 
+def add_new():
+    pass
+
+
 database = sqlite_wrapper()
 # Create database if not present
 if not database.is_present():
@@ -76,12 +80,19 @@ tree.heading("#3", text="Quantity")
 tree.column("#4", anchor=tk.CENTER)
 tree.heading("#4", text="Price")
 # The update button
-update_button = tk.Button(display_frame, text="Update", command=view)
+display_button = tk.Button(display_frame, text="Update", command=view)
 
 # Data entry area
-entry_frame = ttk.Frame(content_frame)
+entry_frame = ttk.Frame(content_frame, borderwidth=5, relief="ridge")
 ticker_label = ttk.Label(entry_frame, text="Ticker")
 ticker_entry = ttk.Entry(entry_frame)
+stock_name_label = ttk.Label(entry_frame, text="Name")
+stock_name_entry = ttk.Entry(entry_frame)
+quantity_label = ttk.Label(entry_frame, text="Quantity")
+quantity_entry = ttk.Entry(entry_frame)
+price_label = ttk.Label(entry_frame, text="Price")
+price_entry = ttk.Entry(entry_frame)
+add_new_button = tk.Button(entry_frame, text="Add", command=add_new)
 
 # Layout items on the grid
 # Everything in here
@@ -90,9 +101,17 @@ content_frame.grid(column=0, row=0)
 display_frame.grid(column=0, row=0)
 treeview_frame.grid(column=0, row=0)
 tree.grid(column=0, row=0, columnspan=5, rowspan=4)
-update_button.grid(column=0, row=4)
+display_button.grid(column=0, row=4)
 # Entry frame
-# entry_frame.grid(column=0, row=5, columnspan=5, rowspan=2)
-# ticker_label.grid
+entry_frame.grid(column=0, row=5, columnspan=5, rowspan=3)
+ticker_label.grid(column=0, row=5)
+ticker_entry.grid(column=0, row=6)
+stock_name_label.grid(column=1, row=5, columnspan=2)
+stock_name_entry.grid(column=1, row=6, columnspan=2)
+quantity_label.grid(column=3, row=5)
+quantity_entry.grid(column=3, row=6)
+price_label.grid(column=4, row=5)
+price_entry.grid(column=4, row=6)
+add_new_button.grid(column=2, row=7)
 
 root.mainloop()
