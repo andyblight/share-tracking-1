@@ -152,21 +152,17 @@ class HelpMenu(tk.Menu):
         self.about_box.grid_rowconfigure(0, pad=10, weight=1)
         self.about_box.grid_columnconfigure(0, pad=10, weight=1)
         frame = tk.Frame(self.about_box, borderwidth=4, relief="ridge")
-        # This shows the frame.
-        frame.grid(column=0, row=0, columnspan=3, rowspan=3, sticky="nesw")
+        # The shows the frame the same size as the window.
+        frame.grid(sticky="nesw")
 
         # Label frame
         label_frame = tk.LabelFrame(frame, text="About this program...")
-        label_frame.grid(column=1, row=1, sticky="nesw")
+        label_frame.grid(column=0, row=0, columnspan=3, rowspan=3, sticky=("nesw"))
         label = ttk.Label(label_frame, text="Share Tracker is AWESOME!")
-        label.grid(sticky="nesw")
+        label.grid(column=1, row=1, sticky="n", padx=5, pady=5)
 
-        self.execute_button = tk.Button(frame, text="Execute", command=self.do_nothing)
-        self.execute_button.grid(column=0, row=3, sticky="s")
         self.ok_button = tk.Button(frame, text="OK", command=self.dialog_about_exit)
         self.ok_button.grid(column=1, row=3, sticky="s")
-        self.cancel_button = tk.Button(frame, text="Cancel", command=self.do_nothing)
-        self.cancel_button.grid(column=2, row=3, sticky="s")
 
 
 class MenuBar(tk.Menu):
