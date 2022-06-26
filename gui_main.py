@@ -6,6 +6,11 @@ from database.securities import SecuritiesDatabase
 
 DEFAULT_APP_WIDTH = 800
 DEFAULT_APP_HEIGHT = 500
+VERSION_MAJOR = 0
+VERSION_MINOR = 0
+VERSION_BUILD = 1
+
+__program_name__ = "Share Tracker"
 
 database = SecuritiesDatabase()
 
@@ -127,14 +132,36 @@ class TransactionsMenu(tk.Menu):
 
 
 class HelpMenu(tk.Menu):
-    def __init__(self, menu_bar):
+    def __init__(self, parent, menu_bar):
+        self.parent = parent
         self.menu_help = tk.Menu(menu_bar)
         self.menu_help.add_command(label="Help Index", command=self.do_nothing)
-        self.menu_help.add_command(label="About...", command=self.do_nothing)
+        self.menu_help.add_command(label="About...", command=self.dialog_about)
         menu_bar.add_cascade(label="Help", menu=self.menu_help)
 
     def do_nothing(self):
         pass
+
+    def dialog_about_exit(self):
+        self.about_box.destroy()
+
+    def dialog_about(self):
+        self.about_box = tk.Toplevel(self.parent)
+        self.about_box.title("About " + __program_name__)
+        # 3 x 3 grid
+        self.about_box.grid_rowconfigure(3, weight=1)
+        self.about_box.grid_columnconfigure(3, weight=1)
+        frame = ttk.Frame.__init__(self, self.about_box)
+        main_label_frame = ttk.LabelFrame(
+            frame, text="About this program.."
+        )
+        main_label_frame.grid(column=0, row=0)
+        # Button
+        self.ok_button = tk.Button(
+            main_label_frame, text="OK", command=self.dialog_about_exit
+        )
+        # Keep the button on the left.
+        self.add_new_button.grid(column=0, row=2)
 
 
 class MenuBar(tk.Menu):
@@ -144,7 +171,7 @@ class MenuBar(tk.Menu):
         self.menu_file = FileMenu(self.menu_bar)
         self.menu_securities = SecuritiesMenu(self.menu_bar)
         self.menu_transactions = TransactionsMenu(self.menu_bar)
-        self.menu_help = HelpMenu(self.menu_bar)
+        self.menu_help = HelpMenu(parent, self.menu_bar)
         # Finally, add the menu to the parent
         parent["menu"] = self.menu_bar
 
@@ -152,9 +179,9 @@ class MenuBar(tk.Menu):
 class MainApplication(ttk.Frame):
     def __init__(self, parent, *args, **kwargs):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
-        # The window?
+        # The parent window.
         self.parent = parent
-        self.parent.title("Share Tracker 1")
+        self.parent.title(__program_name__)
         self.parent.option_add("*tearOff", False)
         # Set size
         self.parent.geometry("{}x{}".format(DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT))
