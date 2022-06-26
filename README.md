@@ -13,6 +13,8 @@ Getting this right is important as most of the effort of creating an
 application that uses a database is the GUI and that is very dependent on the
 information that the user needs to view and change.
 
+### Securities
+
 The first table is the `securities`.  Each security has the following
 attributes:
 
@@ -24,6 +26,8 @@ attributes:
 
 The `securities` table has been split out as other data that related to the
 security might need to be added at a later date.
+
+### Transactions
 
 The `transaction` table where the purchase and sale records are stored.  The
 attributes are:
@@ -39,6 +43,8 @@ attributes are:
 | Fees | Real | Commission or other fees. |
 | Tax | Real | Stamp duty in the UK. |
 | Total | Real | Total cost paid.  Should be (Quantity * Price) + Fees + Tax. |
+
+### Holdings
 
 The `holdings` table holds information about the current value of each of the
 securities held.  This table is generated from the transaction data and is
@@ -62,14 +68,16 @@ The attributes are:
 |---|---|---|
 | UniqueID | Integer | Unique ID for each holding record. |
 | SecurityID | Integer | Link to the security unique ID. |
-| Status | Text | Open = , Closed = sale occurred |
+| Status | Text | Open = holding is active, Closed = sale occurred |
 | Created | Date | Date when the record was created. |
-| UnitCost | Real | |
+| UnitCost | Real | Price per share. |
 | TotalCost | Real | Total paid. |
 | Closed | Date | Date when the record was finalised. |
 | UnitSale | Real | Unit value received. |
 | TotalSale | Real | Total received. |
-| Profit | Real | Total Sale - Total Cost |
+| Profit | Real | Total Sale - Total Cost. |
+
+### Running
 
 The `running` table of is to hold the latest information for the holdings.
 The attributes are:
@@ -82,4 +90,4 @@ The attributes are:
 | Target | Real | The target value. |
 | Value | Real | The current value of the holding. |
 
-NOTE: The above tables and content be different in the code, so beware!
+NOTE: The above tables and content may be different in the code, so beware!

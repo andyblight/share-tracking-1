@@ -2,7 +2,12 @@
 
 from tkinter import ttk
 import tkinter as tk
-from .securities_database import SecuritiesDatabase, create, add_rows, get_all_rows
+from database.securities import SecuritiesDatabase
+
+DEFAULT_APP_WIDTH = 800
+DEFAULT_APP_HEIGHT = 500
+
+database = SecuritiesDatabase()
 
 
 def view():
@@ -16,14 +21,10 @@ def add_new():
     pass
 
 
-database = SecuritiesDatabase()
 # Create database if not present
 if not database.is_present():
     database.create()
     database.add_rows()
-
-DEFAULT_APP_WIDTH = 800
-DEFAULT_APP_HEIGHT = 500
 
 # The window?
 root = tk.Tk()
