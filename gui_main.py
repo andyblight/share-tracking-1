@@ -104,6 +104,28 @@ class FileMenu(tk.Menu):
         pass
 
 
+class SecuritiesMenu(tk.Menu):
+    def __init__(self, menu_bar):
+        self.menu_file = tk.Menu(menu_bar)
+        self.menu_file.add_command(label="Add...", command=self.do_nothing)
+        self.menu_file.add_command(label="Show", command=self.do_nothing)
+        menu_bar.add_cascade(label="Securities", menu=self.menu_file)
+
+    def do_nothing(self):
+        pass
+
+
+class TransactionsMenu(tk.Menu):
+    def __init__(self, menu_bar):
+        self.menu_file = tk.Menu(menu_bar)
+        self.menu_file.add_command(label="New...", command=self.do_nothing)
+        self.menu_file.add_command(label="Show", command=self.do_nothing)
+        menu_bar.add_cascade(label="Transactions", menu=self.menu_file)
+
+    def do_nothing(self):
+        pass
+
+
 class HelpMenu(tk.Menu):
     def __init__(self, menu_bar):
         self.menu_help = tk.Menu(menu_bar)
@@ -120,6 +142,8 @@ class MenuBar(tk.Menu):
         self.menu_bar = tk.Menu(parent)
         # File menu
         self.menu_file = FileMenu(self.menu_bar)
+        self.menu_securities = SecuritiesMenu(self.menu_bar)
+        self.menu_transactions = TransactionsMenu(self.menu_bar)
         self.menu_help = HelpMenu(self.menu_bar)
         # Finally, add the menu to the parent
         parent["menu"] = self.menu_bar
