@@ -1,4 +1,4 @@
-# From: https://www.activestate.com/resources/quick-reads/how-to-display-data-in-a-table-using-tkinter/
+# noqa: E501 From: https://www.activestate.com/resources/quick-reads/how-to-display-data-in-a-table-using-tkinter/
 
 from tkinter import ttk
 import tkinter as tk
@@ -90,29 +90,55 @@ class AddSecurityTab(ttk.Frame):
         pass
 
 
+class MenuBar(tk.Menu):
+    def __init__(self, parent, *args, **kwargs):
+        self.menu_bar = tk.Menu(parent)
+        # File menu
+        self.menu_file = tk.Menu(self.menu_bar)
+        self.menu_file.add_command(label="New", command=self.do_nothing)
+        self.menu_file.add_command(label="Open", command=self.do_nothing)
+        self.menu_file.add_command(label="Save", command=self.do_nothing)
+        self.menu_file.add_separator()
+        self.menu_file.add_command(label="Exit", command=root.quit)
+        self.menu_bar.add_cascade(label="File", menu=self.menu_file)
+        # Help menu
+        self.menu_help = tk.Menu(self.menu_bar)
+        self.menu_help.add_command(label="Help Index", command=self.do_nothing)
+        self.menu_help.add_command(label="About...", command=self.do_nothing)
+        self.menu_bar.add_cascade(label="Help", menu=self.menu_help)
+        # Finally, add the menu to the parent
+        parent["menu"] = self.menu_bar
+
+    def do_nothing(self):
+        pass
+
+
 class MainApplication(ttk.Frame):
     def __init__(self, parent, *args, **kwargs):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
         # The window?
         self.parent = parent
         self.parent.title("Share Tracker 1")
+        self.parent.option_add("*tearOff", False)
         # Set size
         self.parent.geometry("{}x{}".format(DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT))
         # Create simplest layout, grid of 1 x 1 using all of window.
         self.parent.grid_rowconfigure(0, weight=1)
         self.parent.grid_columnconfigure(0, weight=1)
         # Add two tabbed frames.
-        self.notebook = ttk.Notebook(root)
-        # Use sticky to ensure the tabs resize with the window.
-        self.notebook.grid(sticky="nsew")
-        # Create the frames for each page.
-        self.display_tab = DisplayTab(self.notebook)
-        self.display_tab.grid(sticky="nsew")
-        self.add_security_tab = AddSecurityTab(self.notebook)
-        self.add_security_tab.grid(sticky="nsew")
-        # Add frames to notebook.
-        self.notebook.add(self.display_tab, text="Display")
-        self.notebook.add(self.add_security_tab, text="Add Security")
+        # self.notebook = ttk.Notebook(root)
+        # # Use sticky to ensure the tabs resize with the window.
+        # self.notebook.grid(sticky="nsew")
+        # # Create the frames for each page.
+        # self.display_tab = DisplayTab(self.notebook)
+        # self.display_tab.grid(sticky="nsew")
+        # self.add_security_tab = AddSecurityTab(self.notebook)
+        # self.add_security_tab.grid(sticky="nsew")
+        # # Add frames to notebook.
+        # self.notebook.add(self.display_tab, text="Display")
+        # self.notebook.add(self.add_security_tab, text="Add Security")
+        # Add menu bar.
+        self.menu_bar = MenuBar(self.parent)
 
 
 if __name__ == "__main__":
