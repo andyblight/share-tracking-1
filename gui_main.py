@@ -90,27 +90,39 @@ class AddSecurityTab(ttk.Frame):
         pass
 
 
-class MenuBar(tk.Menu):
-    def __init__(self, parent, *args, **kwargs):
-        self.menu_bar = tk.Menu(parent)
-        # File menu
-        self.menu_file = tk.Menu(self.menu_bar)
+class FileMenu(tk.Menu):
+    def __init__(self, menu_bar):
+        self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="New", command=self.do_nothing)
         self.menu_file.add_command(label="Open", command=self.do_nothing)
         self.menu_file.add_command(label="Save", command=self.do_nothing)
         self.menu_file.add_separator()
         self.menu_file.add_command(label="Exit", command=root.quit)
-        self.menu_bar.add_cascade(label="File", menu=self.menu_file)
-        # Help menu
-        self.menu_help = tk.Menu(self.menu_bar)
-        self.menu_help.add_command(label="Help Index", command=self.do_nothing)
-        self.menu_help.add_command(label="About...", command=self.do_nothing)
-        self.menu_bar.add_cascade(label="Help", menu=self.menu_help)
-        # Finally, add the menu to the parent
-        parent["menu"] = self.menu_bar
+        menu_bar.add_cascade(label="File", menu=self.menu_file)
 
     def do_nothing(self):
         pass
+
+
+class HelpMenu(tk.Menu):
+    def __init__(self, menu_bar):
+        self.menu_help = tk.Menu(menu_bar)
+        self.menu_help.add_command(label="Help Index", command=self.do_nothing)
+        self.menu_help.add_command(label="About...", command=self.do_nothing)
+        menu_bar.add_cascade(label="Help", menu=self.menu_help)
+
+    def do_nothing(self):
+        pass
+
+
+class MenuBar(tk.Menu):
+    def __init__(self, parent, *args, **kwargs):
+        self.menu_bar = tk.Menu(parent)
+        # File menu
+        self.menu_file = FileMenu(self.menu_bar)
+        self.menu_help = HelpMenu(self.menu_bar)
+        # Finally, add the menu to the parent
+        parent["menu"] = self.menu_bar
 
 
 class MainApplication(ttk.Frame):
