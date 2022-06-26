@@ -148,20 +148,25 @@ class HelpMenu(tk.Menu):
     def dialog_about(self):
         self.about_box = tk.Toplevel(self.parent)
         self.about_box.title("About " + __program_name__)
-        # 3 x 3 grid
-        self.about_box.grid_rowconfigure(3, weight=1)
-        self.about_box.grid_columnconfigure(3, weight=1)
-        frame = ttk.Frame.__init__(self, self.about_box)
-        main_label_frame = ttk.LabelFrame(
-            frame, text="About this program.."
-        )
-        main_label_frame.grid(column=0, row=0)
-        # Button
-        self.ok_button = tk.Button(
-            main_label_frame, text="OK", command=self.dialog_about_exit
-        )
-        # Keep the button on the left.
-        self.add_new_button.grid(column=0, row=2)
+        self.about_box.geometry("400x300")
+        self.about_box.grid_rowconfigure(0, pad=10, weight=1)
+        self.about_box.grid_columnconfigure(0, pad=10, weight=1)
+        frame = tk.Frame(self.about_box, borderwidth=4, relief="ridge")
+        # This shows the frame.
+        frame.grid(column=0, row=0, columnspan=3, rowspan=3, sticky="nesw")
+
+        # Label frame
+        label_frame = tk.LabelFrame(frame, text="About this program...")
+        label_frame.grid(column=1, row=1, sticky="nesw")
+        label = ttk.Label(label_frame, text="Share Tracker is AWESOME!")
+        label.grid(sticky="nesw")
+
+        self.execute_button = tk.Button(frame, text="Execute", command=self.do_nothing)
+        self.execute_button.grid(column=0, row=3, sticky="s")
+        self.ok_button = tk.Button(frame, text="OK", command=self.dialog_about_exit)
+        self.ok_button.grid(column=1, row=3, sticky="s")
+        self.cancel_button = tk.Button(frame, text="Cancel", command=self.do_nothing)
+        self.cancel_button.grid(column=2, row=3, sticky="s")
 
 
 class MenuBar(tk.Menu):
