@@ -1,7 +1,8 @@
 from tkinter import ttk
 import tkinter as tk
 
-from ui.securities_menu import SecuritiesMenu
+from ui.securities_menu import SecuritiesMenu, database
+from ui.help_menu import HelpMenu
 
 DEFAULT_APP_WIDTH = 800
 DEFAULT_APP_HEIGHT = 500
@@ -35,13 +36,6 @@ __program_name__ = "Share Tracker"
 #         # The refresh button
 #         refresh_button = tk.Button(self.frame, text="Refresh", command=self.view)
 #         refresh_button.grid(column=0, row=1)
-#         # FIXME: Hack for now to have some data to show.
-#         # Create database if not present
-#         if not database.is_present():
-#             database.create()
-#             # FIXME: This is for testing the GUI.
-#             # Remove when done.
-#             database.add_fake_rows()
 
 #     def view(self):
 #         all_rows = database.get_all_rows()
@@ -98,15 +92,28 @@ class FileMenu(tk.Menu):
     def __init__(self, parent, menu_bar):
         self.parent = parent
         self.menu_file = tk.Menu(menu_bar)
-        self.menu_file.add_command(label="New", command=self.do_nothing)
-        self.menu_file.add_command(label="Open", command=self.do_nothing)
-        self.menu_file.add_command(label="Save", command=self.do_nothing)
+        self.menu_file.add_command(label="New", command=self.new)
+        self.menu_file.add_command(label="Open", command=self.open)
+        self.menu_file.add_command(label="Save", command=self.save)
         self.menu_file.add_separator()
         self.menu_file.add_command(label="Exit", command=self.parent.quit)
         menu_bar.add_cascade(label="File", menu=self.menu_file)
 
-    def do_nothing(self):
-        pass
+    def new(self):
+        print("File->New")
+        # FIXME: Hack for now to have some data to show.
+        # Create database if not present
+        if not database.is_present():
+            database.create()
+            # FIXME: This is for testing the GUI.
+            # Remove when done.
+            database.add_fake_rows()
+
+    def open(self):
+        print("File->Open")
+
+    def save(self):
+        print("File->Save")
 
 
 class TransactionsMenu(tk.Menu):
@@ -119,40 +126,6 @@ class TransactionsMenu(tk.Menu):
 
     def do_nothing(self):
         pass
-
-
-class HelpMenu(tk.Menu):
-    def __init__(self, parent, menu_bar):
-        self.parent = parent
-        self.menu_help = tk.Menu(menu_bar)
-        self.menu_help.add_command(label="Help Index", command=self.do_nothing)
-        self.menu_help.add_command(label="About...", command=self.dialog_about)
-        menu_bar.add_cascade(label="Help", menu=self.menu_help)
-
-    def do_nothing(self):
-        pass
-
-    def dialog_about_exit(self):
-        self.about_box.destroy()
-
-    def dialog_about(self):
-        self.about_box = tk.Toplevel(self.parent)
-        self.about_box.title("About " + __program_name__)
-        self.about_box.geometry("400x300")
-        self.about_box.grid_rowconfigure(0, pad=10, weight=1)
-        self.about_box.grid_columnconfigure(0, pad=10, weight=1)
-        frame = tk.Frame(self.about_box, borderwidth=4, relief="ridge")
-        # The shows the frame the same size as the window.
-        frame.grid(sticky="nesw")
-
-        # Label frame
-        label_frame = tk.LabelFrame(frame, text="About this program...")
-        label_frame.grid(column=0, row=0, columnspan=3, rowspan=3, sticky=("nesw"))
-        label = ttk.Label(label_frame, text="Share Tracker is AWESOME!")
-        label.grid(column=1, row=1, sticky="n", padx=5, pady=5)
-
-        self.ok_button = tk.Button(frame, text="OK", command=self.dialog_about_exit)
-        self.ok_button.grid(column=1, row=3, sticky="s")
 
 
 class MenuBar(tk.Menu):

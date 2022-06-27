@@ -97,12 +97,12 @@ class SecuritiesTableView:
         # Allow scrolling.
 
     def refresh(self):
-        print("refresh")
+        # print("refresh")
         for item in self.tree.get_children():
             self.tree.delete(item)
         all_rows = database.get_all_rows()
         for row in all_rows:
-            print(row)
+            # print(row)
             self.tree.insert("", tk.END, values=row)
 
 
