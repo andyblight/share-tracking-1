@@ -1,3 +1,4 @@
+from numbers import Real
 from tkinter import ttk
 import tkinter as tk
 
@@ -60,14 +61,45 @@ class AddNewSecurityDialog:
         self.add_new_button.grid(column=0, row=4)
         self.cancel_button.grid(column=1, row=4)
 
+    def validate_ticker(self, ticker):
+        valid = False
+        if len(ticker) > 2 and len(ticker) < 5:
+            valid = True
+        return valid
+
+    def validate_name(self, name):
+        valid = False
+        if len(name) > 2:
+            valid = True
+        return valid
+
     def add(self):
-        # Write
-        print("add called")
+        print("SecurityDialog Add")
+        # Get info from entry boxes.
         ticker = self.stock_ticker_entry.get()
         name = self.stock_name_entry.get()
         quantity = self.stock_quantity_entry.get()
         price = self.stock_price_entry.get()
         print("add: " + ticker + ", " + name + ", " + quantity + ", " + price)
+        # Validate info.
+        quantity_float = 0.0
+        price_float = 0.0
+        valid = self.validate_ticker(ticker)
+        if valid:
+            valid = self.validate_name(name)
+            if valid:
+                try:
+                    quantity_float = float(quantity)
+                except:
+                    valid = False
+                if valid:
+                    try:
+                        price_float = float(price)
+                    except:
+                        valid = False
+                    if valid:
+                        # Write to database.
+                        database.add_record(ticker, name, quantity_float, price_float)
 
     def cancel(self):
         # Quit dialog doing nothing.

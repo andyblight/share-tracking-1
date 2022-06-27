@@ -26,6 +26,18 @@ class SecuritiesDatabase:
         con1.commit()
         con1.close()
 
+    def add_record(self, ticker, name, quantity_float, price_float):
+        con1 = sqlite3.connect(self.__file_name)
+        cur = con1.cursor()
+        row_string = "('" + ticker + "',"
+        row_string += "'" + name + "',"
+        row_string += "'" + str(quantity_float) + "',"
+        row_string += "'" + str(price_float) + "')"
+        print("Adding row [", row_string, "]")
+        cur.execute("INSERT INTO shares VALUES " + row_string)
+        con1.commit()
+        con1.close()
+
     def get_all_rows(self):
         con1 = sqlite3.connect(self.__file_name)
         cur1 = con1.cursor()
