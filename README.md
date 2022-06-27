@@ -85,9 +85,17 @@ The attributes are:
 | Field name | Type | Notes |
 |---|---|---|
 | UniqueID | Integer | Unique ID for each running record. |
-| HoldingID | Integer | Link to the holding unique ID. |
+| SecurityID | Integer | Link to the security unique ID. |
 | StopLoss | Real | The stop loss value. |
 | Target | Real | The target value. |
 | Value | Real | The current value of the holding. |
 
 NOTE: The above tables and content may be different in the code, so beware!
+
+## Future plans
+
+Time permitting, I would like to pull in the "end of day" data and do some
+clever stuff like:
+- Report on crystallized profits.
+- Report on potential profits so far.
+- Rate of growth, % per month, ideally with graph.
