@@ -1,7 +1,10 @@
 from tkinter import ttk
 import tkinter as tk
 
-# from database.securities import SecuritiesDatabase
+from database.securities import SecuritiesDatabase
+
+# FIXME Hacky
+database = SecuritiesDatabase()
 
 
 class AddNewSecurityDialog:
@@ -95,6 +98,12 @@ class SecuritiesTableView:
 
     def refresh(self):
         print("refresh")
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        all_rows = database.get_all_rows()
+        for row in all_rows:
+            print(row)
+            self.tree.insert("", tk.END, values=row)
 
 
 class SecuritiesMenu(tk.Menu):
