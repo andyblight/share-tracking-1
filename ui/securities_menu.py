@@ -26,24 +26,24 @@ class AddNewSecurityDialog:
         data_entry_label_frame.grid(column=0, row=0, sticky="new")
         # Ticker label frame
         stock_ticker_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Ticker")
-        stock_ticker_entry = ttk.Entry(stock_ticker_label_frame)
-        stock_ticker_entry.grid(column=0, row=0)
+        self.stock_ticker_entry = ttk.Entry(stock_ticker_label_frame)
+        self.stock_ticker_entry.grid(column=0, row=0)
         # Name label frame
         stock_name_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Name")
-        stock_name_entry = ttk.Entry(stock_name_label_frame)
-        stock_name_entry.grid(sticky="ew")
+        self.stock_name_entry = ttk.Entry(stock_name_label_frame)
+        self.stock_name_entry.grid(sticky="ew")
         # Quantity label frame
         stock_quantity_label_frame = ttk.LabelFrame(
             data_entry_label_frame, text="Quantity"
         )
-        stock_quantity_entry = ttk.Entry(stock_quantity_label_frame)
-        stock_quantity_entry.grid(column=0, row=0)
+        self.stock_quantity_entry = ttk.Entry(stock_quantity_label_frame)
+        self.stock_quantity_entry.grid(column=0, row=0)
         # Price label frame
         stock_price_label_frame = ttk.LabelFrame(
             data_entry_label_frame, text="Price (GBX)"
         )
-        stock_price_entry = ttk.Entry(stock_price_label_frame)
-        stock_price_entry.grid(column=0, row=0)
+        self.stock_price_entry = ttk.Entry(stock_price_label_frame)
+        self.stock_price_entry.grid(column=0, row=0)
         # Position label frames
         stock_ticker_label_frame.grid(column=0, row=0)
         stock_name_label_frame.grid(column=0, row=1, columnspan=2, sticky="ew")
@@ -63,6 +63,11 @@ class AddNewSecurityDialog:
     def add(self):
         # Write
         print("add called")
+        ticker = self.stock_ticker_entry.get()
+        name = self.stock_name_entry.get()
+        quantity = self.stock_quantity_entry.get()
+        price = self.stock_price_entry.get()
+        print("add: " + ticker + ", " + name + ", " + quantity + ", " + price)
 
     def cancel(self):
         # Quit dialog doing nothing.
