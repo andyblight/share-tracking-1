@@ -17,7 +17,7 @@ class SecuritiesDatabase:
         con1.commit()
         con1.close()
 
-    def add_rows(self):
+    def add_fake_rows(self):
         con1 = sqlite3.connect(self.__file_name)
         cur = con1.cursor()
         cur.execute("INSERT INTO shares VALUES ('FRED', 'Frederick', '12', '75.4')")
