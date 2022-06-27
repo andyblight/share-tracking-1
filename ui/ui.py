@@ -2,7 +2,6 @@ from tkinter import ttk
 import tkinter as tk
 
 from ui.securities_menu import SecuritiesMenu
-from database.securities import SecuritiesDatabase
 
 DEFAULT_APP_WIDTH = 800
 DEFAULT_APP_HEIGHT = 500
