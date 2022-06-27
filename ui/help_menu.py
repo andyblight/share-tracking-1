@@ -5,21 +5,11 @@ import tkinter as tk
 # FIXME Get program name from single point.
 __program_name__ = "Share Tracker"
 
-class HelpMenu(tk.Menu):
-    def __init__(self, parent, menu_bar):
+
+class AboutDialog:
+    def __init__(self, parent):
         self.parent = parent
-        self.menu_help = tk.Menu(menu_bar)
-        self.menu_help.add_command(label="Help Index", command=self.do_nothing)
-        self.menu_help.add_command(label="About...", command=self.dialog_about)
-        menu_bar.add_cascade(label="Help", menu=self.menu_help)
-
-    def do_nothing(self):
-        pass
-
-    def dialog_about_exit(self):
-        self.about_box.destroy()
-
-    def dialog_about(self):
+        # Set up new window.
         self.about_box = tk.Toplevel(self.parent)
         self.about_box.title("About " + __program_name__)
         self.about_box.geometry("400x300")
@@ -28,15 +18,32 @@ class HelpMenu(tk.Menu):
         frame = tk.Frame(self.about_box, borderwidth=4, relief="ridge")
         # The shows the frame the same size as the window.
         frame.grid(sticky="nesw")
-
         # Label frame
         label_frame = tk.LabelFrame(frame, text="About this program...")
         label_frame.grid(column=0, row=0, columnspan=3, rowspan=3, sticky=("nesw"))
         display_string = __program_name__ + " is AWESOME!"
         label = ttk.Label(label_frame, text=display_string)
         label.grid(column=1, row=1, sticky="n", padx=5, pady=5)
-
-        self.ok_button = tk.Button(frame, text="OK", command=self.dialog_about_exit)
+        # OK button
+        self.ok_button = tk.Button(frame, text="OK", command=self.exit)
         self.ok_button.grid(column=1, row=3, sticky="s")
 
+    def exit(self):
+        # Quit dialog doing nothing.
+        self.about_box.destroy()
 
+
+class HelpMenu(tk.Menu):
+    def __init__(self, parent, menu_bar):
+        self.parent = parent
+        self.menu_help = tk.Menu(menu_bar)
+        self.menu_help.add_command(label="Help Index", command=self.index)
+        self.menu_help.add_command(label="About...", command=self.dialog_about)
+        menu_bar.add_cascade(label="Help", menu=self.menu_help)
+
+    def index(self):
+        print("Help->Index")
+
+    def dialog_about(self):
+        print("Help->About")
+        _ = AboutDialog(self.parent)
