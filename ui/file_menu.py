@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from ui.securities_menu import database
+from database.main import database
 
 
 class FileMenu(tk.Menu):

@@ -1,11 +1,10 @@
-from numbers import Real
 from tkinter import ttk
 import tkinter as tk
 
-from database.securities import SecuritiesDatabase
+# from database.securities import SecuritiesDatabase
 
-# FIXME Hacky
-database = SecuritiesDatabase()
+# # FIXME Hacky
+# database = SecuritiesDatabase()
 
 
 class AddNewSecurityDialog:
@@ -82,24 +81,24 @@ class AddNewSecurityDialog:
         price = self.stock_price_entry.get()
         print("add: " + ticker + ", " + name + ", " + quantity + ", " + price)
         # Validate info.
-        quantity_float = 0.0
-        price_float = 0.0
-        valid = self.validate_ticker(ticker)
-        if valid:
-            valid = self.validate_name(name)
-            if valid:
-                try:
-                    quantity_float = float(quantity)
-                except:
-                    valid = False
-                if valid:
-                    try:
-                        price_float = float(price)
-                    except:
-                        valid = False
-                    if valid:
-                        # Write to database.
-                        database.add_record(ticker, name, quantity_float, price_float)
+        # quantity_float = 0.0
+        # price_float = 0.0
+        # valid = self.validate_ticker(ticker)
+        # if valid:
+        #     valid = self.validate_name(name)
+        #     if valid:
+        #         try:
+        #             quantity_float = float(quantity)
+        #         except (ValueError, TypeError):
+        #             valid = False
+        #         if valid:
+        #             try:
+        #                 price_float = float(price)
+        #             except (ValueError, TypeError):
+        #                 valid = False
+        #             # if valid:
+        #                 # Write to database.
+        #                 # database.add_record(ticker, name, quantity_float, price_float)
 
     def cancel(self):
         # Quit dialog doing nothing.
@@ -137,10 +136,10 @@ class SecuritiesTableView:
         # print("refresh")
         for item in self.tree.get_children():
             self.tree.delete(item)
-        all_rows = database.get_all_rows()
-        for row in all_rows:
-            # print(row)
-            self.tree.insert("", tk.END, values=row)
+        # all_rows = database.get_all_rows()
+        # for row in all_rows:
+        #     # print(row)
+        #     self.tree.insert("", tk.END, values=row)
 
 
 class SecuritiesMenu(tk.Menu):
