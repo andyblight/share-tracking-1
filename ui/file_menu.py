@@ -16,16 +16,17 @@ class FileMenu(tk.Menu):
 
     def new(self):
         print("File->New")
-        # FIXME: Hack for now to have some data to show.
-        # Create database if not present
+        # Create database with empty tables if not present
         if not database.is_present():
             database.create()
-            # FIXME: This is for testing the GUI.
-            # Remove when done.
-            database.add_fake_rows()
 
     def open(self):
         print("File->Open")
+        if database.is_present():
+            # FIXME: This is for testing the GUI.
+            # Remove when done.
+            database.add_test_rows()
 
     def save(self):
         print("File->Save")
+        database.dump_tables()

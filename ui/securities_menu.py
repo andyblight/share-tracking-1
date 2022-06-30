@@ -1,10 +1,7 @@
 from tkinter import ttk
 import tkinter as tk
 
-# from database.securities import SecuritiesDatabase
-
-# # FIXME Hacky
-# database = SecuritiesDatabase()
+from database.main import database
 
 
 class AddNewSecurityDialog:
@@ -32,23 +29,9 @@ class AddNewSecurityDialog:
         stock_name_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Name")
         self.stock_name_entry = ttk.Entry(stock_name_label_frame)
         self.stock_name_entry.grid(sticky="ew")
-        # Quantity label frame
-        stock_quantity_label_frame = ttk.LabelFrame(
-            data_entry_label_frame, text="Quantity"
-        )
-        self.stock_quantity_entry = ttk.Entry(stock_quantity_label_frame)
-        self.stock_quantity_entry.grid(column=0, row=0)
-        # Price label frame
-        stock_price_label_frame = ttk.LabelFrame(
-            data_entry_label_frame, text="Price (GBX)"
-        )
-        self.stock_price_entry = ttk.Entry(stock_price_label_frame)
-        self.stock_price_entry.grid(column=0, row=0)
         # Position label frames
         stock_ticker_label_frame.grid(column=0, row=0)
         stock_name_label_frame.grid(column=0, row=1, columnspan=2, sticky="ew")
-        stock_quantity_label_frame.grid(column=0, row=2)
-        stock_price_label_frame.grid(column=0, row=3)
         # Buttons
         self.add_new_button = tk.Button(
             data_entry_label_frame, text="Add", command=self.add
@@ -77,28 +60,14 @@ class AddNewSecurityDialog:
         # Get info from entry boxes.
         ticker = self.stock_ticker_entry.get()
         name = self.stock_name_entry.get()
-        quantity = self.stock_quantity_entry.get()
-        price = self.stock_price_entry.get()
-        print("add: " + ticker + ", " + name + ", " + quantity + ", " + price)
+        print("add: " + ticker + ", " + name)
         # Validate info.
-        # quantity_float = 0.0
-        # price_float = 0.0
-        # valid = self.validate_ticker(ticker)
-        # if valid:
-        #     valid = self.validate_name(name)
-        #     if valid:
-        #         try:
-        #             quantity_float = float(quantity)
-        #         except (ValueError, TypeError):
-        #             valid = False
-        #         if valid:
-        #             try:
-        #                 price_float = float(price)
-        #             except (ValueError, TypeError):
-        #                 valid = False
-        #             # if valid:
-        #                 # Write to database.
-        #                 # database.add_record(ticker, name, quantity_float, price_float)
+        valid = self.validate_ticker(ticker)
+        if valid:
+            valid = self.validate_name(name)
+            if valid:
+                # Write to database.
+                database.securities.add_row(ticker, name)
 
     def cancel(self):
         # Quit dialog doing nothing.
@@ -115,18 +84,16 @@ class SecuritiesTableView:
         self.treeview_frame = ttk.Frame(self.frame, borderwidth=4, relief="ridge")
         # This shows the frame.
         self.treeview_frame.grid(column=0, row=0)
-        columns = ("ticker", "name", "quantity", "price")
+        columns = ("uid", "ticker", "name")
         self.tree = ttk.Treeview(self.treeview_frame, columns=columns, show="headings")
         self.tree.grid(column=0, row=0)
         # Define headings
+        self.tree.heading("uid", text="Id")
+        self.tree.column("uid", width=40)
         self.tree.heading("ticker", text="Ticker")
-        self.tree.column("ticker", width=100)
+        self.tree.column("ticker", width=80)
         self.tree.heading("name", text="Name")
-        self.tree.column("name", width=200)
-        self.tree.heading("quantity", text="Quantity")
-        self.tree.column("quantity", width=100, anchor="e")
-        self.tree.heading("price", text="Price")
-        self.tree.column("price", width=100, anchor="e")
+        self.tree.column("name", width=300)
         # The refresh button
         refresh_button = tk.Button(self.frame, text="Refresh", command=self.refresh)
         refresh_button.grid(column=0, row=1)
@@ -136,10 +103,10 @@ class SecuritiesTableView:
         # print("refresh")
         for item in self.tree.get_children():
             self.tree.delete(item)
-        # all_rows = database.get_all_rows()
-        # for row in all_rows:
-        #     # print(row)
-        #     self.tree.insert("", tk.END, values=row)
+        all_rows = database.securities.get_all_rows()
+        for row in all_rows:
+            # print(row)
+            self.tree.insert("", tk.END, values=row)
 
 
 class SecuritiesMenu(tk.Menu):

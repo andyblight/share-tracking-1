@@ -39,17 +39,5 @@ class UserInterface(ttk.Frame):
         # Create simplest layout, grid of 1 x 1 using all of window.
         self.parent.grid_rowconfigure(0, weight=1)
         self.parent.grid_columnconfigure(0, weight=1)
-        # Add two tabbed frames.
-        # self.notebook = ttk.Notebook(root)
-        # # Use sticky to ensure the tabs resize with the window.
-        # self.notebook.grid(sticky="nsew")
-        # # Create the frames for each page.
-        # self.display_tab = DisplayTab(self.notebook)
-        # self.display_tab.grid(sticky="nsew")
-        # self.add_security_tab = AddSecurityTab(self.notebook)
-        # self.add_security_tab.grid(sticky="nsew")
-        # # Add frames to notebook.
-        # self.notebook.add(self.display_tab, text="Display")
-        # self.notebook.add(self.add_security_tab, text="Add Security")
-        # Add menu bar.
+        # Add the menu bar.
         self.menu_bar = MenuBar(self.parent)

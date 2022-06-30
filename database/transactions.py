@@ -1,5 +1,4 @@
 import sqlite3
-from pathlib import Path
 
 
 class TransactionsTable:
@@ -13,20 +12,24 @@ class TransactionsTable:
         sql_query = "CREATE TABLE IF NOT EXISTS "
         sql_query += self._type_table_name
         sql_query += " (Type CHAR(1) PRIMARY KEY, "
-        sql_query += " Label TEXT)"
+        sql_query += " Label TEXT);"
+        print(sql_query)
         cursor.execute(sql_query)
         # Insert the values.
-        sql_query = "INSERT "
+        sql_query = "INSERT INTO "
         sql_query += self._type_table_name
-        sql_query += " (Type, Label) VALUES ('B' 'Buy')"
+        sql_query += " (Type, Label) VALUES ('B', 'Buy');"
+        print(sql_query)
         cursor.execute(sql_query)
-        sql_query = "INSERT "
+        sql_query = "INSERT INTO "
         sql_query += self._type_table_name
-        sql_query += " (Type, Label) VALUES ('N' 'None')"
+        sql_query += " (Type, Label) VALUES ('N', 'None');"
+        print(sql_query)
         cursor.execute(sql_query)
-        sql_query = "INSERT "
+        sql_query = "INSERT INTO "
         sql_query += self._type_table_name
-        sql_query += " (Type, Label) VALUES ('S' 'Sell')"
+        sql_query += " (Type, Label) VALUES ('S', 'Sell');"
+        print(sql_query)
         cursor.execute(sql_query)
 
     def create_transactions_table(self, cursor):
@@ -43,47 +46,42 @@ class TransactionsTable:
         sql_query += "price REAL NOT NULL, "
         sql_query += "fees REAL NOT NULL, "
         sql_query += "tax REAL NOT NULL, "
-        sql_query += "total REAL NOT NULL, "
-        sql_query += ")"
+        sql_query += "total REAL NOT NULL"
+        sql_query += ");"
+        print(sql_query)
         cursor.execute(sql_query)
 
     def create(self):
-        con1 = sqlite3.connect(self._file_name)
-        cur1 = con1.cursor()
-        cur1.execute()
-        if cur1.fetchone()[0] != 1:
-            # Table does not exist so create them.
-            self.create_transactions_type_table(cur1)
-            self.create_transactions_table(cur1)
-        con1.commit()
-        con1.close()
+        connection = sqlite3.connect(self._file_name)
+        cursor = connection.cursor()
+        # Create tables if not existing.
+        self.create_transactions_type_table(cursor)
+        self.create_transactions_table(cursor)
+        connection.commit()
+        connection.close()
 
     def add_test_rows(self):
-        self.add_row(self, "B", 1, 1, 20, 1.23, 0.10, 0.50, 25.20)
-        self.add_row(self, "S", 2, 2, 30, 1.00, 2.00, 1.50, 33.50)
+        self.add_row("B", 1, 1, 20, 1.23, 0.10, 0.50, 25.20)
+        self.add_row("S", 2, 2, 30, 1.00, 2.00, 1.50, 33.50)
 
     def add_row(self, type, date, security_id, quantity, price, fees, tax, total):
-        con1 = sqlite3.connect(self._file_name)
-        cur = con1.cursor()
+        connection = sqlite3.connect(self._file_name)
+        cur = connection.cursor()
         sql_query = "INSERT INTO {} ".format(self._table_name)
         sql_query += "(type, date, security_id, quantity, price, fees, tax, total) "
-        sql_query += "VALUES ({}, {}, {}, {}, {}, {}, {}, {})".format(
+        sql_query += "VALUES ('{}', {}, {}, {}, {}, {}, {}, {})".format(
             type, date, security_id, quantity, price, fees, tax, total
         )
         print("Adding row [", sql_query, "]")
         cur.execute(sql_query)
-        con1.commit()
-        con1.close()
+        connection.commit()
+        connection.close()
 
     def get_all_rows(self):
-        con1 = sqlite3.connect(self._file_name)
-        cur1 = con1.cursor()
+        connection = sqlite3.connect(self._file_name)
+        cursor = connection.cursor()
         sql_query = "SELECT * FROM " + self._table_name
-        cur1.execute(sql_query)
-        rows = cur1.fetchall()
-        con1.close()
+        cursor.execute(sql_query)
+        rows = cursor.fetchall()
+        connection.close()
         return rows
-
-    def is_present(self):
-        db_file = Path(self._file_name)
-        return db_file.is_file()
