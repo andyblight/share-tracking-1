@@ -14,18 +14,38 @@ class TransactionsTableView:
         self.treeview_frame = ttk.Frame(self.frame, borderwidth=4, relief="ridge")
         # This shows the frame.
         self.treeview_frame.grid(column=0, row=0)
-        columns = ("ticker", "name", "quantity", "price")
+        columns = (
+            "uid",
+            "type",
+            "date",
+            "security_id",
+            "quantity",
+            "price",
+            "fees",
+            "tax",
+            "total",
+        )
         self.tree = ttk.Treeview(self.treeview_frame, columns=columns, show="headings")
         self.tree.grid(column=0, row=0)
         # Define headings
-        self.tree.heading("ticker", text="Ticker")
-        self.tree.column("ticker", width=100)
-        self.tree.heading("name", text="Name")
-        self.tree.column("name", width=200)
+        self.tree.heading("uid", text="UID")
+        self.tree.column("uid", width=40)
+        self.tree.heading("type", text="B/S")
+        self.tree.column("type", width=40)
+        self.tree.heading("date", text="Date")
+        self.tree.column("date", width=80)
+        self.tree.heading("security_id", text="SID")
+        self.tree.column("security_id", width=40)
         self.tree.heading("quantity", text="Quantity")
-        self.tree.column("quantity", width=100, anchor="e")
+        self.tree.column("quantity", width=80)
         self.tree.heading("price", text="Price")
-        self.tree.column("price", width=100, anchor="e")
+        self.tree.column("price", width=80)
+        self.tree.heading("fees", text="Fees")
+        self.tree.column("fees", width=80)
+        self.tree.heading("tax", text="Tax")
+        self.tree.column("tax", width=80)
+        self.tree.heading("total", text="Total")
+        self.tree.column("total", width=80)
         # The refresh button
         refresh_button = tk.Button(self.frame, text="Refresh", command=self.refresh)
         refresh_button.grid(column=0, row=1)

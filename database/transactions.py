@@ -36,7 +36,7 @@ class TransactionsTable:
         # Create Transactions table.
         sql_query = "CREATE TABLE IF NOT EXISTS "
         sql_query += self._table_name
-        sql_query += " (transaction_id INTEGER "
+        sql_query += " (uid INTEGER "
         sql_query += "PRIMARY KEY AUTOINCREMENT NOT NULL, "
         sql_query += "type CHAR(1) "
         sql_query += "NOT NULL DEFAULT ('N') REFERENCES TransactionType(Type), "
