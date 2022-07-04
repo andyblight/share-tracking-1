@@ -84,7 +84,7 @@ class SecuritiesTableView:
         self.treeview_frame = ttk.Frame(self.frame, borderwidth=4, relief="ridge")
         # This shows the frame.
         self.treeview_frame.grid(column=0, row=0)
-        columns = ("ticker", "name", "quantity", "price")
+        columns = ("ticker", "name")
         self.tree = ttk.Treeview(self.treeview_frame, columns=columns, show="headings")
         self.tree.grid(column=0, row=0)
         # Define headings
@@ -92,10 +92,6 @@ class SecuritiesTableView:
         self.tree.column("ticker", width=100)
         self.tree.heading("name", text="Name")
         self.tree.column("name", width=200)
-        self.tree.heading("quantity", text="Quantity")
-        self.tree.column("quantity", width=100, anchor="e")
-        self.tree.heading("price", text="Price")
-        self.tree.column("price", width=100, anchor="e")
         # The refresh button
         refresh_button = tk.Button(self.frame, text="Refresh", command=self.refresh)
         refresh_button.grid(column=0, row=1)
@@ -108,7 +104,8 @@ class SecuritiesTableView:
         all_rows = database.securities.get_all_rows()
         for row in all_rows:
             # print(row)
-            self.tree.insert("", tk.END, values=row)
+            trimmed_row = row[1:]
+            self.tree.insert("", tk.END, values=trimmed_row)
 
 
 class SecuritiesMenu(tk.Menu):
