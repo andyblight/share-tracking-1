@@ -1,6 +1,6 @@
-from tkinter import ttk
 import tkinter as tk
-
+from tkinter import ttk
+from datetime import datetime, date
 from database.main import database
 
 
@@ -33,7 +33,7 @@ class TransactionsTableView:
         self.tree.heading("type", text="B/S")
         self.tree.column("type", width=40)
         self.tree.heading("date", text="Date")
-        self.tree.column("date", width=80)
+        self.tree.column("date", width=120)
         self.tree.heading("security_id", text="SID")
         self.tree.column("security_id", width=40)
         self.tree.heading("quantity", text="Quantity")
@@ -53,13 +53,30 @@ class TransactionsTableView:
         # TODO
 
     def refresh(self):
-        # print("refresh")
+        print("refresh")
+        # Delete the existing data.
         for item in self.tree.get_children():
             self.tree.delete(item)
+        # Get all rows of data and add to the treeview object.
         all_rows = database.transactions.get_all_rows()
         for row in all_rows:
-            # print(row)
-            self.tree.insert("", tk.END, values=row)
+            print(row)
+            # Convert row into correct format for treeview.
+            row_max_index = len(row) - 1
+            treeview_row = []
+            for i in range(0, row_max_index):
+                print("index", i, row[i])
+                if i == 2:
+                    # Convert datetime string from database into a date string.
+                    datetime_str = row[i]
+                    print(datetime_str)
+                    datetime_obj = datetime.fromisoformat(datetime_str)
+                    date_str = datetime_obj.date().isoformat()
+                    print(date_str)
+                    treeview_row.append(date_str)
+                else:
+                    treeview_row.append(row[i])
+            self.tree.insert("", tk.END, values=treeview_row)
 
 
 class TransactionsMenu(tk.Menu):

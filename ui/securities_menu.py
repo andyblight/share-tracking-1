@@ -84,10 +84,12 @@ class SecuritiesTableView:
         self.treeview_frame = ttk.Frame(self.frame, borderwidth=4, relief="ridge")
         # This shows the frame.
         self.treeview_frame.grid(column=0, row=0)
-        columns = ("ticker", "name")
+        columns = ("uid", "ticker", "name")
         self.tree = ttk.Treeview(self.treeview_frame, columns=columns, show="headings")
         self.tree.grid(column=0, row=0)
         # Define headings
+        self.tree.heading("uid", text="UID")
+        self.tree.column("uid", width=40)
         self.tree.heading("ticker", text="Ticker")
         self.tree.column("ticker", width=100)
         self.tree.heading("name", text="Name")
@@ -104,8 +106,7 @@ class SecuritiesTableView:
         all_rows = database.securities.get_all_rows()
         for row in all_rows:
             # print(row)
-            trimmed_row = row[1:]
-            self.tree.insert("", tk.END, values=trimmed_row)
+            self.tree.insert("", tk.END, values=row)
 
 
 class SecuritiesMenu(tk.Menu):

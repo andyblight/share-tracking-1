@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 
 
 class TransactionsTable:
@@ -6,6 +7,17 @@ class TransactionsTable:
         self._file_name = file_name
         self._table_name = "Transactions"
         self._type_table_name = "TransactionType"
+
+    def _get_cursor(self):
+        self.connection = sqlite3.connect(
+            self._file_name, detect_types=sqlite3.PARSE_COLNAMES
+        )
+        cursor = self.connection.cursor()
+        return cursor
+
+    def _release_cursor(self):
+        self.connection.commit()
+        self.connection.close()
 
     def create_transactions_type_table(self, cursor):
         # Create Transactions Type table.
@@ -40,7 +52,7 @@ class TransactionsTable:
         sql_query += "PRIMARY KEY AUTOINCREMENT NOT NULL, "
         sql_query += "type CHAR(1) "
         sql_query += "NOT NULL DEFAULT ('N') REFERENCES TransactionType(Type), "
-        sql_query += "date INTEGER NOT NULL, "
+        sql_query += "date timestamp NOT NULL, "
         sql_query += "security_id INTEGER NOT NULL, "
         sql_query += "quantity REAL NOT NULL, "
         sql_query += "price REAL NOT NULL, "
@@ -52,36 +64,31 @@ class TransactionsTable:
         cursor.execute(sql_query)
 
     def create(self):
-        connection = sqlite3.connect(self._file_name)
-        cursor = connection.cursor()
+        cursor = self._get_cursor()
         # Create tables if not existing.
         self.create_transactions_type_table(cursor)
         self.create_transactions_table(cursor)
-        connection.commit()
-        connection.close()
+        self._release_cursor()
 
     def add_test_rows(self):
-        self.add_row("B", 1, 1, 20, 1.23, 0.10, 0.50, 25.20)
-        self.add_row("S", 2, 2, 30, 1.00, 2.00, 1.50, 33.50)
+        self.add_row("B", datetime(2022, 5, 22), 4, 20, 1.23, 0.10, 0.50, 25.20)
+        self.add_row("S", datetime(2022, 6, 22), 3, 30, 1.00, 2.00, 1.50, 33.50)
 
-    def add_row(self, type, date, security_id, quantity, price, fees, tax, total):
-        connection = sqlite3.connect(self._file_name)
-        cur = connection.cursor()
+    def add_row(self, type, date_obj, security_id, quantity, price, fees, tax, total):
         sql_query = "INSERT INTO {} ".format(self._table_name)
         sql_query += "(type, date, security_id, quantity, price, fees, tax, total) "
-        sql_query += "VALUES ('{}', {}, {}, {}, {}, {}, {}, {})".format(
-            type, date, security_id, quantity, price, fees, tax, total
+        sql_query += "VALUES ('{}', '{}', {}, {}, {}, {}, {}, {})".format(
+            type, date_obj, security_id, quantity, price, fees, tax, total
         )
         print("Adding row [", sql_query, "]")
-        cur.execute(sql_query)
-        connection.commit()
-        connection.close()
+        cursor = self._get_cursor()
+        cursor.execute(sql_query)
+        self._release_cursor()
 
     def get_all_rows(self):
-        connection = sqlite3.connect(self._file_name)
-        cursor = connection.cursor()
         sql_query = "SELECT * FROM " + self._table_name
+        cursor = self._get_cursor()
         cursor.execute(sql_query)
         rows = cursor.fetchall()
-        connection.close()
+        self._release_cursor()
         return rows

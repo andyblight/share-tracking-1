@@ -34,7 +34,7 @@ class SharesDatabase:
 
     def _dump_table_info(self):
         print("SharesDB.dump table info")
-        db = sqlite3.connect("database.db")
+        db = sqlite3.connect("database.db", detect_types=sqlite3.PARSE_DECLTYPES)
         cursor = db.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
         tables = cursor.fetchall()
