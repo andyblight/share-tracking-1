@@ -2,9 +2,10 @@ from tkinter import ttk
 import tkinter as tk
 
 from database.main import database
-from ui.dialog_about import AboutDialog
-from ui.transactions import TransactionsTableView, AddTransactionDialog
-from ui.securities import SecuritiesTableView, AddNewSecurityDialog
+from ui.tabs import TabbedWindow
+from ui.help import AboutDialog
+from ui.transactions import AddTransactionDialog
+from ui.securities import AddNewSecurityDialog
 
 
 DEFAULT_APP_WIDTH = 800
@@ -14,22 +15,6 @@ VERSION_MINOR = 0
 VERSION_BUILD = 1
 
 __program_name__ = "Share Tracker"
-
-
-class HelpMenu(tk.Menu):
-    def __init__(self, parent, menu_bar):
-        self.parent = parent
-        self.menu_help = tk.Menu(menu_bar)
-        self.menu_help.add_command(label="Help Index", command=self.index)
-        self.menu_help.add_command(label="About...", command=self.dialog_about)
-        menu_bar.add_cascade(label="Help", menu=self.menu_help)
-
-    def index(self):
-        print("Help->Index")
-
-    def dialog_about(self):
-        print("Help->About")
-        _ = AboutDialog(self.parent, __program_name__)
 
 
 class FileMenu(tk.Menu):
@@ -68,15 +53,14 @@ class SecuritiesMenu(tk.Menu):
         self.menu_file.add_command(label="Add...", command=self.add)
         self.menu_file.add_command(label="Show", command=self.show)
         menu_bar.add_cascade(label="Securities", menu=self.menu_file)
-        # Add treeview table on main window.
-        self.table_view = SecuritiesTableView(self.parent)
 
     def add(self):
         # Create a new dialog box.
         _ = AddNewSecurityDialog(self.parent)
 
     def show(self):
-        self.table_view.refresh()
+        self.tabbed_window.show_tab("Securities")
+        self.tabbed_window.show_securities()
 
 
 class TransactionsMenu(tk.Menu):
@@ -86,8 +70,6 @@ class TransactionsMenu(tk.Menu):
         self.menu_file.add_command(label="New...", command=self.new)
         self.menu_file.add_command(label="Show", command=self.show)
         menu_bar.add_cascade(label="Transactions", menu=self.menu_file)
-        # Add treeview table on main window.
-        self.table_view = TransactionsTableView(self.parent)
 
     def new(self):
         print("Transactions->New")
@@ -96,7 +78,23 @@ class TransactionsMenu(tk.Menu):
 
     def show(self):
         print("Transactions->Show")
-        self.table_view.refresh()
+        self.tabbed_window.show_transactions()
+
+
+class HelpMenu(tk.Menu):
+    def __init__(self, parent, menu_bar):
+        self.parent = parent
+        self.menu_help = tk.Menu(menu_bar)
+        self.menu_help.add_command(label="Help Index", command=self.index)
+        self.menu_help.add_command(label="About...", command=self.dialog_about)
+        menu_bar.add_cascade(label="Help", menu=self.menu_help)
+
+    def index(self):
+        print("Help->Index")
+
+    def dialog_about(self):
+        print("Help->About")
+        _ = AboutDialog(self.parent, __program_name__)
 
 
 class MenuBar(tk.Menu):
@@ -111,17 +109,18 @@ class MenuBar(tk.Menu):
         parent["menu"] = self.menu_bar
 
 
-class UserInterface(ttk.Frame):
-    def __init__(self, parent, *args, **kwargs):
-        ttk.Frame.__init__(self, parent, *args, **kwargs)
+class UserInterface:
+    def __init__(self, root):
         # The parent window.
-        self.parent = parent
-        self.parent.title(__program_name__)
-        self.parent.option_add("*tearOff", False)
+        self.root = root
+        self.root.title(__program_name__)
+        self.root.option_add("*tearOff", False)
         # Set size
-        self.parent.geometry("{}x{}".format(DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT))
+        self.root.geometry("{}x{}".format(DEFAULT_APP_WIDTH, DEFAULT_APP_HEIGHT))
         # Create simplest layout, grid of 1 x 1 using all of window.
-        self.parent.grid_rowconfigure(0, weight=1)
-        self.parent.grid_columnconfigure(0, weight=1)
+        self.root.grid_rowconfigure(0, weight=1)
+        self.root.grid_columnconfigure(0, weight=1)
         # Add the menu bar.
-        self.menu_bar = MenuBar(self.parent)
+        self.menu_bar = MenuBar(self.root)
+        # Add the tabbed window.
+        self.tabbed_window = TabbedWindow(self.root)
