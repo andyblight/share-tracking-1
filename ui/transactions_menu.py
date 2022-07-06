@@ -166,15 +166,17 @@ class TransactionsTableView:
         self.tree.column("tax", width=80)
         self.tree.heading("total", text="Total")
         self.tree.column("total", width=80)
-        # Add vertical scroll bar.
+        # Add scroll bars.
         self.ytree_scroll = ttk.Scrollbar(
             master=self.treeview_frame, orient=tk.VERTICAL, command=self.tree.yview
         )
+        self.ytree_scroll.grid(row=0, column=2, sticky="nse")
+        self.tree.configure(yscrollcommand=self.ytree_scroll.set)
         self.xtree_scroll = ttk.Scrollbar(
             master=self.treeview_frame, orient=tk.HORIZONTAL, command=self.tree.xview
         )
-        self.ytree_scroll.grid(row=0, column=2, sticky="nse")
         self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
+        self.tree.configure(xscrollcommand=self.xtree_scroll.set)
 
     def refresh(self):
         # print("refresh")

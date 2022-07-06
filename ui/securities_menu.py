@@ -98,12 +98,13 @@ class SecuritiesTableView:
         self.ytree_scroll = ttk.Scrollbar(
             master=self.treeview_frame, orient=tk.VERTICAL, command=self.tree.yview
         )
+        self.tree.configure(yscrollcommand=self.ytree_scroll.set)
         self.xtree_scroll = ttk.Scrollbar(
             master=self.treeview_frame, orient=tk.HORIZONTAL, command=self.tree.xview
         )
+        self.tree.configure(xscrollcommand=self.xtree_scroll.set)
         self.ytree_scroll.grid(row=0, column=2, sticky="nse")
         self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
-
 
     def refresh(self):
         # print("refresh")
