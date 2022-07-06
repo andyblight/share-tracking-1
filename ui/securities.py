@@ -79,34 +79,43 @@ class SecuritiesTableView(ttk.Frame):
         self.configure(borderwidth=4, relief="ridge")
         # This shows the frame.
         self.grid(column=0, row=0)
-        # Create treeview.
-        columns = ("uid", "ticker", "name")
-        self.tree = ttk.Treeview(self, columns=columns, show="headings")
-        self.tree.grid(column=0, row=0)
-        # Define headings
-        self.tree.heading("uid", text="UID")
-        self.tree.column("uid", width=40)
-        self.tree.heading("ticker", text="Ticker")
-        self.tree.column("ticker", width=100)
-        self.tree.heading("name", text="Name")
-        self.tree.column("name", width=200)
-        # Allow scrolling.
-        self.ytree_scroll = ttk.Scrollbar(
-            master=self, orient=tk.VERTICAL, command=self.tree.yview
-        )
-        self.ytree_scroll.grid(row=0, column=2, sticky="nse")
-        self.tree.configure(yscrollcommand=self.ytree_scroll.set)
-        self.xtree_scroll = ttk.Scrollbar(
-            master=self, orient=tk.HORIZONTAL, command=self.tree.xview
-        )
-        self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
-        self.tree.configure(xscrollcommand=self.xtree_scroll.set)
+        self.label = ttk.Label(text="Hello Securities!")
+        self.label.grid(column=0, row=0)
+        # # Create treeview.
+        # columns = ("uid", "ticker", "name")
+        # self.tree = ttk.Treeview(self, columns=columns, show="headings")
+        # self.tree.grid(column=0, row=0)
+        # # Define headings
+        # self.tree.heading("uid", text="UID")
+        # self.tree.column("uid", width=40)
+        # self.tree.heading("ticker", text="Ticker")
+        # self.tree.column("ticker", width=100)
+        # self.tree.heading("name", text="Name")
+        # self.tree.column("name", width=200)
+        # # Allow scrolling.
+        # self.ytree_scroll = ttk.Scrollbar(
+        #     master=self, orient=tk.VERTICAL, command=self.tree.yview
+        # )
+        # self.ytree_scroll.grid(row=0, column=2, sticky="nse")
+        # self.tree.configure(yscrollcommand=self.ytree_scroll.set)
+        # self.xtree_scroll = ttk.Scrollbar(
+        #     master=self, orient=tk.HORIZONTAL, command=self.tree.xview
+        # )
+        # self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
+        # self.tree.configure(xscrollcommand=self.xtree_scroll.set)
 
     def refresh(self):
-        # print("refresh")
-        for item in self.tree.get_children():
-            self.tree.delete(item)
-        all_rows = database.securities.get_all_rows()
-        for row in all_rows:
-            # print(row)
-            self.tree.insert("", tk.END, values=row)
+        print("refresh")
+        self.label.configure(text="Refresh Securities")
+        # for item in self.tree.get_children():
+        #     self.tree.delete(item)
+        # all_rows = database.securities.get_all_rows()
+        # for row in all_rows:
+        #     # print(row)
+        #     self.tree.insert("", tk.END, values=row)
+
+    def show(self):
+        self.label.configure(text="Show Securities")
+
+    def hide(self):
+        self.label.configure(text="")

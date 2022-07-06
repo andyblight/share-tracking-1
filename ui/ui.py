@@ -47,8 +47,9 @@ class FileMenu(tk.Menu):
 
 
 class SecuritiesMenu(tk.Menu):
-    def __init__(self, parent, menu_bar):
+    def __init__(self, parent, menu_bar, tabbed_window):
         self.parent = parent
+        self.tabbed_window = tabbed_window
         self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="Add...", command=self.add)
         self.menu_file.add_command(label="Show", command=self.show)
@@ -59,13 +60,14 @@ class SecuritiesMenu(tk.Menu):
         _ = AddNewSecurityDialog(self.parent)
 
     def show(self):
-        self.tabbed_window.show_tab("Securities")
+        print("Securities->Show")
         self.tabbed_window.show_securities()
 
 
 class TransactionsMenu(tk.Menu):
-    def __init__(self, parent, menu_bar):
+    def __init__(self, parent, menu_bar, tabbed_window):
         self.parent = parent
+        self.tabbed_window = tabbed_window
         self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="New...", command=self.new)
         self.menu_file.add_command(label="Show", command=self.show)
@@ -97,14 +99,20 @@ class HelpMenu(tk.Menu):
         _ = AboutDialog(self.parent, __program_name__)
 
 
-class MenuBar(tk.Menu):
-    def __init__(self, parent, *args, **kwargs):
+class MenuBar:
+    def __init__(self, parent, tabbed_window):
+        self.parent = parent
+        self.tabbed_window = tabbed_window
         self.menu_bar = tk.Menu(parent)
         # File menu
-        self.menu_file = FileMenu(parent, self.menu_bar)
-        self.menu_securities = SecuritiesMenu(parent, self.menu_bar)
-        self.menu_transactions = TransactionsMenu(parent, self.menu_bar)
-        self.menu_help = HelpMenu(parent, self.menu_bar)
+        self.menu_file = FileMenu(self.parent, self.menu_bar)
+        self.menu_securities = SecuritiesMenu(
+            self.parent, self.menu_bar, self.tabbed_window
+        )
+        self.menu_transactions = TransactionsMenu(
+            self.parent, self.menu_bar, self.tabbed_window
+        )
+        self.menu_help = HelpMenu(self.parent, self.menu_bar)
         # Finally, add the menu to the parent
         parent["menu"] = self.menu_bar
 
@@ -120,7 +128,8 @@ class UserInterface:
         # Create simplest layout, grid of 1 x 1 using all of window.
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
-        # Add the menu bar.
-        self.menu_bar = MenuBar(self.root)
         # Add the tabbed window.
         self.tabbed_window = TabbedWindow(self.root)
+        # Add the menu bar.
+        self.menu_bar = MenuBar(self.root, self.tabbed_window)
+        self.tabbed_window.show_securities()
