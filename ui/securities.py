@@ -110,20 +110,3 @@ class SecuritiesTableView:
             # print(row)
             self.tree.insert("", tk.END, values=row)
 
-
-class SecuritiesMenu(tk.Menu):
-    def __init__(self, parent, menu_bar):
-        self.parent = parent
-        self.menu_file = tk.Menu(menu_bar)
-        self.menu_file.add_command(label="Add...", command=self.add)
-        self.menu_file.add_command(label="Show", command=self.show)
-        menu_bar.add_cascade(label="Securities", menu=self.menu_file)
-        # Add treeview table on main window.
-        self.table_view = SecuritiesTableView(self.parent)
-
-    def add(self):
-        # Create a new dialog box.
-        _ = AddNewSecurityDialog(self.parent)
-
-    def show(self):
-        self.table_view.refresh()

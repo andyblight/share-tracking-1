@@ -311,23 +311,3 @@ class TransactionsTableView:
                     treeview_row.append(row[i])
             print(treeview_row)
             self.tree.insert("", tk.END, values=treeview_row)
-
-
-class TransactionsMenu(tk.Menu):
-    def __init__(self, parent, menu_bar):
-        self.parent = parent
-        self.menu_file = tk.Menu(menu_bar)
-        self.menu_file.add_command(label="New...", command=self.new)
-        self.menu_file.add_command(label="Show", command=self.show)
-        menu_bar.add_cascade(label="Transactions", menu=self.menu_file)
-        # Add treeview table on main window.
-        self.table_view = TransactionsTableView(self.parent)
-
-    def new(self):
-        print("Transactions->New")
-        # Create a new dialog box.
-        _ = AddTransactionDialog(self.parent)
-
-    def show(self):
-        print("Transactions->Show")
-        self.table_view.refresh()

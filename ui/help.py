@@ -2,16 +2,13 @@ from tkinter import ttk
 import tkinter as tk
 
 
-# FIXME Get program name from single point.
-__program_name__ = "Share Tracker"
-
-
 class AboutDialog:
-    def __init__(self, parent):
+    def __init__(self, parent, program_name):
         self.parent = parent
+        self.program_name = program_name
         # Set up new window.
         self.about_box = tk.Toplevel(self.parent)
-        self.about_box.title("About " + __program_name__)
+        self.about_box.title("About " + self.program_name)
         self.about_box.geometry("400x300")
         self.about_box.grid_rowconfigure(0, pad=10, weight=1)
         self.about_box.grid_columnconfigure(0, pad=10, weight=1)
@@ -21,7 +18,7 @@ class AboutDialog:
         # Label frame
         label_frame = tk.LabelFrame(frame, text="About this program...")
         label_frame.grid(column=0, row=0, columnspan=3, rowspan=3, sticky=("nesw"))
-        display_string = __program_name__ + " is AWESOME!"
+        display_string = self.program_name + " is AWESOME!"
         label = ttk.Label(label_frame, text=display_string)
         label.grid(column=1, row=1, sticky="n", padx=5, pady=5)
         # OK button
@@ -31,19 +28,3 @@ class AboutDialog:
     def exit(self):
         # Quit dialog doing nothing.
         self.about_box.destroy()
-
-
-class HelpMenu(tk.Menu):
-    def __init__(self, parent, menu_bar):
-        self.parent = parent
-        self.menu_help = tk.Menu(menu_bar)
-        self.menu_help.add_command(label="Help Index", command=self.index)
-        self.menu_help.add_command(label="About...", command=self.dialog_about)
-        menu_bar.add_cascade(label="Help", menu=self.menu_help)
-
-    def index(self):
-        print("Help->Index")
-
-    def dialog_about(self):
-        print("Help->About")
-        _ = AboutDialog(self.parent)
