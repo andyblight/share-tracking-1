@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-from datetime import datetime, date
+from datetime import datetime
 from database.main import database
+
 
 class AddTransactionDialog:
     def __init__(self, parent):
@@ -71,34 +72,52 @@ class AddTransactionDialog:
             data_entry_label_frame, text="Cancel", command=self.cancel
         )
         # Place buttons.
-        self.add_new_button.grid(column=0, row=4)
-        self.cancel_button.grid(column=1, row=4)
+        self.add_new_button.grid(column=0, row=2)
+        self.cancel_button.grid(column=1, row=2)
 
-    def validate_ticker(self, ticker):
-        valid = False
-        if len(ticker) > 2 and len(ticker) < 5:
-            valid = True
-        return valid
+    def validate_date(self, date_string):
+        invalid = 0
+        try:
+            datetime.datetime.strptime(date_string, "%Y-%m-%d")
+        except (ValueError, AttributeError):
+            print("Incorrect data format, should be YYYY-MM-DD")
+            invalid = 1
+        return invalid
 
-    def validate_name(self, name):
-        valid = False
-        if len(name) > 2:
-            valid = True
-        return valid
+    def validate_currency(self, value):
+        invalid = 0
+        try:
+            float(value)
+        except ValueError:
+            print("Incorrect currency format. Should be a valid number.")
+            invalid = 1
+        return invalid
 
     def add(self):
         print("SecurityDialog Add")
         # Get info from entry boxes.
-        ticker = self.stock_ticker_entry.get()
-        name = self.stock_name_entry.get()
-        print("add: " + ticker + ", " + name)
+        date_entered = self.date_entry.get()
+        buy_sell = self.buy_sell_entry.get()
+        security = self.security_entry.get()
+        quantity = self.quantity_entry.get()
+        price = self.price_entry.get()
+        fees = self.fees_entry.get()
+        tax = self.tax_entry.get()
+        total = self.total_entry.get()
         # Validate info.
-        valid = self.validate_ticker(ticker)
-        if valid:
-            valid = self.validate_name(name)
-            if valid:
-                # Write to database.
-                database.securities.add_row(ticker, name)
+        write = 0
+        write += self.validate_date(date_entered)
+        write += self.validate_currency(price)
+        write += self.validate_currency(fees)
+        write += self.validate_currency(tax)
+        if write == 0:
+            # Write if valid.
+            database.transactions.add_row(
+                buy_sell, date_entered, security, quantity, price, fees, tax, total
+            )
+        else:
+            print("One or more fields are invalid.")
+            # TODO Add some logic here.
 
     def cancel(self):
         # Quit dialog doing nothing.
@@ -147,26 +166,30 @@ class TransactionsTableView:
         self.tree.column("tax", width=80)
         self.tree.heading("total", text="Total")
         self.tree.column("total", width=80)
-        # The refresh button
-        refresh_button = tk.Button(self.frame, text="Refresh", command=self.refresh)
-        refresh_button.grid(column=0, row=1)
-        # Allow scrolling.
-        # TODO
+        # Add vertical scroll bar.
+        self.ytree_scroll = ttk.Scrollbar(
+            master=self.treeview_frame, orient=tk.VERTICAL, command=self.tree.yview
+        )
+        self.xtree_scroll = ttk.Scrollbar(
+            master=self.treeview_frame, orient=tk.HORIZONTAL, command=self.tree.xview
+        )
+        self.ytree_scroll.grid(row=0, column=2, sticky="nse")
+        self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
 
     def refresh(self):
-        print("refresh")
+        # print("refresh")
         # Delete the existing data.
         for item in self.tree.get_children():
             self.tree.delete(item)
         # Get all rows of data and add to the treeview object.
         all_rows = database.transactions.get_all_rows()
         for row in all_rows:
-            print(row)
+            # print(row)
             # Convert row into correct format for treeview.
             row_max_index = len(row) - 1
             treeview_row = []
             for i in range(0, row_max_index):
-                print("index", i, row[i])
+                # print("index", i, row[i])
                 if i == 2:
                     # Convert datetime string from database into a date string.
                     datetime_str = row[i]
@@ -194,7 +217,6 @@ class TransactionsMenu(tk.Menu):
         print("Transactions->New")
         # Create a new dialog box.
         _ = AddTransactionDialog(self.parent)
-
 
     def show(self):
         print("Transactions->Show")

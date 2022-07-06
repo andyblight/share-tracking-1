@@ -94,10 +94,16 @@ class SecuritiesTableView:
         self.tree.column("ticker", width=100)
         self.tree.heading("name", text="Name")
         self.tree.column("name", width=200)
-        # The refresh button
-        refresh_button = tk.Button(self.frame, text="Refresh", command=self.refresh)
-        refresh_button.grid(column=0, row=1)
         # Allow scrolling.
+        self.ytree_scroll = ttk.Scrollbar(
+            master=self.treeview_frame, orient=tk.VERTICAL, command=self.tree.yview
+        )
+        self.xtree_scroll = ttk.Scrollbar(
+            master=self.treeview_frame, orient=tk.HORIZONTAL, command=self.tree.xview
+        )
+        self.ytree_scroll.grid(row=0, column=2, sticky="nse")
+        self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
+
 
     def refresh(self):
         # print("refresh")
