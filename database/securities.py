@@ -29,13 +29,15 @@ class SecuritiesTable:
     def add_test_rows(self):
         self.add_row("ABCD.L", "Alphabet Corporation")
         self.add_row("BR.L", "British Railways Limited")
+        self.add_row("Fund", "MAN GLG UNDERVAL AST PROFESSIONAL C ACC")
 
     def add_row(self, ticker, name):
+        ticker_upper = ticker.upper()
         connection = sqlite3.connect(self._file_name)
         cursor = connection.cursor()
         sql_query = "INSERT INTO {} ".format(self._table_name)
         sql_query += "(ticker, name) "
-        sql_query += "VALUES ('{}', '{}')".format(ticker, name)
+        sql_query += "VALUES ('{}', '{}')".format(ticker_upper, name)
         print("Adding row [", sql_query, "]")
         cursor.execute(sql_query)
         connection.commit()

@@ -28,7 +28,7 @@ class AddNewSecurityDialog:
         # Name label frame
         stock_name_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Name")
         self.stock_name_entry = ttk.Entry(stock_name_label_frame)
-        self.stock_name_entry.grid(sticky="ew")
+        self.stock_name_entry.grid(sticky="news")
         # Position label frames
         stock_ticker_label_frame.grid(column=0, row=0)
         stock_name_label_frame.grid(column=0, row=1, columnspan=2, sticky="ew")
@@ -45,7 +45,7 @@ class AddNewSecurityDialog:
 
     def validate_ticker(self, ticker):
         valid = False
-        if len(ticker) > 2 and len(ticker) < 5:
+        if len(ticker) > 2 and len(ticker) < 20:
             valid = True
         return valid
 
@@ -61,13 +61,8 @@ class AddNewSecurityDialog:
         ticker = self.stock_ticker_entry.get()
         name = self.stock_name_entry.get()
         print("add: " + ticker + ", " + name)
-        # Validate info.
-        valid = self.validate_ticker(ticker)
-        if valid:
-            valid = self.validate_name(name)
-            if valid:
-                # Write to database.
-                database.securities.add_row(ticker, name)
+        # Write to database.
+        database.securities.add_row(ticker, name)
 
     def cancel(self):
         # Quit dialog doing nothing.
@@ -98,13 +93,13 @@ class SecuritiesTableView:
         self.ytree_scroll = ttk.Scrollbar(
             master=self.treeview_frame, orient=tk.VERTICAL, command=self.tree.yview
         )
+        self.ytree_scroll.grid(row=0, column=2, sticky="nse")
         self.tree.configure(yscrollcommand=self.ytree_scroll.set)
         self.xtree_scroll = ttk.Scrollbar(
             master=self.treeview_frame, orient=tk.HORIZONTAL, command=self.tree.xview
         )
-        self.tree.configure(xscrollcommand=self.xtree_scroll.set)
-        self.ytree_scroll.grid(row=0, column=2, sticky="nse")
         self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
+        self.tree.configure(xscrollcommand=self.xtree_scroll.set)
 
     def refresh(self):
         # print("refresh")
