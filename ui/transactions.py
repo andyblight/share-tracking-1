@@ -240,56 +240,53 @@ class TransactionsTableView(ttk.Frame):
         self.configure(borderwidth=4, relief="ridge")
         # This shows the frame.
         self.grid(column=0, row=0)
-        self.label = ttk.Label(text="Hello Transactions!")
-        self.label.grid(column=0, row=0)
-
         # Create treeview of transactions_table.
-        # columns = (
-        #     "uid",
-        #     "type",
-        #     "date",
-        #     "security_id",
-        #     "quantity",
-        #     "price",
-        #     "fees",
-        #     "tax",
-        #     "total",
-        # )
-        # self.tree = ttk.Treeview(self, columns=columns, show="headings")
-        # self.tree.grid(column=0, row=0)
-        # # Define headings
-        # self.tree.heading("uid", text="UID")
-        # self.tree.column("uid", width=40)
-        # self.tree.heading("type", text="B/S")
-        # self.tree.column("type", width=40)
-        # self.tree.heading("date", text="Date")
-        # self.tree.column("date", width=120)
-        # self.tree.heading("security_id", text="SID")
-        # self.tree.column("security_id", width=40)
-        # self.tree.heading("quantity", text="Quantity")
-        # self.tree.column("quantity", width=80)
-        # self.tree.heading("price", text="Price")
-        # self.tree.column("price", width=80)
-        # self.tree.heading("fees", text="Fees")
-        # self.tree.column("fees", width=80)
-        # self.tree.heading("tax", text="Tax")
-        # self.tree.column("tax", width=80)
-        # self.tree.heading("total", text="Total")
-        # self.tree.column("total", width=80)
-        # # Add scroll bars.
-        # self.ytree_scroll = ttk.Scrollbar(
-        #     master=self, orient=tk.VERTICAL, command=self.tree.yview
-        # )
-        # self.ytree_scroll.grid(row=0, column=2, sticky="nse")
-        # self.tree.configure(yscrollcommand=self.ytree_scroll.set)
-        # self.xtree_scroll = ttk.Scrollbar(
-        #     master=self, orient=tk.HORIZONTAL, command=self.tree.xview
-        # )
-        # self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
-        # self.tree.configure(xscrollcommand=self.xtree_scroll.set)
+        columns = (
+            "uid",
+            "type",
+            "date",
+            "security_id",
+            "quantity",
+            "price",
+            "fees",
+            "tax",
+            "total",
+        )
+        self.tree = ttk.Treeview(self, columns=columns, show="headings")
+        self.tree.grid(column=0, row=0)
+        # Define headings
+        self.tree.heading("uid", text="UID")
+        self.tree.column("uid", width=40)
+        self.tree.heading("type", text="B/S")
+        self.tree.column("type", width=40)
+        self.tree.heading("date", text="Date")
+        self.tree.column("date", width=120)
+        self.tree.heading("security_id", text="SID")
+        self.tree.column("security_id", width=40)
+        self.tree.heading("quantity", text="Quantity")
+        self.tree.column("quantity", width=80)
+        self.tree.heading("price", text="Price")
+        self.tree.column("price", width=80)
+        self.tree.heading("fees", text="Fees")
+        self.tree.column("fees", width=80)
+        self.tree.heading("tax", text="Tax")
+        self.tree.column("tax", width=80)
+        self.tree.heading("total", text="Total")
+        self.tree.column("total", width=80)
+        # Add scroll bars.
+        self.ytree_scroll = ttk.Scrollbar(
+            master=self, orient=tk.VERTICAL, command=self.tree.yview
+        )
+        self.ytree_scroll.grid(row=0, column=2, sticky="nse")
+        self.tree.configure(yscrollcommand=self.ytree_scroll.set)
+        self.xtree_scroll = ttk.Scrollbar(
+            master=self, orient=tk.HORIZONTAL, command=self.tree.xview
+        )
+        self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
+        self.tree.configure(xscrollcommand=self.xtree_scroll.set)
 
-    def refresh(self):
-        # print("refresh")
+    def show(self):
+        self.tkraise()
         # Delete the existing data.
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -314,9 +311,3 @@ class TransactionsTableView(ttk.Frame):
                     treeview_row.append(row[i])
             print(treeview_row)
             self.tree.insert("", tk.END, values=treeview_row)
-
-    def show(self):
-        self.label.configure(text="Show Transactions")
-
-    def hide(self):
-        self.label.configure(text="")

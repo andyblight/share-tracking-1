@@ -19,7 +19,7 @@ class TabbedWindow:
         self.notebook.add(
             child=self.transactions_table_view, sticky="news", text="Transactions"
         )
-        self.notebook.grid(column=0, row=0, sticky=tk.E+tk.W+tk.N+tk.S)
+        self.notebook.grid(column=0, row=0, sticky="news")
         self.notebook.bind('<<NotebookTabChanged>>', self.on_tab_changed)
 
     def on_tab_changed(self, event):
@@ -31,12 +31,8 @@ class TabbedWindow:
 
     def show_securities(self):
         self.notebook.select(0)
-        self.transactions_table_view.hide()
         self.securities_table_view.show()
-        # pass
 
     def show_transactions(self):
         self.notebook.select(1)
-        self.securities_table_view.hide()
         self.transactions_table_view.show()
-        # pass
