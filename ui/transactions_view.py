@@ -244,8 +244,8 @@ class TransactionsTableView(ttk.Frame):
         # Create treeview of transactions_table.
         columns = (
             "uid",
-            "type",
             "date",
+            "type",
             "security_id",
             "quantity",
             "price",
@@ -258,10 +258,10 @@ class TransactionsTableView(ttk.Frame):
         # Define headings
         self.tree.heading("uid", text="UID", anchor=tk.E)
         self.tree.column("uid", width=40)
-        self.tree.heading("type", text="B/S")
-        self.tree.column("type", width=40)
         self.tree.heading("date", text="Date")
         self.tree.column("date", width=120)
+        self.tree.heading("type", text="B/S")
+        self.tree.column("type", width=40)
         self.tree.heading("security_id", text="SID")
         self.tree.column("security_id", width=40, anchor=tk.E)
         self.tree.heading("quantity", text="Quantity")
@@ -299,12 +299,10 @@ class TransactionsTableView(ttk.Frame):
             treeview_row = []
             for i in range(0, row_max_index):
                 # print("index", i, row[i])
-                if i == 2:
-                    treeview_row.append(row[i])
-                if i in (5, 6, 7, 8, 9):
+                if i in (4, 5, 6, 7, 8):
                     currency_str = float_to_currency(row[i])
                     treeview_row.append(currency_str)
                 else:
                     treeview_row.append(row[i])
-            print(treeview_row)
+            # print(treeview_row)
             self.tree.insert("", tk.END, values=treeview_row)

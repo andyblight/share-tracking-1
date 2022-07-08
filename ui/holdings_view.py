@@ -102,7 +102,7 @@ class HoldingsTableView(ttk.Frame):
             self.tree.delete(item)
         all_rows = database.holdings.get_all_rows()
         for row in all_rows:
-            print(row)
+            # print(row)
             # Convert row into correct format for treeview.
             row_max_index = len(row)
             treeview_row = []
@@ -113,5 +113,5 @@ class HoldingsTableView(ttk.Frame):
                     treeview_row.append(currency_str)
                 else:
                     treeview_row.append(row[i])
-            print(treeview_row)
+            # print(treeview_row)
             self.tree.insert("", tk.END, values=treeview_row)
