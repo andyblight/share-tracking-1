@@ -5,6 +5,18 @@ class SecuritiesTable:
     def __init__(self, file_name):
         self._file_name = file_name
         self._table_name = "Securities"
+        self._connection = None
+
+    def _get_cursor(self):
+        self._connection = sqlite3.connect(
+            self._file_name, detect_types=sqlite3.PARSE_COLNAMES
+        )
+        cursor = self._connection.cursor()
+        return cursor
+
+    def _release_cursor(self):
+        self._connection.commit()
+        self._connection.close()
 
     def create_securities_table(self, cursor):
         # Create securities table.
@@ -19,12 +31,9 @@ class SecuritiesTable:
         cursor.execute(sql_query)
 
     def create(self):
-        connection = sqlite3.connect(self._file_name)
-        cursor = connection.cursor()
-        # Create table if not existing.
+        cursor = self._get_cursor()
         self.create_securities_table(cursor)
-        connection.commit()
-        connection.close()
+        self._release_cursor()
 
     def add_test_rows(self):
         self.add_row("ABCD.L", "Alphabet Corporation")
@@ -33,21 +42,18 @@ class SecuritiesTable:
 
     def add_row(self, ticker, name):
         ticker_upper = ticker.upper()
-        connection = sqlite3.connect(self._file_name)
-        cursor = connection.cursor()
+        cursor = self._get_cursor()
         sql_query = "INSERT INTO {} ".format(self._table_name)
         sql_query += "(ticker, name) "
         sql_query += "VALUES ('{}', '{}')".format(ticker_upper, name)
         print("Adding row [", sql_query, "]")
         cursor.execute(sql_query)
-        connection.commit()
-        connection.close()
+        self._release_cursor()
 
     def get_all_rows(self):
-        connection = sqlite3.connect(self._file_name)
-        cursor = connection.cursor()
+        cursor = self._get_cursor()
         sql_query = "SELECT * FROM " + self._table_name
         cursor.execute(sql_query)
         rows = cursor.fetchall()
-        connection.close()
+        self._release_cursor()
         return rows

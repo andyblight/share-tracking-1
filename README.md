@@ -35,8 +35,8 @@ attributes are:
 | Field name | Type | Notes |
 |---|---|---|
 | Unique ID | Integer | Unique ID for each transaction. |
-| Security ID | Integer | Link to the security unique ID. |
 | Date | Date | The date of the transaction. |
+| Security ID | Integer | Link to the security unique ID. |
 | Transaction Type | Text | Short name for the transaction type e.g. `Buy`, `Sell`.|
 | Quantity | Real | The number of things involved in the transaction.|
 | Price | Real | The price per unit. |
@@ -47,50 +47,32 @@ attributes are:
 ### Holdings
 
 The `holdings` table holds information about the current value of each of the
-securities held.  This table is generated from the transaction data and is
-not quite so obvious as the previous tables as can be seen using the following
-example for a single security.
+securities held.  This table is generated from:
 
-1. Buy 200 shares.
-2. Buy 200 shares.  Total holding 400.
-3. Sell 100 shares.  Total holding 300.
-4. Sell 100 shares.  Total holding 200.
-5. Sell 100 shares.  Total holding 100.
-6. Sell 100 shares.  Total holding 0.
+* The transaction data:
+    * security Id.
+    * quantity bought/sold.
+    * price.
+* The valuation data:
+    * value of a single share.
+    * stop/loss value.
+    * target value.
 
-At any point, I want to generate performance information about the security
-including historical performance.  After a lot of thought, I decided the best
-way to do this was to create a new holding record after each transaction.
+The valuation date will initially be entered using a dialog box.
 
-The attributes are:
+We end up with a table that looks like this:
 
 | Field name | Type | Notes |
 |---|---|---|
-| UniqueID | Integer | Unique ID for each holding record. |
-| SecurityID | Integer | Link to the security unique ID. |
-| Status | Text | Open = holding is active, Closed = sale occurred |
-| Created | Date | Date when the record was created. |
-| UnitCost | Real | Price per share. |
-| TotalCost | Real | Total paid. |
-| Closed | Date | Date when the record was finalised. |
-| UnitSale | Real | Unit value received. |
-| TotalSale | Real | Total received. |
-| Profit | Real | Total Sale - Total Cost. |
+| Unique ID | Integer | Unique ID for each transaction. |
+| Date | Date | The date of the transaction. |
+| Security ID | Integer | Link to the security unique ID. |
+| Quantity | Real | The number of unit involved in the transaction.|
+| Value | Real | The valuation for each unit. |
+| StopLoss | Real | Sell at this price. |
+| Target | Real | Target value. |
+| Total | Real | (Quantity * Value) |
 
-### Running
-
-The `running` table of is to hold the latest information for the holdings.
-The attributes are:
-
-| Field name | Type | Notes |
-|---|---|---|
-| UniqueID | Integer | Unique ID for each running record. |
-| SecurityID | Integer | Link to the security unique ID. |
-| StopLoss | Real | The stop loss value. |
-| Target | Real | The target value. |
-| Value | Real | The current value of the holding. |
-
-NOTE: The above tables and content may be different in the code, so beware!
 
 ## Future plans
 

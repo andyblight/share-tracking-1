@@ -50,9 +50,9 @@ class TransactionsTable:
         sql_query += self._table_name
         sql_query += " (uid INTEGER "
         sql_query += "PRIMARY KEY AUTOINCREMENT NOT NULL, "
+        sql_query += "date timestamp NOT NULL, "
         sql_query += "type CHAR(1) "
         sql_query += "NOT NULL DEFAULT ('N') REFERENCES TransactionType(Type), "
-        sql_query += "date timestamp NOT NULL, "
         sql_query += "security_id INTEGER NOT NULL, "
         sql_query += "quantity REAL NOT NULL, "
         sql_query += "price REAL NOT NULL, "
@@ -71,14 +71,14 @@ class TransactionsTable:
         self._release_cursor()
 
     def add_test_rows(self):
-        self.add_row("B", datetime(2022, 5, 22), 4, 20, 1.23, 0.10, 0.50, 25.20)
-        self.add_row("S", datetime(2022, 6, 22), 3, 30, 1.00, 2.00, 1.50, 33.50)
+        self.add_row(datetime(2022, 5, 22), "B", 4, 20, 1.23, 0.10, 0.50, 25.20)
+        self.add_row(datetime(2022, 6, 22), "S", 3, 30, 1.00, 2.00, 1.50, 33.50)
 
     def add_row(self, type, date_obj, security_id, quantity, price, fees, tax, total):
         sql_query = "INSERT INTO {} ".format(self._table_name)
-        sql_query += "(type, date, security_id, quantity, price, fees, tax, total) "
+        sql_query += "(date, type, security_id, quantity, price, fees, tax, total) "
         sql_query += "VALUES ('{}', '{}', {}, {}, {}, {}, {}, {})".format(
-            type, date_obj, security_id, quantity, price, fees, tax, total
+            date_obj, type, security_id, quantity, price, fees, tax, total
         )
         print("Adding row [", sql_query, "]")
         cursor = self._get_cursor()

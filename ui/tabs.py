@@ -20,10 +20,10 @@ class TabbedWindow:
             child=self.transactions_table_view, sticky="news", text="Transactions"
         )
         self.notebook.grid(column=0, row=0, sticky="news")
-        self.notebook.bind('<<NotebookTabChanged>>', self.on_tab_changed)
+        self.notebook.bind("<<NotebookTabChanged>>", self.on_tab_changed)
 
     def on_tab_changed(self, event):
-        tab = event.widget.tab('current')['text']
+        tab = event.widget.tab("current")["text"]
         if tab == "Securities":
             self.show_securities()
         elif tab == "Transactions":
