@@ -1,4 +1,3 @@
-import tkinter as tk
 from tkinter import ttk
 
 from ui.holdings_view import HoldingsTableView
@@ -39,12 +38,15 @@ class TabbedFrame:
 
     def show_holdings(self):
         self.notebook.select(0)
+        self.holdings_table_view.tkraise()
         self.holdings_table_view.show()
 
     def show_securities(self):
         self.notebook.select(1)
+        self.securities_table_view.tkraise()
         self.securities_table_view.show()
 
     def show_transactions(self):
         self.notebook.select(2)
+        self.transactions_table_view.tkraise()
         self.transactions_table_view.show()

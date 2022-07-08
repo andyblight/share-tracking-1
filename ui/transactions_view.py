@@ -220,15 +220,15 @@ class AddTransactionDialog:
             invalid = 1
         return invalid
 
-    def validate_total(self, quantity, price, fees, tax, total):
-        invalid = 0
-        try:
-            float(quantity_string)
-        except ValueError:
-            print("Invalid quantity. Should be a valid number.")
-            invalid = 1
-        return invalid
-        write += self.validate_total(quantity, price, fees, tax, total)
+    # def validate_total(self, quantity, price, fees, tax, total):
+    # invalid = 0
+    # try:
+    #     float(quantity_string)
+    # except ValueError:
+    #     print("Invalid quantity. Should be a valid number.")
+    #     invalid = 1
+    # return invalid
+    # write += self.validate_total(quantity, price, fees, tax, total)
 
 
 class TransactionsTableView(ttk.Frame):
@@ -286,7 +286,6 @@ class TransactionsTableView(ttk.Frame):
         self.tree.configure(xscrollcommand=self.xtree_scroll.set)
 
     def show(self):
-        self.tkraise()
         # Delete the existing data.
         for item in self.tree.get_children():
             self.tree.delete(item)

@@ -148,4 +148,5 @@ class UserInterface:
         self.tabbed_window = TabbedFrame(self.root)
         # Add the menu bar.
         self.menu_bar = MenuBar(self.root, self.tabbed_window)
-        self.tabbed_window.show_securities()
+        # Show holdings tab by default.
+        self.tabbed_window.show_holdings()

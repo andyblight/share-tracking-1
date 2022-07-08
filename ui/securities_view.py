@@ -103,7 +103,6 @@ class SecuritiesTableView(ttk.Frame):
         self.tree.configure(xscrollcommand=self.xtree_scroll.set)
 
     def show(self):
-        self.tkraise()
         for item in self.tree.get_children():
             self.tree.delete(item)
         all_rows = database.securities.get_all_rows()
