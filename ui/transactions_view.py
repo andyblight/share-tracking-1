@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
 from database.main import database
+from ui.utils import float_to_currency
 
 
 class AddTransactionDialog:
@@ -255,24 +256,24 @@ class TransactionsTableView(ttk.Frame):
         self.tree = ttk.Treeview(self, columns=columns, show="headings")
         self.tree.grid(column=0, row=0)
         # Define headings
-        self.tree.heading("uid", text="UID")
+        self.tree.heading("uid", text="UID", anchor=tk.E)
         self.tree.column("uid", width=40)
         self.tree.heading("type", text="B/S")
         self.tree.column("type", width=40)
         self.tree.heading("date", text="Date")
         self.tree.column("date", width=120)
         self.tree.heading("security_id", text="SID")
-        self.tree.column("security_id", width=40)
+        self.tree.column("security_id", width=40, anchor=tk.E)
         self.tree.heading("quantity", text="Quantity")
-        self.tree.column("quantity", width=80)
+        self.tree.column("quantity", width=80, anchor=tk.E)
         self.tree.heading("price", text="Price")
-        self.tree.column("price", width=80)
+        self.tree.column("price", width=80, anchor=tk.E)
         self.tree.heading("fees", text="Fees")
-        self.tree.column("fees", width=80)
+        self.tree.column("fees", width=80, anchor=tk.E)
         self.tree.heading("tax", text="Tax")
-        self.tree.column("tax", width=80)
+        self.tree.column("tax", width=80, anchor=tk.E)
         self.tree.heading("total", text="Total")
-        self.tree.column("total", width=80)
+        self.tree.column("total", width=80, anchor=tk.E)
         # Add scroll bars.
         self.ytree_scroll = ttk.Scrollbar(
             master=self, orient=tk.VERTICAL, command=self.tree.yview
@@ -299,13 +300,10 @@ class TransactionsTableView(ttk.Frame):
             for i in range(0, row_max_index):
                 # print("index", i, row[i])
                 if i == 2:
-                    # Convert datetime string from database into a date string.
-                    datetime_str = row[i]
-                    print(datetime_str)
-                    datetime_obj = datetime.fromisoformat(datetime_str)
-                    date_str = datetime_obj.date().isoformat()
-                    print(date_str)
-                    treeview_row.append(date_str)
+                    treeview_row.append(row[i])
+                if i in (5, 6, 7, 8, 9):
+                    currency_str = float_to_currency(row[i])
+                    treeview_row.append(currency_str)
                 else:
                     treeview_row.append(row[i])
             print(treeview_row)

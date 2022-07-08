@@ -2,11 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 
 from database.main import database
+from ui.utils import float_to_currency
 
-
-def float_to_currency(amount):
-    amount_string = "{:,.2f}".format(amount)
-    return amount_string
 
 class UpdateHoldingDialog:
     def __init__(self, parent):
@@ -59,7 +56,16 @@ class HoldingsTableView(ttk.Frame):
         # This shows the frame.
         self.grid(column=0, row=0)
         # Create treeview.
-        columns = ("uid", "date", "sid", "quantity", "value", "stop_loss", "target", "total")
+        columns = (
+            "uid",
+            "date",
+            "sid",
+            "quantity",
+            "value",
+            "stop_loss",
+            "target",
+            "total",
+        )
         self.tree = ttk.Treeview(self, columns=columns, show="headings")
         self.tree.grid(column=0, row=0)
         # Define headings
