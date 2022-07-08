@@ -18,7 +18,7 @@ class SecuritiesTable:
         self._connection.commit()
         self._connection.close()
 
-    def create_securities_table(self, cursor):
+    def _create_securities_table(self, cursor):
         # Create securities table.
         sql_query = "CREATE TABLE IF NOT EXISTS "
         sql_query += self._table_name
@@ -32,7 +32,7 @@ class SecuritiesTable:
 
     def create(self):
         cursor = self._get_cursor()
-        self.create_securities_table(cursor)
+        self._create_securities_table(cursor)
         self._release_cursor()
 
     def add_test_rows(self):
@@ -51,9 +51,13 @@ class SecuritiesTable:
         self._release_cursor()
 
     def get_all_rows(self):
+        rows = []
         cursor = self._get_cursor()
         sql_query = "SELECT * FROM " + self._table_name
-        cursor.execute(sql_query)
-        rows = cursor.fetchall()
+        try:
+            cursor.execute(sql_query)
+            rows = cursor.fetchall()
+        except sqlite3.OperationalError:
+            print("ERROR: No table", self._table_name)
         self._release_cursor()
         return rows

@@ -2,10 +2,11 @@ from tkinter import ttk
 import tkinter as tk
 
 from database.main import database
-from ui.tabs import TabbedWindow
+from ui.tabbed_frame import TabbedFrame
 from ui.help import AboutDialog
-from ui.transactions import AddTransactionDialog
-from ui.securities import AddNewSecurityDialog
+from ui.holdings_view import UpdateHoldingDialog
+from ui.securities_view import AddNewSecurityDialog
+from ui.transactions_view import AddTransactionDialog
 
 
 DEFAULT_APP_WIDTH = 800
@@ -23,7 +24,6 @@ class FileMenu(tk.Menu):
         self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="New", command=self.new)
         self.menu_file.add_command(label="Open", command=self.open)
-        self.menu_file.add_command(label="Save", command=self.save)
         self.menu_file.add_separator()
         self.menu_file.add_command(label="Exit", command=self.parent.quit)
         menu_bar.add_cascade(label="File", menu=self.menu_file)
@@ -31,8 +31,7 @@ class FileMenu(tk.Menu):
     def new(self):
         print("File->New")
         # Create database with empty tables if not present
-        if not database.is_present():
-            database.create()
+        database.create()
 
     def open(self):
         print("File->Open")
@@ -41,9 +40,23 @@ class FileMenu(tk.Menu):
             # Remove when done.
             database.add_test_rows()
 
-    def save(self):
-        print("File->Save")
-        database.dump_tables()
+
+class HoldingsMenu(tk.Menu):
+    def __init__(self, parent, menu_bar, tabbed_window):
+        self.parent = parent
+        self.tabbed_window = tabbed_window
+        self.menu_file = tk.Menu(menu_bar)
+        self.menu_file.add_command(label="Add...", command=self.add)
+        self.menu_file.add_command(label="Show", command=self.show)
+        menu_bar.add_cascade(label="Holdings", menu=self.menu_file)
+
+    def add(self):
+        # Create a new dialog box.
+        _ = UpdateHoldingDialog(self.parent)
+
+    def show(self):
+        print("Holdings->Show")
+        self.tabbed_window.show_holdings()
 
 
 class SecuritiesMenu(tk.Menu):
@@ -106,6 +119,9 @@ class MenuBar:
         self.menu_bar = tk.Menu(parent)
         # File menu
         self.menu_file = FileMenu(self.parent, self.menu_bar)
+        self.menu_holdings = HoldingsMenu(
+            self.parent, self.menu_bar, self.tabbed_window
+        )
         self.menu_securities = SecuritiesMenu(
             self.parent, self.menu_bar, self.tabbed_window
         )
@@ -129,7 +145,7 @@ class UserInterface:
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
         # Add the tabbed window.
-        self.tabbed_window = TabbedWindow(self.root)
+        self.tabbed_window = TabbedFrame(self.root)
         # Add the menu bar.
         self.menu_bar = MenuBar(self.root, self.tabbed_window)
         self.tabbed_window.show_securities()

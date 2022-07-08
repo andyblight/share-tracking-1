@@ -19,7 +19,7 @@ class TransactionsTable:
         self.connection.commit()
         self.connection.close()
 
-    def create_transactions_type_table(self, cursor):
+    def _create_transactions_type_table(self, cursor):
         # Create Transactions Type table.
         sql_query = "CREATE TABLE IF NOT EXISTS "
         sql_query += self._type_table_name
@@ -44,7 +44,7 @@ class TransactionsTable:
         print(sql_query)
         cursor.execute(sql_query)
 
-    def create_transactions_table(self, cursor):
+    def _create_transactions_table(self, cursor):
         # Create Transactions table.
         sql_query = "CREATE TABLE IF NOT EXISTS "
         sql_query += self._table_name
@@ -66,8 +66,8 @@ class TransactionsTable:
     def create(self):
         cursor = self._get_cursor()
         # Create tables if not existing.
-        self.create_transactions_type_table(cursor)
-        self.create_transactions_table(cursor)
+        self._create_transactions_type_table(cursor)
+        self._create_transactions_table(cursor)
         self._release_cursor()
 
     def add_test_rows(self):
@@ -86,9 +86,13 @@ class TransactionsTable:
         self._release_cursor()
 
     def get_all_rows(self):
-        sql_query = "SELECT * FROM " + self._table_name
+        rows = []
         cursor = self._get_cursor()
-        cursor.execute(sql_query)
-        rows = cursor.fetchall()
+        sql_query = "SELECT * FROM " + self._table_name
+        try:
+            cursor.execute(sql_query)
+            rows = cursor.fetchall()
+        except sqlite3.OperationalError:
+            print("ERROR: No table", self._table_name)
         self._release_cursor()
         return rows

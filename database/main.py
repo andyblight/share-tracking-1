@@ -3,14 +3,16 @@
 import sqlite3
 from pathlib import Path
 
-from database.securities import SecuritiesTable
-from database.transactions import TransactionsTable
+from database.holdings_table import HoldingsTable
+from database.securities_table import SecuritiesTable
+from database.transactions_table import TransactionsTable
 
 
 class SharesDatabase:
     def __init__(self):
         self._file_name = "shares.db"
         # TODO Add tables owned by this class.
+        self.holdings = HoldingsTable(self._file_name)
         self.securities = SecuritiesTable(self._file_name)
         self.transactions = TransactionsTable(self._file_name)
 
@@ -24,11 +26,13 @@ class SharesDatabase:
     def create(self):
         # Add empty tables.
         print("SharesDB.create")
+        self.holdings.create()
         self.securities.create()
         self.transactions.create()
 
     def add_test_rows(self):
         print("SharesDB.add test rows")
+        self.holdings.add_test_rows()
         self.securities.add_test_rows()
         self.transactions.add_test_rows()
 
@@ -44,7 +48,7 @@ class SharesDatabase:
 
     def dump_tables(self):
         print("SharesDB.dump tables")
-        self._dump_table_info()
+        self.dump_table_info()
         # self.securities.dump()
         # self.transactions.dump()
 
