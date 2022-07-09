@@ -1,3 +1,4 @@
+import csv
 import sqlite3
 from datetime import date
 
@@ -116,3 +117,7 @@ class TransactionsTable:
 
     def import_csv(self, filename):
         print("Transactions->ImportCSV", filename)
+        with open(filename) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=",")
+            for row in csv_reader:
+                print(row)
