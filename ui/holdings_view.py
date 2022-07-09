@@ -73,6 +73,8 @@ class UpdateFromTransactionsDialog:
 
     def update(self):
         print("UpdateFromTransactionsDialog->Add")
+        quantities = database.transactions.get_quantities()
+        print(quantities)
 
     def cancel(self):
         # Quit dialog doing nothing.

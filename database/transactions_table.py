@@ -96,3 +96,20 @@ class TransactionsTable:
             print("ERROR: No table", self._table_name)
         self._release_cursor()
         return rows
+
+    def get_quantities(self):
+        """ Returns a list of tuples.
+        Each tuple contains (security id, quantity).
+        The quantity is the total of all quantities for that security where
+        buy is a positive quantity and sell is a negative quantity.
+        """
+        quantities = []
+        cursor = self._get_cursor()
+        sql_query = "SELECT security_id, quantity FROM " + self._table_name
+        try:
+            cursor.execute(sql_query)
+            quantities = cursor.fetchall()
+        except sqlite3.OperationalError:
+            print("ERROR: No table", self._table_name)
+        self._release_cursor()
+        return quantities
