@@ -113,3 +113,6 @@ class TransactionsTable:
             print("ERROR: No table", self._table_name)
         self._release_cursor()
         return quantities
+
+    def import_csv(self, filename):
+        print("Transactions->ImportCSV", filename)

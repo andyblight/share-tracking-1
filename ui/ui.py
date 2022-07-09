@@ -1,5 +1,6 @@
-from tkinter import ttk
 import tkinter as tk
+from tkinter import ttk
+from tkinter import filedialog
 
 from database.main import database
 from ui.tabbed_frame import TabbedFrame
@@ -48,7 +49,9 @@ class HoldingsMenu(tk.Menu):
         self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="Manual update...", command=self.add)
         self.menu_file.add_command(label="Show", command=self.show)
-        self.menu_file.add_command(label="Update from transactions...", command=self.update)
+        self.menu_file.add_command(
+            label="Update from transactions...", command=self.update
+        )
         menu_bar.add_cascade(label="Holdings", menu=self.menu_file)
 
     def add(self):
@@ -88,6 +91,7 @@ class TransactionsMenu(tk.Menu):
         self.tabbed_window = tabbed_window
         self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="New...", command=self.new)
+        self.menu_file.add_command(label="Import...", command=self.import_csv)
         self.menu_file.add_command(label="Show", command=self.show)
         menu_bar.add_cascade(label="Transactions", menu=self.menu_file)
 
@@ -95,6 +99,15 @@ class TransactionsMenu(tk.Menu):
         print("Transactions->New")
         # Create a new dialog box.
         _ = AddTransactionDialog(self.parent)
+
+    def import_csv(self):
+        # Open file.
+        filetypes = (("CSV files", "*.csv"), ("All files", "*.*"))
+        filename = filedialog.askopenfilename(
+            parent=self.parent, title="Open a file", initialdir="~", filetypes=filetypes
+        )
+        # Import the CSV data into the transactions table.
+        database.transactions.import_csv(filename)
 
     def show(self):
         print("Transactions->Show")
