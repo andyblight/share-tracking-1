@@ -108,7 +108,7 @@ class TransactionsMenu(tk.Menu):
             ("All files", "*.*"),
         )
         filename = filedialog.askopenfilename(
-            parent=self.parent, title="Open a file", initialdir="~", filetypes=filetypes
+            parent=self.parent, title="Open a file", initialdir="~/Documents", filetypes=filetypes
         )
         # Import the CSV data into the transactions table.
         database.transactions.import_file(filename)

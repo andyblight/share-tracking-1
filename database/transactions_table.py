@@ -115,9 +115,37 @@ class TransactionsTable:
         self._release_cursor()
         return quantities
 
+    def _convert_excel_to_df(self, excel_df):
+        clean_df = pandas.DataFrame()
+        # Strip off rubbish from old dataframe.
+        header_index = 2
+        start_index = header_index + 1
+        end_index = excel_df.index[-9]
+        print("Indices:", header_index, start_index, end_index)
+        for row in excel_df.itertuples(index=True):
+            index = row.Index
+            if index == header_index:
+                print("Label row:", row)
+            elif index >= start_index and index <= end_index:
+                print("Data row:", row._1)
+        return clean_df
+
+    # def _write_clean_df_to_table(self, clean_df):
+    #     for row in clean_df.itertuples(index=True):
+    #         date_obj = row.Date
+    #         b_s
+    #         security_id
+    #         quantity
+    #         price
+    #         fees
+    #         tax
+    #         total
+    #         self.add_row(date_obj, b_s, security_id, quantity, price, fees, tax, total)
+
+
     def import_file(self, filename):
         print("Transactions->ImportFile", filename)
-        data_frame = pandas.read_excel(filename)
-        print(data_frame)
-
-        # add_row(date_obj, type, security_id, quantity, price, fees, tax, total):
+        excel_df = pandas.read_excel(filename)
+        clean_df = self._convert_excel_to_df(excel_df)
+        clean_df.info()
+        # self._write_clean_df_to_table(clean_df)
