@@ -115,8 +115,8 @@ class TransactionsTable:
         self._release_cursor()
         return quantities
 
-    def import_csv(self, filename):
-        print("Transactions->ImportCSV", filename)
+    def import_file(self, filename):
+        print("Transactions->ImportFile", filename)
         data_frame = pandas.read_excel(filename)
         print(data_frame)
 
