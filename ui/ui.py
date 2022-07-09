@@ -4,7 +4,7 @@ import tkinter as tk
 from database.main import database
 from ui.tabbed_frame import TabbedFrame
 from ui.help import AboutDialog
-from ui.holdings_view import UpdateHoldingDialog
+from ui.holdings_view import UpdateHoldingDialog, UpdateFromTransactionsDialog
 from ui.securities_view import AddNewSecurityDialog
 from ui.transactions_view import AddTransactionDialog
 
@@ -46,8 +46,9 @@ class HoldingsMenu(tk.Menu):
         self.parent = parent
         self.tabbed_window = tabbed_window
         self.menu_file = tk.Menu(menu_bar)
-        self.menu_file.add_command(label="Add...", command=self.add)
+        self.menu_file.add_command(label="Manual update...", command=self.add)
         self.menu_file.add_command(label="Show", command=self.show)
+        self.menu_file.add_command(label="Update from transactions...", command=self.update)
         menu_bar.add_cascade(label="Holdings", menu=self.menu_file)
 
     def add(self):
@@ -57,6 +58,10 @@ class HoldingsMenu(tk.Menu):
     def show(self):
         print("Holdings->Show")
         self.tabbed_window.show_holdings()
+
+    def update(self):
+        print("Holdings->Update")
+        _ = UpdateFromTransactionsDialog(self.parent)
 
 
 class SecuritiesMenu(tk.Menu):
