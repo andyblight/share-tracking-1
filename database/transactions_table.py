@@ -1,4 +1,4 @@
-import csv
+import pandas
 import sqlite3
 from datetime import date
 
@@ -117,7 +117,7 @@ class TransactionsTable:
 
     def import_csv(self, filename):
         print("Transactions->ImportCSV", filename)
-        with open(filename) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=",")
-            for row in csv_reader:
-                print(row)
+        data_frame = pandas.read_excel(filename)
+        print(data_frame)
+
+        # add_row(date_obj, type, security_id, quantity, price, fees, tax, total):

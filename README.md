@@ -73,7 +73,8 @@ We end up with a table that looks like this:
 | Target | Real | Target value. |
 | Total | Real | (Quantity * Value) |
 
-Holdings records should work as per the (spreadsheet)[]
+Holdings records should work as per the
+(spreadsheet)[TransactionHoldingInteraction.ods]
 but have more fields for stop loss and target values.
 
 ## Future plans
