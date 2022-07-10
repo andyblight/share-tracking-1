@@ -44,14 +44,10 @@ class AddTransactionDialog:
         price_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Price")
         self.price_entry = ttk.Entry(price_label_frame)
         self.price_entry.grid(sticky="ew")
-        # Fees label frame.
-        fees_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Fees")
-        self.fees_entry = ttk.Entry(fees_label_frame)
-        self.fees_entry.grid(sticky="ew")
-        # Tax label frame.
-        tax_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Tax")
-        self.tax_entry = ttk.Entry(tax_label_frame)
-        self.tax_entry.grid(sticky="ew")
+        # costs label frame.
+        costs_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Costs")
+        self.costs_entry = ttk.Entry(costs_label_frame)
+        self.costs_entry.grid(sticky="ew")
         # Total label frame.
         total_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Total")
         self.total_entry = ttk.Entry(total_label_frame)
@@ -62,8 +58,7 @@ class AddTransactionDialog:
         security_label_frame.grid(column=2, row=0, columnspan=2, sticky="ew")
         quantity_label_frame.grid(column=0, row=1)
         price_label_frame.grid(column=1, row=1)
-        fees_label_frame.grid(column=2, row=1)
-        tax_label_frame.grid(column=3, row=1)
+        costs_label_frame.grid(column=2, row=1)
         total_label_frame.grid(column=4, row=1)
         # Buttons
         self.validate_button = tk.Button(
@@ -88,12 +83,11 @@ class AddTransactionDialog:
         security = self.security_entry.get()
         quantity = self.quantity_entry.get()
         price = self.price_entry.get()
-        fees = self.fees_entry.get()
-        tax = self.tax_entry.get()
+        costs = self.costs_entry.get()
         total = self.total_entry.get()
         # Convert values.
         security_id = self._convert_security_id(security)
-        numerics = self._convert_numerics(quantity, price, fees, tax, total)
+        numerics = self._convert_numerics(quantity, price, costs, total)
         # If all values are valid, write the data.
         if security_id[0] and numerics[0]:
             database.transactions.add_row(
@@ -103,8 +97,7 @@ class AddTransactionDialog:
                 numerics[1][0],
                 numerics[1][1],
                 numerics[1][2],
-                numerics[1][3],
-                numerics[1][4],
+                numerics[1][3]
             )
 
     def _convert_security_id(self, security_string):
@@ -129,7 +122,7 @@ class AddTransactionDialog:
             print("Error. '{}' should be a valid number.".format(value))
         return (valid, result)
 
-    def _convert_numerics(self, quantity, price, fees, tax, total):
+    def _convert_numerics(self, quantity, price, costs, total):
         # print(locals())
         # Save dictionary of parameter values.
         values = locals()
@@ -160,8 +153,7 @@ class AddTransactionDialog:
         security = self.security_entry.get()
         quantity = self.quantity_entry.get()
         price = self.price_entry.get()
-        fees = self.fees_entry.get()
-        tax = self.tax_entry.get()
+        costs = self.costs_entry.get()
         total = self.total_entry.get()
         # Validate info.
         write = 0
@@ -170,9 +162,8 @@ class AddTransactionDialog:
         write += self.validate_security(security)
         write += self.validate_quantity(quantity)
         write += self.validate_currency(price)
-        write += self.validate_currency(fees)
-        write += self.validate_currency(tax)
-        write += self.validate_total(quantity, price, fees, tax, total)
+        write += self.validate_currency(costs)
+        write += self.validate_total(quantity, price, costs, total)
         if write > 0:
             print("One or more fields are invalid.")
             # TODO Add some logic here.
@@ -221,7 +212,7 @@ class AddTransactionDialog:
             invalid = 1
         return invalid
 
-    # def validate_total(self, quantity, price, fees, tax, total):
+    # def validate_total(self, quantity, price, costs, total):
     # invalid = 0
     # try:
     #     float(quantity_string)
@@ -229,7 +220,7 @@ class AddTransactionDialog:
     #     print("Invalid quantity. Should be a valid number.")
     #     invalid = 1
     # return invalid
-    # write += self.validate_total(quantity, price, fees, tax, total)
+    # write += self.validate_total(quantity, price, costs, total)
 
 
 class TransactionsTableView(ttk.Frame):
@@ -249,8 +240,7 @@ class TransactionsTableView(ttk.Frame):
             "security_id",
             "quantity",
             "price",
-            "fees",
-            "tax",
+            "costs",
             "total",
         )
         self.tree = ttk.Treeview(self, columns=columns, show="headings")
@@ -268,10 +258,8 @@ class TransactionsTableView(ttk.Frame):
         self.tree.column("quantity", width=80, anchor=tk.E)
         self.tree.heading("price", text="Price")
         self.tree.column("price", width=80, anchor=tk.E)
-        self.tree.heading("fees", text="Fees")
-        self.tree.column("fees", width=80, anchor=tk.E)
-        self.tree.heading("tax", text="Tax")
-        self.tree.column("tax", width=80, anchor=tk.E)
+        self.tree.heading("costs", text="costs")
+        self.tree.column("costs", width=80, anchor=tk.E)
         self.tree.heading("total", text="Total")
         self.tree.column("total", width=80, anchor=tk.E)
         # Add scroll bars.

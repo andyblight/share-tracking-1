@@ -1,11 +1,11 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
+# from tkinter import ttk
 
 from database.main import database
 from ui.tabbed_frame import TabbedFrame
 from ui.help import AboutDialog
 from ui.holdings_view import UpdateHoldingDialog, UpdateFromTransactionsDialog
+from ui.import_file_dialog import ImportFileDialog
 from ui.securities_view import AddNewSecurityDialog
 from ui.transactions_view import AddTransactionDialog
 
@@ -43,9 +43,9 @@ class FileMenu(tk.Menu):
 
 
 class HoldingsMenu(tk.Menu):
-    def __init__(self, parent, menu_bar, tabbed_window):
+    def __init__(self, parent, menu_bar, tabbed_frame):
         self.parent = parent
-        self.tabbed_window = tabbed_window
+        self.tabbed_frame = tabbed_frame
         self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="Manual update...", command=self.add)
         self.menu_file.add_command(label="Show", command=self.show)
@@ -56,11 +56,12 @@ class HoldingsMenu(tk.Menu):
 
     def add(self):
         # Create a new dialog box.
-        _ = UpdateHoldingDialog(self.parent)
+        dialog = UpdateHoldingDialog(self.parent)
+        dialog.import_file()
 
     def show(self):
         print("Holdings->Show")
-        self.tabbed_window.show_holdings()
+        self.tabbed_frame.show_holdings()
 
     def update(self):
         print("Holdings->Update")
@@ -68,9 +69,9 @@ class HoldingsMenu(tk.Menu):
 
 
 class SecuritiesMenu(tk.Menu):
-    def __init__(self, parent, menu_bar, tabbed_window):
+    def __init__(self, parent, menu_bar, tabbed_frame):
         self.parent = parent
-        self.tabbed_window = tabbed_window
+        self.tabbed_frame = tabbed_frame
         self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="Add...", command=self.add)
         self.menu_file.add_command(label="Show", command=self.show)
@@ -82,13 +83,13 @@ class SecuritiesMenu(tk.Menu):
 
     def show(self):
         print("Securities->Show")
-        self.tabbed_window.show_securities()
+        self.tabbed_frame.show_securities()
 
 
 class TransactionsMenu(tk.Menu):
-    def __init__(self, parent, menu_bar, tabbed_window):
+    def __init__(self, parent, menu_bar, tabbed_frame):
         self.parent = parent
-        self.tabbed_window = tabbed_window
+        self.tabbed_frame = tabbed_frame
         self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="New...", command=self.new)
         self.menu_file.add_command(label="Import...", command=self.import_file)
@@ -96,29 +97,15 @@ class TransactionsMenu(tk.Menu):
         menu_bar.add_cascade(label="Transactions", menu=self.menu_file)
 
     def new(self):
-        print("Transactions->New")
-        # Create a new dialog box.
         _ = AddTransactionDialog(self.parent)
 
     def import_file(self):
-        # Open file.
-        filetypes = (
-            ("Excel files", "*.xlsx"),
-            ("CSV files", "*.csv"),
-            ("All files", "*.*"),
-        )
-        filename = filedialog.askopenfilename(
-            parent=self.parent,
-            title="Open a file",
-            initialdir="~/Documents",
-            filetypes=filetypes,
-        )
-        # Import the CSV data into the transactions table.
-        database.transactions.import_file(filename)
+        dialog = ImportFileDialog(self.parent)
+        dialog.import_file()
 
     def show(self):
         print("Transactions->Show")
-        self.tabbed_window.show_transactions()
+        self.tabbed_frame.show_transactions()
 
 
 class HelpMenu(tk.Menu):
@@ -138,20 +125,20 @@ class HelpMenu(tk.Menu):
 
 
 class MenuBar:
-    def __init__(self, parent, tabbed_window):
+    def __init__(self, parent, tabbed_frame):
         self.parent = parent
-        self.tabbed_window = tabbed_window
+        self.tabbed_frame = tabbed_frame
         self.menu_bar = tk.Menu(parent)
         # File menu
         self.menu_file = FileMenu(self.parent, self.menu_bar)
         self.menu_holdings = HoldingsMenu(
-            self.parent, self.menu_bar, self.tabbed_window
+            self.parent, self.menu_bar, self.tabbed_frame
         )
         self.menu_securities = SecuritiesMenu(
-            self.parent, self.menu_bar, self.tabbed_window
+            self.parent, self.menu_bar, self.tabbed_frame
         )
         self.menu_transactions = TransactionsMenu(
-            self.parent, self.menu_bar, self.tabbed_window
+            self.parent, self.menu_bar, self.tabbed_frame
         )
         self.menu_help = HelpMenu(self.parent, self.menu_bar)
         # Finally, add the menu to the parent
@@ -169,9 +156,9 @@ class UserInterface:
         # Create simplest layout, grid of 1 x 1 using all of window.
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
-        # Add the tabbed window.
-        self.tabbed_window = TabbedFrame(self.root)
+        # Add the tabbed frame.
+        self.tabbed_frame = TabbedFrame(self.root)
         # Add the menu bar.
-        self.menu_bar = MenuBar(self.root, self.tabbed_window)
+        self.menu_bar = MenuBar(self.root, self.tabbed_frame)
         # Show holdings tab by default.
-        self.tabbed_window.show_holdings()
+        self.tabbed_frame.show_holdings()
