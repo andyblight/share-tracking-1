@@ -86,7 +86,9 @@ class ImportFileDialog:
                 # Calculate fees.
                 costs = total - (quantity * price)
                 # Append new row.
-                database.transactions.add_row(date_obj, type, security_id, quantity, price, costs, total)
+                database.transactions.add_row(
+                    date_obj, type, security_id, quantity, price, costs, total
+                )
             except ValueError:
                 # Ignore this row.
                 pass

@@ -97,7 +97,7 @@ class AddTransactionDialog:
                 numerics[1][0],
                 numerics[1][1],
                 numerics[1][2],
-                numerics[1][3]
+                numerics[1][3],
             )
 
     def _convert_security_id(self, security_string):

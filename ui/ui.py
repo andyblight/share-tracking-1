@@ -1,4 +1,5 @@
 import tkinter as tk
+
 # from tkinter import ttk
 
 from database.main import database
@@ -131,9 +132,7 @@ class MenuBar:
         self.menu_bar = tk.Menu(parent)
         # File menu
         self.menu_file = FileMenu(self.parent, self.menu_bar)
-        self.menu_holdings = HoldingsMenu(
-            self.parent, self.menu_bar, self.tabbed_frame
-        )
+        self.menu_holdings = HoldingsMenu(self.parent, self.menu_bar, self.tabbed_frame)
         self.menu_securities = SecuritiesMenu(
             self.parent, self.menu_bar, self.tabbed_frame
         )
