@@ -5,8 +5,9 @@ import tkinter as tk
 from database.main import database
 from ui.tabbed_frame import TabbedFrame
 from ui.help import AboutDialog
+from ui.import_transactions_dialog import ImportTransactionsDialog
+from ui.import_securities_dialog import ImportSecuritiesDialog
 from ui.holdings_view import UpdateHoldingDialog, UpdateFromTransactionsDialog
-from ui.import_file_dialog import ImportFileDialog
 from ui.securities_view import AddNewSecurityDialog
 from ui.transactions_view import AddTransactionDialog
 
@@ -75,12 +76,17 @@ class SecuritiesMenu(tk.Menu):
         self.tabbed_frame = tabbed_frame
         self.menu_file = tk.Menu(menu_bar)
         self.menu_file.add_command(label="Add...", command=self.add)
+        self.menu_file.add_command(label="Import...", command=self.import_file)
         self.menu_file.add_command(label="Show", command=self.show)
         menu_bar.add_cascade(label="Securities", menu=self.menu_file)
 
     def add(self):
         # Create a new dialog box.
         _ = AddNewSecurityDialog(self.parent)
+
+    def import_file(self):
+        dialog = ImportSecuritiesDialog(self.parent)
+        dialog.import_file()
 
     def show(self):
         print("Securities->Show")
@@ -101,7 +107,7 @@ class TransactionsMenu(tk.Menu):
         _ = AddTransactionDialog(self.parent)
 
     def import_file(self):
-        dialog = ImportFileDialog(self.parent)
+        dialog = ImportTransactionsDialog(self.parent)
         dialog.import_file()
 
     def show(self):

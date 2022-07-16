@@ -7,7 +7,7 @@ from datetime import datetime
 from database.main import database
 
 
-class ImportFileDialog:
+class ImportTransactionsDialog:
     def __init__(self, parent):
         self.parent = parent
 
@@ -66,14 +66,14 @@ class ImportFileDialog:
             # Everything else is a string and can be ignored.
             # Extract info from _2='Description'
             description = row._2.split()
-            print(description)
+            # print(description)
             try:
                 quantity = float(description[0])
                 # We have a number so copy date into the new row and write to DB.
                 # Convert date from string to datetime object.
                 date_obj = datetime.strptime(row._1, "%d-%b-%Y")
                 # Look up security from _4='Stock Description'
-                security_id = self._get_security(row._4)
+                security_id = database.securities.find_security(row._4)
                 # Copy price.
                 price = row._6
                 # Buy/sell related info.
@@ -92,16 +92,3 @@ class ImportFileDialog:
             except ValueError:
                 # Ignore this row.
                 pass
-
-    def _get_security(self, security_description):
-        security_id = database.securities.find_security(security_description)
-        if security_id < 0:
-            # Not found so add the security.
-            ticker = self._get_ticker(security_description)
-            database.securities.add_row(ticker, security_description)
-        return security_id
-
-    def _get_ticker(self, security_description):
-        # TODO Find ticker from security name.
-        ticker = "TEMP.L"
-        return ticker

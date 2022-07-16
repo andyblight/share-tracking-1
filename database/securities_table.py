@@ -64,4 +64,15 @@ class SecuritiesTable:
 
     def find_security(self, security_description):
         # TODO Do query to find existing security.
+        print(security_description)
+        security_id = database.securities.find_security(security_description)
+        if security_id < 0:
+            # Not found so add the security.
+            ticker = self._get_ticker(security_description)
+            database.securities.add_row(ticker, security_description)
         return 1
+
+    def _get_ticker(self, security_description):
+        # TODO Find ticker from security name.
+        ticker = "TEMP.L"
+        return ticker
