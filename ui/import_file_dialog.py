@@ -2,7 +2,7 @@ import pandas
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
-from datetime import date
+from datetime import datetime
 
 from database.main import database
 
@@ -16,9 +16,7 @@ class ImportFileDialog:
         filename = self._get_filename()
         print("Importing transactions file", filename)
         excel_df = pandas.read_excel(filename)
-        clean_df = database.transactions.get_clean_df()
-        filled_df = self._copy_excel_to_df(excel_df, clean_df)
-        database.transactions.write_df(filled_df)
+        self._write_df_to_db(excel_df)
 
     def _get_filename(self):
         # Open file.
@@ -35,7 +33,7 @@ class ImportFileDialog:
         )
         return filename
 
-    def _copy_excel_to_df(self, excel_df, clean_df):
+    def _write_df_to_db(self, excel_df):
         # The rows from the spreadsheet look like this:
         #
         # Header row: Pandas(Index=2, _1='Date', _2='Description',
@@ -47,7 +45,7 @@ class ImportFileDialog:
         # _4='BEEKS FINANCIAL CL ORD GBP0.00125', _5='N45263',
         # _6=0.93399, _7=998.74, _8=0, At='25-Nov-2020', _10=7340.12)
         #
-        # Output format:
+        # SQLite output format.
         # 0|uid|INTEGER|1||1
         # 1|date|timestamp|1||0
         # 2|type|CHAR(1)|1|'N'|0
@@ -64,29 +62,34 @@ class ImportFileDialog:
         # print("Indices:", start_index, end_index)
         # Only process range of rows.
         for row in excel_df.loc[start_index:end_index].itertuples(index=True):
-            # print("Data row:", row._1)
-            index = row.Index
-            # Copy easy values.
-            print(type(clean_df[index].date))
-            clean_df[index].date = date(row._1)
-            clean_df[index].price = row._6
+            # Share purchases or sales start with a quantity.
+            # Everything else is a string and can be ignored.
             # Extract info from _2='Description'
             description = row._2.split()
-            clean_df[index].quantity = float(description[0])
-            # Fees
-            clean_df[index].fees = clean_df[index].total - (
-                clean_df[index].quantity * clean_df[index].price
-            )
-            # Buy/sell related info.
-            if row._7 > row._8:
-                clean_df[index].type = "B"
-                clean_df[index].total = row._7
-            else:
-                clean_df[index].type = "S"
-                clean_df[index].total = row._8
-            # Look up security from _4='Stock Description'
-            clean_df[index].security_id = self._get_security(row._4)
-            return clean_df
+            print(description)
+            try:
+                quantity = float(description[0])
+                # We have a number so copy date into the new row and write to DB.
+                # Convert date from string to datetime object.
+                date_obj = datetime.strptime(row._1, "%d-%b-%Y")
+                # Look up security from _4='Stock Description'
+                security_id = self._get_security(row._4)
+                # Copy price.
+                price = row._6
+                # Buy/sell related info.
+                if row._7 > row._8:
+                    type = "B"
+                    total = row._7
+                else:
+                    type = "S"
+                    total = row._8
+                # Calculate fees.
+                costs = total - (quantity * price)
+                # Append new row.
+                database.transactions.add_row(date_obj, type, security_id, quantity, price, costs, total)
+            except ValueError:
+                # Ignore this row.
+                pass
 
     def _get_security(self, security_description):
         security_id = database.securities.find_security(security_description)

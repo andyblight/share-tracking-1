@@ -76,7 +76,7 @@ class TransactionsTable:
 
     def add_row(self, date_obj, type, security_id, quantity, price, costs, total):
         sql_query = "INSERT INTO {} ".format(self._table_name)
-        sql_query += "(date, type, security_id, quantity, price, costs total) "
+        sql_query += "(date, type, security_id, quantity, price, costs, total) "
         sql_query += "VALUES ('{}', '{}', {}, {}, {}, {}, {})".format(
             date_obj, type, security_id, quantity, price, costs, total
         )

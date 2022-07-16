@@ -61,3 +61,7 @@ class SecuritiesTable:
             print("ERROR: No table", self._table_name)
         self._release_cursor()
         return rows
+
+    def find_security(self, security_description):
+        # TODO Do query to find existing security.
+        return 1
