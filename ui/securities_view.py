@@ -89,7 +89,7 @@ class SecuritiesTableView(ttk.Frame):
         self.tree.heading("ticker", text="Ticker")
         self.tree.column("ticker", width=100)
         self.tree.heading("name", text="Name")
-        self.tree.column("name", width=200)
+        self.tree.column("name", width=400)
         # Allow scrolling.
         self.ytree_scroll = ttk.Scrollbar(
             master=self, orient=tk.VERTICAL, command=self.tree.yview
