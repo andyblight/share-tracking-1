@@ -5,6 +5,7 @@ from tkinter import filedialog
 from datetime import datetime
 
 from database.main import database
+from ui.select_security_dialog import SelectSecurityDialog
 
 
 class ImportTransactionsDialog:
@@ -33,7 +34,10 @@ class ImportTransactionsDialog:
         if num_ids == 1:
             security_id = rows[0][0]
         elif num_ids > 1:
-            print("TODO Handle multiple")
+            security_dialog = SelectSecurityDialog(self.parent, rows)
+            self.parent.wait_window(security_dialog.top)
+            security_id = security_dialog.get_security_id()
+            print("DEBUG: Returned security_id: ", security_id)
         else:
             print("Security Id not found for ", security_name)
         return security_id
@@ -104,4 +108,3 @@ class ImportTransactionsDialog:
         print("Importing transactions file", filename)
         excel_df = pandas.read_excel(filename)
         self._write_df_to_db(excel_df)
-

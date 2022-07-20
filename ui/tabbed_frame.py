@@ -1,7 +1,7 @@
 from tkinter import ttk
 
 from ui.holdings_view import HoldingsTableView
-from ui.securities_view import SecuritiesTableView
+from ui.securities_table_view import SecuritiesTableView
 from ui.transactions_view import TransactionsTableView
 
 
