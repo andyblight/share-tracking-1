@@ -14,7 +14,7 @@ class SecuritiesTable:
         cursor = self._connection.cursor()
         return cursor
 
-    def _release_cursor(self):
+    def _commit_cursor(self):
         self._connection.commit()
         self._connection.close()
 
@@ -33,7 +33,7 @@ class SecuritiesTable:
     def create(self):
         cursor = self._get_cursor()
         self._create_securities_table(cursor)
-        self._release_cursor()
+        self._commit_cursor()
 
     def add_test_rows(self):
         self.add_row("ABCD.L", "Alphabet Corporation")
@@ -48,7 +48,7 @@ class SecuritiesTable:
         sql_query += "VALUES ('{}', '{}')".format(ticker_upper, name)
         print("Adding row [", sql_query, "]")
         cursor.execute(sql_query)
-        self._release_cursor()
+        self._commit_cursor()
 
     def get_all_rows(self):
         rows = []
@@ -59,18 +59,26 @@ class SecuritiesTable:
             rows = cursor.fetchall()
         except sqlite3.OperationalError:
             print("ERROR: No table", self._table_name)
-        self._release_cursor()
+        self._connection.close()
         return rows
 
-    def find_security(self, security_description):
-        # TODO Do query to find existing security.
-        print(security_description)
-        security_id = database.securities.find_security(security_description)
-        if security_id < 0:
-            # Not found so add the security.
-            ticker = self._get_ticker(security_description)
-            database.securities.add_row(ticker, security_description)
-        return 1
+    def get_security(self, security_description):
+        security_description_upper = security_description.upper()
+        # Find existing security.
+        rows = []
+        cursor = self._get_cursor()
+        sql_query = "SELECT * FROM " + self._table_name
+        sql_query += " WHERE name LIKE '%"
+        sql_query += security_description_upper
+        sql_query += "%'"
+        print(sql_query)
+        try:
+            cursor.execute(sql_query)
+            rows = cursor.fetchall()
+        except sqlite3.OperationalError:
+            print("ERROR: No table", self._table_name)
+        self._connection.close()
+        return rows
 
     def _get_ticker(self, security_description):
         # TODO Find ticker from security name.

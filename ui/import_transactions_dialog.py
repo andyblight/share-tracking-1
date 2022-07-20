@@ -11,13 +11,6 @@ class ImportTransactionsDialog:
     def __init__(self, parent):
         self.parent = parent
 
-    def import_file(self):
-        # Import the CSV data into the transactions table.
-        filename = self._get_filename()
-        print("Importing transactions file", filename)
-        excel_df = pandas.read_excel(filename)
-        self._write_df_to_db(excel_df)
-
     def _get_filename(self):
         # Open file.
         filetypes = (
@@ -32,6 +25,18 @@ class ImportTransactionsDialog:
             filetypes=filetypes,
         )
         return filename
+
+    def _get_security_id(self, security_name):
+        security_id = 0
+        rows = database.securities.get_security(security_name[:6])
+        num_ids = len(rows)
+        if num_ids == 1:
+            security_id = rows[0][0]
+        elif num_ids > 1:
+            print("TODO Handle multiple")
+        else:
+            print("Security Id not found for ", security_name)
+        return security_id
 
     def _write_df_to_db(self, excel_df):
         # The rows from the spreadsheet look like this:
@@ -73,7 +78,7 @@ class ImportTransactionsDialog:
                 # Convert date from string to datetime object.
                 date_obj = datetime.strptime(row._1, "%d-%b-%Y")
                 # Look up security from _4='Stock Description'
-                security_id = database.securities.find_security(row._4)
+                security_id = self._get_security_id(row._4)
                 # Copy price.
                 price = row._6
                 # Buy/sell related info.
@@ -92,3 +97,11 @@ class ImportTransactionsDialog:
             except ValueError:
                 # Ignore this row.
                 pass
+
+    def import_file(self):
+        # Import the CSV data into the transactions table.
+        filename = self._get_filename()
+        print("Importing transactions file", filename)
+        excel_df = pandas.read_excel(filename)
+        self._write_df_to_db(excel_df)
+
