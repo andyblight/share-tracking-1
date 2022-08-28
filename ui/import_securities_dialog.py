@@ -21,10 +21,7 @@ class ImportSecuritiesDialog:
 
     def _get_filename(self):
         # Open file.
-        filetypes = (
-            ("Text files", "*.txt"),
-            ("All files", "*.*"),
-        )
+        filetypes = (("Text files", "*.txt"), ("All files", "*.*"))
         filename = filedialog.askopenfilename(
             parent=self.parent,
             title="Open a file",

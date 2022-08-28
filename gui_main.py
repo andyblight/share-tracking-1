@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # noqa: E501 From: https://www.activestate.com/resources/quick-reads/how-to-display-data-in-a-table-using-tkinter/
 
 import tkinter as tk

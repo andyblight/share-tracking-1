@@ -5,6 +5,19 @@ selling of my shares.
 
 ## Usage
 
+To install:
+
+```bash
+cd share-tracking-1
+pip install .
+```
+
+To run the app:
+
+```bash
+cd share-tracking-1
+./gui_main.py
+```
 
 ## Database schema
 
