@@ -82,7 +82,7 @@ class SecuritiesMenu(tk.Menu):
 
     def add(self):
         # Create a new dialog box.
-        _ = AddNewSecurityDialog(self.parent)
+        _ = AddSecurityDialog(self.parent)
 
     def import_file(self):
         dialog = ImportSecuritiesDialog(self.parent)
