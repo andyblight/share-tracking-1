@@ -6,6 +6,7 @@ from datetime import datetime
 
 from database.main import database
 from ui.select_security_dialog import SelectSecurityDialog
+from ui.user_settings import UserSettings
 
 
 class ImportTransactionsDialog:
@@ -19,10 +20,11 @@ class ImportTransactionsDialog:
             ("CSV files", "*.csv"),
             ("All files", "*.*"),
         )
+        initial_dir = UserSettings().get_import_path()
         filename = filedialog.askopenfilename(
             parent=self.parent,
             title="Open a file",
-            initialdir="~/Documents",
+            initialdir=initial_dir,
             filetypes=filetypes,
         )
         return filename

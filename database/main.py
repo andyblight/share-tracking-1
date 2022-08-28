@@ -1,16 +1,21 @@
 # The main database file.
-# This class owns all tables in the database.
 import sqlite3
+import os
 from pathlib import Path
 
 from database.holdings_table import HoldingsTable
 from database.securities_table import SecuritiesTable
 from database.transactions_table import TransactionsTable
+from ui.user_settings import UserSettings
 
 
 class SharesDatabase:
-    def __init__(self):
-        self._file_name = "shares.db"
+    """
+    This class owns all tables in the database.
+    """
+
+    def __init__(self, database_path):
+        self._file_name = os.path.join(database_path, "shares.db")
         # TODO Add tables owned by this class.
         self.holdings = HoldingsTable(self._file_name)
         self.securities = SecuritiesTable(self._file_name)
@@ -53,4 +58,7 @@ class SharesDatabase:
         # self.transactions.dump()
 
 
-database = SharesDatabase()
+# FIXME The use of settings here is messy
+settings = UserSettings()
+# FIXME Having database as a "global" is also messy.
+database = SharesDatabase(settings.get_database_path())

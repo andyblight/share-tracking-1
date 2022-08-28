@@ -6,6 +6,7 @@ from tkinter import filedialog
 from datetime import datetime
 
 from database.main import database
+from ui.user_settings import UserSettings
 
 
 class ImportSecuritiesDialog:
@@ -22,10 +23,11 @@ class ImportSecuritiesDialog:
     def _get_filename(self):
         # Open file.
         filetypes = (("Text files", "*.txt"), ("All files", "*.*"))
+        initial_dir = UserSettings().get_import_path()
         filename = filedialog.askopenfilename(
             parent=self.parent,
             title="Open a file",
-            initialdir="~/Documents",
+            initialdir=initial_dir,
             filetypes=filetypes,
         )
         return filename

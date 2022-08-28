@@ -1,3 +1,3 @@
 class SelectSecurityDialog:
-    def __init__(self, parent) -> None:
+    def __init__(self, parent, rows) -> None:
         self.parent = parent
