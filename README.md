@@ -94,6 +94,11 @@ but have more fields for stop loss and target values.
 
 Time permitting, I would like to pull in the "end of day" data and do some
 clever stuff like:
-- Report on crystallized profits.
-- Report on potential profits so far.
-- Rate of growth, % per month, ideally with graph.
+
+* Report on crystallized profits.
+* Report on potential profits so far.
+* Rate of growth, % per month, ideally with graph.
+
+## References
+
+* <https://tkdocs.com/tutorial/tree.html>
