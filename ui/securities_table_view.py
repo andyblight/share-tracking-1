@@ -59,8 +59,12 @@ class SecuritiesTableView(ttk.Frame):
         self._selected = item[0]
 
     def on_select(self, event) -> None:
-        item  = self.tree.focus()
-        print("os", event, ",", item)
+        print("os", event)
+        item_id  = self.tree.focus()
+        item = self.tree.item(item_id)
+        print("os", item_id,  ",", item)
+        uid = item["values"][0]
+        print("os", uid)
 
     def get_selected(self) -> int:
         return self._selected
