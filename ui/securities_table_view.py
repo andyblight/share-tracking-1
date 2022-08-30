@@ -36,11 +36,32 @@ class SecuritiesTableView(ttk.Frame):
         )
         self.xtree_scroll.grid(row=1, column=0, columnspan=2, sticky="ews")
         self.tree.configure(xscrollcommand=self.xtree_scroll.set)
+        # Bind functions for selection and double click
+        self.tree.bind("<<TreeviewSelect>>", self.on_select)
+        self.tree.bind("<Double-1>", self.on_double_click)
 
-    def show(self):
+    def show(self) -> None:
         for item in self.tree.get_children():
             self.tree.delete(item)
         all_rows = database.securities.get_all_rows()
         for row in all_rows:
             # print(row)
             self.tree.insert("", tk.END, values=row)
+
+    def show_rows(self, rows) -> None:
+        print("sr")
+
+    def on_double_click(self, event) -> None:
+        print("odc", event)
+        item = self.tree.selection()[0]
+        print("you clicked on", self.tree.item(item,"text"))
+        # Use the UID is first in the list.
+        self._selected = item[0]
+
+    def on_select(self, event) -> None:
+        print("os", event)
+        item = self.tree.selection()[0]
+        print("you clicked on", self.tree.item(item,"text"))
+
+    def get_selected(self) -> int:
+        return self._selected

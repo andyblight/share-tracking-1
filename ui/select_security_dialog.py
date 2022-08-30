@@ -34,12 +34,14 @@ class SelectSecurityDialog:
         return self._security_id
 
     def cancel(self):
-        # Quit dialog doing nothing.
+        """ Quit dialog doing nothing. """
         self.dialog.destroy()
 
     def ok(self):
-        # Quit dialog doing nothing.
+        """ Set the selected security Id for later use. """
         print("SSD ok called")
+        self._security_id = self.securities_table_view.get
 
     def top(self):
+        """ Get the dialog to the top of the pile of windows. """
         self.dialog.top()
