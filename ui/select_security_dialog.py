@@ -18,10 +18,16 @@ class SelectSecurityDialog:
         # Create window sized frame.
         self.frame = ttk.Frame(self.dialog, borderwidth=4, relief="ridge")
         self.frame.grid(columnspan=5, rowspan=2, sticky="nesw")
+        # Add description text.
+        self._description_label = ttk.Label(self.frame, text='Description:')
+        self._description_label.grid(column=0, row=0)
+        self._description_string = tk.StringVar()
+        self._description = ttk.Label(self.frame, textvariable=self._description_string)
+        self._description.grid(column=1, row=0)
         # Add security table view in its own frame.
         self.security_frame = ttk.Frame(self.frame, borderwidth=1)
         self.securities_table_view = SecuritiesTableView(self.security_frame)
-        self.security_frame.grid(columnspan=5, column=0, row=0, sticky="ne")
+        self.security_frame.grid(columnspan=5, column=0, row=1, sticky="ne")
         self.securities_table_view.grid(sticky="nesw")
         # Buttons
         self.ok_button = tk.Button(self.frame, text="Ok", command=self.ok)
@@ -29,6 +35,9 @@ class SelectSecurityDialog:
         # Position buttons.
         self.ok_button.grid(column=1, row=2)
         self.cancel_button.grid(column=3, row=2)
+
+    def set_description(self, description) -> None:
+        self._description_string.set(description)
 
     def set_rows(self, rows) -> None:
         self.securities_table_view.show_rows(rows)
