@@ -8,6 +8,7 @@ class SecuritiesTableView(ttk.Frame):
     def __init__(self, parent, *args, **kwargs):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
+        self._selected_uid = 0
         # Create and show window sized frame.
         self.grid(sticky="nesw")
         # Create treeview of database.
@@ -50,21 +51,19 @@ class SecuritiesTableView(ttk.Frame):
 
     def show_rows(self, rows) -> None:
         print("sr")
+        for row in rows:
+            self.tree.insert("", tk.END, values=row)
 
-    def on_double_click(self, event) -> None:
-        print("odc", event)
-        item = self.tree.selection()[0]
-        print("you clicked on", self.tree.item(item,"text"))
-        # Use the UID is first in the list.
-        self._selected = item[0]
-
-    def on_select(self, event) -> None:
-        print("os", event)
+    def _set_selected(self) -> None:
         item_id  = self.tree.focus()
         item = self.tree.item(item_id)
-        print("os", item_id,  ",", item)
-        uid = item["values"][0]
-        print("os", uid)
+        self._selected_uid = item["values"][0]
 
-    def get_selected(self) -> int:
-        return self._selected
+    def on_double_click(self, event) -> None:
+        self._set_selected()
+
+    def on_select(self, event) -> None:
+        self._set_selected()
+
+    def get_selected_uid(self) -> int:
+        return self._selected_uid

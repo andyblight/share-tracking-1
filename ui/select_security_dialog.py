@@ -6,7 +6,7 @@ from ui.securities_table_view import SecuritiesTableView
 
 
 class SelectSecurityDialog:
-    def __init__(self, parent, rows) -> None:
+    def __init__(self, parent) -> None:
         self.parent = parent
         self._security_id = -1
         # Set up new window.
@@ -30,18 +30,21 @@ class SelectSecurityDialog:
         self.ok_button.grid(column=1, row=2)
         self.cancel_button.grid(column=3, row=2)
 
-    def get_security_id(self):
+    def set_rows(self, rows) -> None:
+        self.securities_table_view.show_rows(rows)
+
+    def get_security_id(self) -> int:
         return self._security_id
 
-    def cancel(self):
+    def cancel(self) -> None:
         """ Quit dialog doing nothing. """
         self.dialog.destroy()
 
-    def ok(self):
+    def ok(self) -> None:
         """ Set the selected security Id for later use. """
         print("SSD ok called")
-        self._security_id = self.securities_table_view.get
+        self._security_id = self.securities_table_view.get_selected_uid()
 
-    def top(self):
+    def top(self) -> None:
         """ Get the dialog to the top of the pile of windows. """
         self.dialog.top()
