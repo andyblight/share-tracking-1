@@ -10,38 +10,47 @@ class AddSecurityDialog:
         self.parent = parent
         self.dialog = tk.Toplevel(self.parent)
         self.dialog.title("Add security")
-        self.dialog.geometry("500x400")
-        self.dialog.grid_rowconfigure(0, pad=10, weight=1)
-        self.dialog.grid_columnconfigure(0, pad=10, weight=1)
-        # Create windows sized frame.
-        self.frame = ttk.Frame(self.dialog, borderwidth=4, relief="ridge")
-        self.frame.grid(sticky="nesw")
-        # Add data field.
-        data_entry_label_frame = ttk.LabelFrame(
-            self.frame, text="Enter new security details"
+        dialog_width = 5 * 120
+        dialog_height = 3 * 100
+        dialog_size = str(dialog_width) + "x" + str(dialog_height)
+        self.dialog.geometry(dialog_size)
+        self.dialog.grid_columnconfigure(0, minsize=dialog_width, pad=5)
+        self.dialog.grid_columnconfigure(1, minsize=dialog_width, pad=5)
+        self.dialog.grid_columnconfigure(2, minsize=dialog_width, pad=5)
+        self.dialog.grid_columnconfigure(3, minsize=dialog_width, pad=5)
+        self.dialog.grid_rowconfigure(0, minsize=dialog_height, pad=5)
+        self.dialog.grid_rowconfigure(1, minsize=dialog_height, pad=5)
+        self.dialog.grid_rowconfigure(2, minsize=dialog_height, pad=5)
+        # Create windows sized label frame.
+        self.data_entry_label_frame = ttk.LabelFrame(
+            self.dialog, text="Enter new security details"
         )
-        data_entry_label_frame.grid(column=0, row=0, sticky="new")
+        self.data_entry_label_frame.grid(
+            columnspan=4, rowspan=3, sticky="news"
+        )
         # Ticker label frame
-        stock_ticker_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Ticker")
-        self.stock_ticker_entry = ttk.Entry(stock_ticker_label_frame)
-        self.stock_ticker_entry.grid(column=0, row=0)
+        self.stock_ticker_label = ttk.Label(
+            self.data_entry_label_frame, text="Ticker"
+        )
+        self.stock_ticker_label.grid(column=0, row=0)
+        self.stock_ticker_entry = ttk.Entry(self.data_entry_label_frame)
+        self.stock_ticker_entry.grid(column=1, row=0)
         # Name label frame
-        stock_name_label_frame = ttk.LabelFrame(data_entry_label_frame, text="Name")
-        self.stock_name_entry = ttk.Entry(stock_name_label_frame)
-        self.stock_name_entry.grid(sticky="news")
-        # Position label frames
-        stock_ticker_label_frame.grid(column=0, row=0)
-        stock_name_label_frame.grid(column=0, row=1, columnspan=2, sticky="ew")
+        self.stock_name_label = ttk.Label(
+            self.data_entry_label_frame, text="Name"
+        )
+        self.stock_name_label.grid(column=0, row=1)
+        self.stock_name_entry = ttk.Entry(self.data_entry_label_frame)
+        self.stock_name_entry.grid(column=1, row=1, columnspan=2, sticky="w")
         # Buttons
         self.add_new_button = tk.Button(
-            data_entry_label_frame, text="Add", command=self.add
+            self.data_entry_label_frame, text="Add", command=self.add
         )
+        self.add_new_button.grid(column=1, row=2)
         self.cancel_button = tk.Button(
-            data_entry_label_frame, text="Cancel", command=self.cancel
+            self.data_entry_label_frame, text="Cancel", command=self.cancel
         )
-        # Position buttons.
-        self.add_new_button.grid(column=0, row=4)
-        self.cancel_button.grid(column=1, row=4)
+        self.cancel_button.grid(column=3, row=2)
 
     def validate_ticker(self, ticker):
         valid = False

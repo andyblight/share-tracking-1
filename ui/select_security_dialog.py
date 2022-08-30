@@ -24,12 +24,8 @@ class SelectSecurityDialog:
         self.security_frame.grid(columnspan=5, column=0, row=0, sticky="ne")
         self.securities_table_view.grid(sticky="nesw")
         # Buttons
-        self.ok_button = tk.Button(
-            self.frame, text="Ok", command=self.ok
-        )
-        self.cancel_button = tk.Button(
-            self.frame, text="Cancel", command=self.cancel
-        )
+        self.ok_button = tk.Button(self.frame, text="Ok", command=self.ok)
+        self.cancel_button = tk.Button(self.frame, text="Cancel", command=self.cancel)
         # Position buttons.
         self.ok_button.grid(column=1, row=2)
         self.cancel_button.grid(column=3, row=2)
