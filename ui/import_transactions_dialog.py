@@ -36,9 +36,10 @@ class ImportTransactionsDialog:
         if num_ids == 1:
             security_id = rows[0][0]
         elif num_ids > 1:
+            print("DEBUG: multiple security_ids found")
             security_dialog = SelectSecurityDialog(self.parent)
             security_dialog.set_rows(rows)
-            self.parent.wait_window(security_dialog.top)
+            security_dialog.top()
             security_id = security_dialog.get_security_id()
             print("DEBUG: Returned security_id: ", security_id)
         else:

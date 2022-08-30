@@ -34,6 +34,7 @@ class SelectSecurityDialog:
         self.securities_table_view.show_rows(rows)
 
     def get_security_id(self) -> int:
+        print("SSD gsi", self._security_id)
         return self._security_id
 
     def cancel(self) -> None:
@@ -42,9 +43,11 @@ class SelectSecurityDialog:
 
     def ok(self) -> None:
         """ Set the selected security Id for later use. """
-        print("SSD ok called")
         self._security_id = self.securities_table_view.get_selected_uid()
+        print("SSD ok set id", self._security_id)
+        self.dialog.destroy()
 
     def top(self) -> None:
-        """ Get the dialog to the top of the pile of windows. """
-        self.dialog.top()
+        """ Get the dialog to the top of the pile of windows and wait until closed. """
+        self.dialog.attributes("-topmost", 1)
+        self.dialog.wait_window()
