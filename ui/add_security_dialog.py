@@ -28,6 +28,12 @@ class AddSecurityDialog:
         self.data_entry_label_frame.grid(
             columnspan=4, rowspan=3, sticky="news"
         )
+        # Add description text.
+        self._description_label = ttk.Label(self.frame, text='Description:')
+        self._description_label.grid(column=0, row=0)
+        self._description_string = tk.StringVar()
+        self._description = ttk.Label(self.frame, textvariable=self._description_string)
+        self._description.grid(column=1, row=0)
         # Ticker label frame
         self.stock_ticker_label = ttk.Label(
             self.data_entry_label_frame, text="Ticker"
@@ -76,3 +82,11 @@ class AddSecurityDialog:
     def cancel(self):
         # Quit dialog doing nothing.
         self.dialog.destroy()
+
+    def set_description(self, description) -> None:
+        self._description_string.set(description)
+
+    def top(self) -> None:
+        """ Get the dialog to the top of the pile of windows and wait until closed. """
+        self.dialog.attributes("-topmost", 1)
+        self.dialog.wait_window()

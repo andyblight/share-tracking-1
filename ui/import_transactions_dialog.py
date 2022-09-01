@@ -5,6 +5,7 @@ from tkinter import filedialog
 from datetime import datetime
 
 from database.main import database
+from ui.add_security_dialog import AddSecurityDialog
 from ui.select_security_dialog import SelectSecurityDialog
 from ui.user_settings import UserSettings
 
@@ -34,6 +35,7 @@ class ImportTransactionsDialog:
         rows = database.securities.get_security(security_name[:6])
         num_ids = len(rows)
         if num_ids == 1:
+            # Exact match.
             security_id = rows[0][0]
         elif num_ids > 1:
             print("DEBUG: multiple security_ids found")
@@ -43,8 +45,19 @@ class ImportTransactionsDialog:
             security_dialog.top()
             security_id = security_dialog.get_security_id()
             print("DEBUG: Returned security_id: ", security_id)
-        else:
+        # If not found, then try adding the security manually.
+        if security_id <= 0:
             print("Security Id not found for ", security_name)
+            add_dialog = AddSecurityDialog(self.parent)
+            add_dialog.set_description(security_name)
+            add_dialog.set_rows(rows)
+            add_dialog.top()
+            # Now get the security ID from the database.
+            rows = database.securities.get_security(security_name[:6])
+            num_ids = len(rows)
+            if num_ids == 1:
+                # Exact match.
+                security_id = rows[0][0]
         return security_id
 
     def _write_df_to_db(self, excel_df):
