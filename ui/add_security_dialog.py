@@ -23,7 +23,7 @@ class AddSecurityDialog:
         self._description_label = ttk.Label(
             self.data_entry_label_frame, text="Description:"
         )
-        self._description_label.grid(column=0, row=0, sticky="w")
+        self._description_label.grid(column=0, row=0, sticky="w", padx=10, pady=10)
         # The description value is a disabled entry box to allow copying of the text.
         self._description_string = tk.StringVar()
         self._description = ttk.Entry(
@@ -31,31 +31,31 @@ class AddSecurityDialog:
             textvariable=self._description_string,
             width=description_width_chars,
         )
-        self._description.grid(column=1, row=0, sticky="nsew")
+        self._description.grid(column=1, row=0, sticky="nsew", padx=10, pady=10)
         self._description.configure(state="disabled")
         # Ticker label frame
         self.stock_ticker_label = ttk.Label(self.data_entry_label_frame, text="Ticker")
-        self.stock_ticker_label.grid(column=0, row=1, sticky="w")
+        self.stock_ticker_label.grid(column=0, row=1, sticky="w", padx=10, pady=5)
         self.stock_ticker_entry = ttk.Entry(
             self.data_entry_label_frame, width=ticker_width_chars
         )
-        self.stock_ticker_entry.grid(column=1, row=1, sticky="w")
+        self.stock_ticker_entry.grid(column=1, row=1, sticky="w", padx=10, pady=5)
         # Name label frame
         self.stock_name_label = ttk.Label(self.data_entry_label_frame, text="Name")
-        self.stock_name_label.grid(column=0, row=2, sticky="w")
+        self.stock_name_label.grid(column=0, row=2, sticky="w", padx=10, pady=5)
         self.stock_name_entry = ttk.Entry(
             self.data_entry_label_frame, width=description_width_chars
         )
-        self.stock_name_entry.grid(column=1, row=2, sticky="nsew")
+        self.stock_name_entry.grid(column=1, row=2, sticky="nsew", padx=10, pady=5)
         # Buttons
         self.add_new_button = tk.Button(
             self.data_entry_label_frame, text="Add", command=self.add
         )
-        self.add_new_button.grid(column=0, row=3)
+        self.add_new_button.grid(column=0, row=3, padx=10, pady=10)
         self.cancel_button = tk.Button(
             self.data_entry_label_frame, text="Cancel", command=self.cancel
         )
-        self.cancel_button.grid(column=1, row=3)
+        self.cancel_button.grid(column=1, row=3, padx=10, pady=10)
 
     def validate_ticker(self, ticker):
         valid = False
