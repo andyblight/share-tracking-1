@@ -25,26 +25,24 @@ class AddSecurityDialog:
         self.data_entry_label_frame = ttk.LabelFrame(
             self.dialog, text="Enter new security details"
         )
-        self.data_entry_label_frame.grid(
-            columnspan=4, rowspan=3, sticky="news"
-        )
+        self.data_entry_label_frame.grid(columnspan=4, rowspan=3, sticky="news")
         # Add description text.
-        self._description_label = ttk.Label(self.frame, text='Description:')
+        self._description_label = ttk.Label(
+            self.data_entry_label_frame, text="Description:"
+        )
         self._description_label.grid(column=0, row=0)
         self._description_string = tk.StringVar()
-        self._description = ttk.Label(self.frame, textvariable=self._description_string)
+        self._description = ttk.Label(
+            self.data_entry_label_frame, textvariable=self._description_string
+        )
         self._description.grid(column=1, row=0)
         # Ticker label frame
-        self.stock_ticker_label = ttk.Label(
-            self.data_entry_label_frame, text="Ticker"
-        )
+        self.stock_ticker_label = ttk.Label(self.data_entry_label_frame, text="Ticker")
         self.stock_ticker_label.grid(column=0, row=0)
         self.stock_ticker_entry = ttk.Entry(self.data_entry_label_frame)
         self.stock_ticker_entry.grid(column=1, row=0)
         # Name label frame
-        self.stock_name_label = ttk.Label(
-            self.data_entry_label_frame, text="Name"
-        )
+        self.stock_name_label = ttk.Label(self.data_entry_label_frame, text="Name")
         self.stock_name_label.grid(column=0, row=1)
         self.stock_name_entry = ttk.Entry(self.data_entry_label_frame)
         self.stock_name_entry.grid(column=1, row=1, columnspan=2, sticky="w")

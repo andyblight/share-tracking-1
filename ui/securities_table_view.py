@@ -55,7 +55,7 @@ class SecuritiesTableView(ttk.Frame):
             self.tree.insert("", tk.END, values=row)
 
     def _set_selected(self) -> None:
-        item_id  = self.tree.focus()
+        item_id = self.tree.focus()
         item = self.tree.item(item_id)
         self._selected_uid = item["values"][0]
 

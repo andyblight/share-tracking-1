@@ -19,9 +19,9 @@ class SelectSecurityDialog:
         self.frame = ttk.Frame(self.dialog, borderwidth=4, relief="ridge")
         self.frame.grid(columnspan=5, rowspan=2, sticky="nesw")
         # Add description text.
-        self._description_label = ttk.Label(self.frame, text='Description:')
+        self._description_label = ttk.Label(self.frame, text="Description:")
         self._description_label.grid(column=0, row=0)
-        self._description_string = tk.StringVar("None")
+        self._description_string = tk.StringVar()
         self._description = ttk.Label(self.frame, textvariable=self._description_string)
         self._description.grid(column=1, row=0)
         # Add security table view in its own frame.
