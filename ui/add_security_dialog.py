@@ -21,7 +21,7 @@ class AddSecurityDialog:
         self.data_entry_label_frame.grid(sticky="nsew")
         # Add description text.
         self._description_label = ttk.Label(
-            self.data_entry_label_frame, text="Description:"
+            self.data_entry_label_frame, text="CS Description:"
         )
         self._description_label.grid(column=0, row=0, sticky="w", padx=10, pady=10)
         # The description value is a disabled entry box to allow copying of the text.
@@ -34,14 +34,14 @@ class AddSecurityDialog:
         self._description.grid(column=1, row=0, sticky="nsew", padx=10, pady=10)
         self._description.configure(state="disabled")
         # Ticker label frame
-        self.stock_ticker_label = ttk.Label(self.data_entry_label_frame, text="Ticker")
+        self.stock_ticker_label = ttk.Label(self.data_entry_label_frame, text="Ticker:")
         self.stock_ticker_label.grid(column=0, row=1, sticky="w", padx=10, pady=5)
         self.stock_ticker_entry = ttk.Entry(
             self.data_entry_label_frame, width=ticker_width_chars
         )
         self.stock_ticker_entry.grid(column=1, row=1, sticky="w", padx=10, pady=5)
         # Name label frame
-        self.stock_name_label = ttk.Label(self.data_entry_label_frame, text="Name")
+        self.stock_name_label = ttk.Label(self.data_entry_label_frame, text="Name:")
         self.stock_name_label.grid(column=0, row=2, sticky="w", padx=10, pady=5)
         self.stock_name_entry = ttk.Entry(
             self.data_entry_label_frame, width=description_width_chars
