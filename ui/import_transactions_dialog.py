@@ -42,7 +42,7 @@ class ImportTransactionsDialog:
             security_dialog = SelectSecurityDialog(self.parent)
             security_dialog.set_description(security_name)
             security_dialog.set_rows(rows)
-            security_dialog.top()
+            security_dialog.wait()
             security_id = security_dialog.get_security_id()
             print("DEBUG: Returned security_id: ", security_id)
         # If not found, then try adding the security manually.
@@ -50,8 +50,7 @@ class ImportTransactionsDialog:
             print("Security Id not found for ", security_name)
             add_dialog = AddSecurityDialog(self.parent)
             add_dialog.set_description(security_name)
-            add_dialog.set_rows(rows)
-            add_dialog.top()
+            add_dialog.wait()
             # Now get the security ID from the database.
             rows = database.securities.get_security(security_name[:6])
             num_ids = len(rows)

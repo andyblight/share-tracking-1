@@ -11,7 +11,7 @@ class SelectSecurityDialog:
         self._security_id = -1
         # Set up new window.
         self.dialog = tk.Toplevel(self.parent)
-        self.dialog.title("Add security")
+        self.dialog.title("Select security")
         self.dialog.geometry("600x400")
         self.dialog.grid_rowconfigure(0, pad=10, weight=1)
         self.dialog.grid_columnconfigure(0, pad=10, weight=1)
@@ -56,7 +56,7 @@ class SelectSecurityDialog:
         print("SSD ok set id", self._security_id)
         self.dialog.destroy()
 
-    def top(self) -> None:
+    def wait(self) -> None:
         """ Get the dialog to the top of the pile of windows and wait until closed. """
         self.dialog.attributes("-topmost", 1)
         self.dialog.wait_window()
