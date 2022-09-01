@@ -32,7 +32,7 @@ class AddSecurityDialog:
             width=description_width_chars,
         )
         self._description.grid(column=1, row=0, sticky="nsew", padx=10, pady=10)
-        self._description.configure(state="disabled")
+        self._description.configure(state="readonly")
         # Ticker label frame
         self.stock_ticker_label = ttk.Label(self.data_entry_label_frame, text="Ticker:")
         self.stock_ticker_label.grid(column=0, row=1, sticky="w", padx=10, pady=5)

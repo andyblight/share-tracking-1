@@ -29,6 +29,7 @@ class SelectSecurityDialog:
         self.securities_table_view = SecuritiesTableView(self.security_frame)
         self.security_frame.grid(columnspan=5, column=0, row=1, sticky="ne")
         self.securities_table_view.grid(sticky="nesw")
+        self.securities_table_view.add_callback(self.ok)
         # Buttons
         self.ok_button = tk.Button(self.frame, text="Ok", command=self.ok)
         self.cancel_button = tk.Button(self.frame, text="No match", command=self.cancel)

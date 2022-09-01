@@ -40,6 +40,8 @@ class SecuritiesTableView(ttk.Frame):
         # Bind functions for selection and double click
         self.tree.bind("<<TreeviewSelect>>", self.on_select)
         self.tree.bind("<Double-1>", self.on_double_click)
+        # Callback function for double click.
+        self._callback = None
 
     def show(self) -> None:
         for item in self.tree.get_children():
@@ -61,9 +63,16 @@ class SecuritiesTableView(ttk.Frame):
 
     def on_double_click(self, event) -> None:
         self._set_selected()
+        if self._callback:
+            self._callback()
 
     def on_select(self, event) -> None:
         self._set_selected()
 
     def get_selected_uid(self) -> int:
         return self._selected_uid
+
+    def add_callback(self, callback) -> None:
+        # TODO Could check if function?
+        self._callback = callback
+
