@@ -1,10 +1,10 @@
-import datetime
 import tkinter as tk
 from tkinter import ttk
 
 from database.main import database
 from ui.utils import float_to_currency
 
+ZERO_DATETIME_STR = "0000-00-00 00:00:00"
 
 class UpdateHoldingDialog:
     def __init__(self, parent):
@@ -87,36 +87,48 @@ class UpdateFromTransactionsDialog:
         filtered_transactions = {}
         for row in all_rows:
             print(row)
-            date_bought = row[1]
+            transaction_date = row[1]
             buy = row[2]
             security_id = row[3]
             quantity = row[4]
             price = row[5]
             if buy == "S":
                 quantity = -quantity
+                date_bought = ZERO_DATETIME_STR
+                date_sold = transaction_date
+            else:
+                date_sold = ZERO_DATETIME_STR
+                date_bought = transaction_date
             if security_id in filtered_transactions:
                 print("Amend existing row")
-                old_row = filtered_transactions[security_id]
-                new_quantity = old_row[2] + quantity
+                old_entry = filtered_transactions[security_id]
+                print("Old entry", old_entry)
+                old_date_bought = old_entry[0]
+                # old_date_sold = old_entry[1]
+                old_quantity = old_entry[2]
+                old_price = old_entry[3]
+                new_quantity = old_quantity + quantity
+                print("Quantity old: {}, new: {}".format(old_quantity, new_quantity))
                 if new_quantity < 0:
                     print(
-                        "Security {} has negative quantity of {}".format(
+                        "Amend: Security {} has negative quantity of {}".format(
                             security_id, new_quantity
                         )
                     )
-                new_row = (old_row[0], new_quantity, old_row[2])
-                filtered_transactions[security_id] = new_row
+                amended_row = (old_date_bought, date_sold, new_quantity, old_price)
+                filtered_transactions[security_id] = amended_row
+                print("Amended entry", amended_row)
             else:
-                # Add new row.
                 print("Add new row")
                 if quantity < 0:
                     print(
-                        "Security {} has negative quantity of {}".format(
+                        "Add: Security {} has negative quantity of {}".format(
                             security_id, quantity
                         )
                     )
-                new_row = (date_bought, quantity, price)
+                new_row = (date_bought, date_sold, quantity, price)
                 filtered_transactions[security_id] = new_row
+            print("")
         print("filtered_transactions: ", filtered_transactions)
         return filtered_transactions
 
