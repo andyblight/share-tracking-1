@@ -1,3 +1,4 @@
+import datetime
 import tkinter as tk
 from tkinter import ttk
 
@@ -47,8 +48,14 @@ class UpdateHoldingDialog:
 
 class UpdateFromTransactionsDialog:
     def __init__(self, parent):
-        # Set up new window.
+        """ This dialog should show:
+        Start button.
+        Number of records updated label.
+        Close button.
+        """
         self.parent = parent
+        self._records_updated = 0
+        # Set up new window.
         self.dialog = tk.Toplevel(self.parent)
         self.dialog.title("Update from transactions")
         self.dialog.geometry("500x400")
@@ -71,10 +78,64 @@ class UpdateFromTransactionsDialog:
         self.update_button.grid(column=0, row=4)
         self.cancel_button.grid(column=1, row=4)
 
+    def _filter_transactions(self, all_rows):
+        """ Filter all_rows  so that only securities with active shares are returned.
+        Active shares are those where the number bought exceeds the number sold.
+        A dictionary is used so the results are accessible by the unique security ID.
+        """
+        print("UpdateFromTransactionsDialog->_filter_transactions")
+        filtered_transactions = {}
+        for row in all_rows:
+            print(row)
+            date_bought = row[1]
+            buy = row[2]
+            security_id = row[3]
+            quantity = row[4]
+            price = row[5]
+            if buy == "S":
+                quantity = -quantity
+            if security_id in filtered_transactions:
+                print("Amend existing row")
+                old_row = filtered_transactions[security_id]
+                new_quantity = old_row[2] + quantity
+                if new_quantity < 0:
+                    print(
+                        "Security {} has negative quantity of {}".format(
+                            security_id, new_quantity
+                        )
+                    )
+                new_row = (old_row[0], new_quantity, old_row[2])
+                filtered_transactions[security_id] = new_row
+            else:
+                # Add new row.
+                print("Add new row")
+                if quantity < 0:
+                    print(
+                        "Security {} has negative quantity of {}".format(
+                            security_id, quantity
+                        )
+                    )
+                new_row = (date_bought, quantity, price)
+                filtered_transactions[security_id] = new_row
+        print("filtered_transactions: ", filtered_transactions)
+        return filtered_transactions
+
+    def _update_holdings_table(self, holdings, filtered_transactions):
+        """ Write new holdings to holdings table. """
+        print("UpdateFromTransactionsDialog->_update_holdings_table")
+        print("holdings: ", holdings)
+        for holding in holdings:
+            pass
+        # FIXME!
+        self._records_updated = 700
+
     def update(self):
-        print("UpdateFromTransactionsDialog->Add")
-        quantities = database.transactions.get_quantities()
-        print(quantities)
+        print("UpdateFromTransactionsDialog->update")
+        all_rows = database.transactions.get_all_rows()
+        date_ordered_rows = sorted(all_rows, key=lambda x: x[1])
+        filtered_transactions = self._filter_transactions(date_ordered_rows)
+        holdings = database.holdings.get_all_rows()
+        self._update_holdings_table(holdings, filtered_transactions)
 
     def cancel(self):
         # Quit dialog doing nothing.
