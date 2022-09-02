@@ -10,7 +10,7 @@ with open(ver_path) as ver_file:
 setup(
     name="Share Tracker",
     author="Andy Blight",
-    install_requires=["pandas", "tkinter", "xlrd"],
+    install_requires=["pandas", "xlrd", "openpyxl"],
     url="https://github.com/andyblight/share-tracking-1",
     version=main_ns["__version__"],
 )

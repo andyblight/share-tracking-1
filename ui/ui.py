@@ -8,7 +8,7 @@ from ui.help import AboutDialog
 from ui.import_transactions_dialog import ImportTransactionsDialog
 from ui.import_securities_dialog import ImportSecuritiesDialog
 from ui.holdings_view import UpdateHoldingDialog, UpdateFromTransactionsDialog
-from ui.add_security_dialog import AddNewSecurityDialog
+from ui.add_security_dialog import AddSecurityDialog
 from ui.transactions_view import AddTransactionDialog
 
 
@@ -82,7 +82,7 @@ class SecuritiesMenu(tk.Menu):
 
     def add(self):
         # Create a new dialog box.
-        _ = AddNewSecurityDialog(self.parent)
+        _ = AddSecurityDialog(self.parent)
 
     def import_file(self):
         dialog = ImportSecuritiesDialog(self.parent)

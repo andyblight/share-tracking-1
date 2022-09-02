@@ -5,6 +5,19 @@ selling of my shares.
 
 ## Usage
 
+To install:
+
+```bash
+cd share-tracking-1
+pip install .
+```
+
+To run the app:
+
+```bash
+cd share-tracking-1
+./gui_main.py
+```
 
 ## Database schema
 
@@ -81,6 +94,13 @@ but have more fields for stop loss and target values.
 
 Time permitting, I would like to pull in the "end of day" data and do some
 clever stuff like:
-- Report on crystallized profits.
-- Report on potential profits so far.
-- Rate of growth, % per month, ideally with graph.
+
+* Report on crystallized profits.
+* Report on potential profits so far.
+* Rate of growth, % per month, ideally with graph.
+
+## References
+
+* <https://tkdocs.com/tutorial/tree.html>
+* <https://anzeljg.github.io/rin2/book2/2405/docs/tkinter/ttk-Treeview.html>
+* <https://anzeljg.github.io/rin2/book2/2405/docs/tkinter/grid-config.html>
