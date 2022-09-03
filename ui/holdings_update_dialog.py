@@ -1,14 +1,19 @@
 import tkinter as tk
 from tkinter import ttk
 
+from datetime import date
 from database.main import database
+from database.holdings_table import HoldingsRow
+from database.transactions_table import TransactionsRow
 
 ZERO_DATETIME_STR = "0000-00-00 00:00:00"
 
 
 class HoldingsUpdateDialog:
     def __init__(self, parent):
-        """ This dialog should show:
+        """
+        This dialog reads the data from the transactions table and adds new records as needed.
+        This dialog should show:
         Start button.
         Number of records updated label.
         Close button.
@@ -92,16 +97,36 @@ class HoldingsUpdateDialog:
         print("filtered_transactions: ", filtered_transactions)
         return filtered_transactions
 
-    def _update_holdings_table(self, holdings, filtered_transactions):
+    def _write_row(self, transaction) -> None:
+        row = HoldingsRow()
+        row.set(date(2022, 5, 12), 1, 81, 4.75, 3.90, 5.95, 384.75)
+        database.holdings.add_row(row)
+        self._records_updated += 1
+
+    def _new_record_needed(
+        self, holding: HoldingsRow, transaction: TransactionsRow
+    ) -> None:
+        needed = False
+        if holding.sid == transaction.sid:
+            # Matched security ID so start checking further.
+            pass
+        return needed
+
+    def _update_holdings_table(self, holdings, filtered_transactions) -> None:
         """ Write new holdings to holdings table. """
         print("UpdateFromTransactionsDialog->_update_holdings_table")
-        print("holdings: ", holdings)
+        print(
+            "num holdings: ",
+            len(holdings),
+            "filtered transactions",
+            len(filtered_transactions),
+        )
         for holding in holdings:
-            pass
-        # FIXME!
-        self._records_updated = 700
+            for transaction in filtered_transactions:
+                if self._new_record_needed(holding, transaction):
+                    self._write_row(transaction)
 
-    def update(self):
+    def update(self) -> None:
         print("UpdateFromTransactionsDialog->update")
         all_rows = database.transactions.get_all_rows()
         date_ordered_rows = sorted(all_rows, key=lambda x: x[1])

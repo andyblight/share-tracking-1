@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
 from database.main import database
+from database.transactions_table import TransactionsRow
 from ui.utils import float_to_currency
 
 
@@ -64,15 +65,18 @@ class TransactionsTableView(ttk.Frame):
         all_rows = database.transactions.get_all_rows()
         for row in all_rows:
             # print(row)
-            # Convert row into correct format for treeview.
-            row_max_index = len(row)
             treeview_row = []
-            for i in range(0, row_max_index):
-                # print("index", i, row[i])
-                if i in (4, 5, 6, 7, 8):
-                    currency_str = float_to_currency(row[i])
-                    treeview_row.append(currency_str)
-                else:
-                    treeview_row.append(row[i])
+            treeview_row.append(row.uid)
+            treeview_row.append(row.date)
+            treeview_row.append(row.type)
+            treeview_row.append(row.sid)
+            currency_str = float_to_currency(row.quantity)
+            treeview_row.append(currency_str)
+            currency_str = float_to_currency(row.price)
+            treeview_row.append(currency_str)
+            currency_str = float_to_currency(row.costs)
+            treeview_row.append(currency_str)
+            currency_str = float_to_currency(row.total)
+            treeview_row.append(currency_str)
             # print(treeview_row)
             self.tree.insert("", tk.END, values=treeview_row)
