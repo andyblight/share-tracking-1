@@ -5,12 +5,12 @@ from tkinter import filedialog
 from datetime import datetime
 
 from database.main import database
-from ui.add_security_dialog import AddSecurityDialog
+from ui.securities_add_dialog import SecuritiesAddDialog
 from ui.select_security_dialog import SelectSecurityDialog
 from ui.user_settings import UserSettings
 
 
-class ImportTransactionsDialog:
+class TransactionsImportDialog:
     def __init__(self, parent):
         self.parent = parent
 
@@ -48,7 +48,7 @@ class ImportTransactionsDialog:
         # If not found, then try adding the security manually.
         if security_id <= 0:
             print("Security Id not found for ", security_name)
-            add_dialog = AddSecurityDialog(self.parent)
+            add_dialog = SecuritiesAddDialog(self.parent)
             add_dialog.set_description(security_name)
             add_dialog.wait()
             # Now get the security ID from the database.
