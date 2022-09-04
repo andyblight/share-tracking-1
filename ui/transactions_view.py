@@ -67,9 +67,9 @@ class TransactionsTableView(ttk.Frame):
             # print(row)
             treeview_row = []
             treeview_row.append(row.uid)
-            treeview_row.append(row.date)
+            treeview_row.append(row.date_obj)
             treeview_row.append(row.type)
-            treeview_row.append(row.sid)
+            treeview_row.append(row.security_id)
             currency_str = float_to_currency(row.quantity)
             treeview_row.append(currency_str)
             currency_str = float_to_currency(row.price)

@@ -10,9 +10,9 @@ class TransactionsRow:
 
     def __init__(self) -> None:
         self.uid = 0
-        self.date = datetime(1900, 1, 1)
+        self.date_obj = datetime(1900, 1, 1)
         self.type = ""
-        self.sid = 0.0
+        self.security_id = 0.0
         self.quantity = 0.0
         self.price = 0.0
         self.costs = 0.0
@@ -29,9 +29,9 @@ class TransactionsRow:
         total: float,
     ) -> None:
         self.uid = 0
-        self.date = date_obj
+        self.date_obj = date_obj
         self.type = type
-        self.sid = security_id
+        self.security_id = security_id
         self.quantity = quantity
         self.price = price
         self.costs = costs
@@ -39,16 +39,16 @@ class TransactionsRow:
 
     def set_from_raw(self, raw_row) -> None:
         self.uid = raw_row[0]
-        self.date = raw_row[1]
+        self.date_obj = raw_row[1]
         self.type = raw_row[2]
-        self.sid = raw_row[3]
+        self.security_id = raw_row[3]
         self.quantity = raw_row[4]
         self.price = raw_row[5]
         self.costs = raw_row[6]
         self.total = raw_row[7]
 
 
-TransactionRowList = List[TransactionsRow]
+TransactionsRows = List[TransactionsRow]
 
 
 class TransactionsTable:
@@ -142,7 +142,7 @@ class TransactionsTable:
         cursor.execute(sql_query)
         self._release_cursor()
 
-    def get_all_rows(self) -> TransactionRowList:
+    def get_all_rows(self) -> TransactionsRows:
         rows = []
         cursor = self._get_cursor()
         sql_query = "SELECT * FROM " + self._table_name
@@ -174,21 +174,46 @@ class TransactionsTable:
         self._release_cursor()
         return quantities
 
-    def get_clean_df(self):
-        # Create an empty DF based on the SQL table values.
-        self.connection = sqlite3.connect(
-            self._file_name, detect_types=sqlite3.PARSE_COLNAMES
-        )
-        # print("Test read all rows")
-        df = pandas.read_sql_query(
-            "SELECT * FROM {}".format(self._table_name), self.connection
-        )
-        self.connection.close()
-        # df.info()
-        clean_df = df[0:0]
-        # clean_df.info()
-        return clean_df
+    def get_filtered_rows(self) -> TransactionsRows:
+        """
+        Filter all rows in table so that only securities with active shares are returned.
+        Active shares are those where the number bought exceeds the number sold.
+        A dictionary is used so the results are accessible by the unique security ID.
+        Intended for use by holdings update dialog.
+        """
+        # print("UpdateFromTransactionsDialog->_filter_transactions")
+        all_rows = self.get_all_rows()
+        # Sort using second element of each row.
+        date_ordered_rows = sorted(all_rows, key=lambda x: x.date_obj)
+        # Find out which shares have active holdings. Store this info in a dictionary.
+        active_securities = {}
+        for row in date_ordered_rows:
+            security_id = row.security_id
+            quantity = row.quantity
+            if row.type == "S":
+                quantity = -quantity
+            if security_id in active_securities:
+                # Update the quantity of securities held.
+                old_quantity = active_securities[security_id]
+                quantity = old_quantity + quantity
+                # print("Quantity old: {}, new: {}".format(old_quantity, new_quantity))
+            if quantity < 0:
+                print(
+                    "ERROR: Security {} has negative quantity of {}".format(
+                        security_id, quantity
+                    )
+                )
+            else:
+                active_securities[security_id] = quantity
+                print("Entry set to {}, {}".format(security_id, quantity))
+            # print("")
+        # Use the dictionary to copy active securities from date_ordered_rows.
+        filtered_transactions = []
+        for row in date_ordered_rows:
+            security_id = row.security_id
+            if security_id in active_securities:
+                if active_securities[security_id] > 0:
+                    filtered_transactions.append(row)
+        print("Filtered rows from ", len(all_rows), "to", len(filtered_transactions))
+        return filtered_transactions
 
-    def write_df(self, filled_df):
-        print("Transactions->write_df")
-        print(filled_df)
