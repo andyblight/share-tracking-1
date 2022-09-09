@@ -80,7 +80,6 @@ class SecuritiesTable:
         return rows
 
     def get_security(self, security_description):
-        # TODO Exact match if first word is exact.
         security_description_upper = security_description.upper()
         # Try match for first 10 characters.
         accurate_match = True
@@ -88,12 +87,12 @@ class SecuritiesTable:
         rows = self._query_security(query_str)
         if len(rows) < 1:
             accurate_match = False
-            # Try for 10 character match anywhere.
-            query_str = "%" + security_description_upper[:10] + "%"
+            # Try match of first 5 characters.
+            query_str = security_description_upper[:5] + "%"
             rows = self._query_security(query_str)
             if len(rows) < 1:
-                # Try match of first 5 characters.
-                query_str = security_description_upper[:5] + "%"
+                # Try for 6 character match anywhere.
+                query_str = "%" + security_description_upper[:6] + "%"
                 rows = self._query_security(query_str)
                 if len(rows) < 1:
                     # Try to 3 character match anywhere.

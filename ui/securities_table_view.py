@@ -43,7 +43,7 @@ class SecuritiesTableView(ttk.Frame):
         # Callback function for double click.
         self._callback = None
 
-    def show(self):
+    def show(self) -> None:
         for item in self.tree.get_children():
             self.tree.delete(item)
         all_rows = database.securities.get_all_rows()
@@ -51,7 +51,7 @@ class SecuritiesTableView(ttk.Frame):
             # print(row)
             self.tree.insert("", tk.END, values=row)
 
-    def show_rows(self, rows):
+    def show_rows(self, rows) -> None:
         for item in self.tree.get_children():
             self.tree.delete(item)
         for row in rows:
