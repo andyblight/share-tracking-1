@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-from database.main import database
 from ui.securities_table_view import SecuritiesTableView
 
 

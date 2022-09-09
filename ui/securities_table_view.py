@@ -52,8 +52,10 @@ class SecuritiesTableView(ttk.Frame):
             self.tree.insert("", tk.END, values=row)
 
     def show_rows(self, rows) -> None:
-        print("sr")
+        for item in self.tree.get_children():
+            self.tree.delete(item)
         for row in rows:
+            # print(row)
             self.tree.insert("", tk.END, values=row)
 
     def _set_selected(self) -> None:

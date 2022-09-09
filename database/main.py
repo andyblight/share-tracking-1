@@ -1,4 +1,5 @@
 # The main database file.
+# This class owns all tables in the database.
 import sqlite3
 import os
 from pathlib import Path

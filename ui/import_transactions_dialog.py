@@ -32,13 +32,15 @@ class ImportTransactionsDialog:
 
     def _get_security_id(self, security_name):
         security_id = 0
-        rows = database.securities.get_security(security_name[:6])
+        (accurate_match, rows) = database.securities.get_security(security_name)
         num_ids = len(rows)
-        if num_ids == 1:
-            # Exact match.
+        if num_ids == 1 and accurate_match:
             security_id = rows[0][0]
+            print(
+                "DEBUG: Exact match for security: ", security_name, " is ", rows[0][2]
+            )
         elif num_ids > 1:
-            print("DEBUG: multiple security_ids found")
+            print("DEBUG: Choosing security id from name: ", security_name)
             security_dialog = SelectSecurityDialog(self.parent)
             security_dialog.set_description(security_name)
             security_dialog.set_rows(rows)
@@ -47,16 +49,22 @@ class ImportTransactionsDialog:
             print("DEBUG: Returned security_id: ", security_id)
         # If not found, then try adding the security manually.
         if security_id <= 0:
+            # No security ID so manually add a new security.
             print("Security Id not found for ", security_name)
             add_dialog = AddSecurityDialog(self.parent)
             add_dialog.set_description(security_name)
             add_dialog.wait()
-            # Now get the security ID from the database.
-            rows = database.securities.get_security(security_name[:6])
+            # Check that security ID can be found.
+            rows = database.securities.get_security(security_name)
             num_ids = len(rows)
             if num_ids == 1:
                 # Exact match.
                 security_id = rows[0][0]
+            else:
+                print(
+                    "ERROR: Multiple matches in database for security: ", security_name
+                )
+
         return security_id
 
     def _write_df_to_db(self, excel_df):
