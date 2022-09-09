@@ -59,7 +59,7 @@ attributes are:
 | Security ID | Integer | Link to the security unique ID. |
 | Transaction Type | Text | Short name for the transaction type e.g. `Buy`, `Sell`.|
 | Quantity | Real | The number of things involved in the transaction.|
-| Price | Real | The price per unit. |
+| Price | Real | The price paid per unit. |
 | Fees | Real | Commission or other fees. |
 | Tax | Real | Stamp duty in the UK. |
 | Total | Real | Total cost paid.  Should be (Quantity * Price) + Fees + Tax. |
@@ -74,7 +74,7 @@ securities held.  This table is generated from:
     * quantity bought/sold.
     * price.
 * The valuation data:
-    * value of a single share.
+    * "current" value of a single share.
     * stop/loss value.
     * target value.
 
@@ -84,18 +84,23 @@ We end up with a table that looks like this:
 
 | Field name | Type | Notes |
 |---|---|---|
-| Unique ID | Integer | Unique ID for each transaction. |
-| Date | Date | The date of the transaction. |
+| Unique ID | Integer | Unique ID for each holding record. |
+| Date | Date | The date of the update. |
 | Security ID | Integer | Link to the security unique ID. |
-| Quantity | Real | The number of unit involved in the transaction.|
+| Quantity | Real | The number of units held.|
+| Price | Real | The price paid per unit. |
 | Value | Real | The valuation for each unit. |
+| Gain | Real | Change in value since purchased. |
 | StopLoss | Real | Sell at this price. |
 | Target | Real | Target value. |
 | Total | Real | (Quantity * Value) |
 
 Holdings records should work as per the
-(spreadsheet)[TransactionHoldingInteraction.ods]
+[spreadsheet](TransactionHoldingInteraction.ods)
 but have more fields for stop loss and target values.
+
+The valuation wil be based on share price data that is downloaded as a file.
+For now, this will be a file from EODData.com.
 
 ## Future plans
 

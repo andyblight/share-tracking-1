@@ -1,16 +1,15 @@
 import pandas
-import tkinter as tk
-from tkinter import ttk
 from tkinter import filedialog
 from datetime import datetime
 
 from database.main import database
-from ui.add_security_dialog import AddSecurityDialog
+from database.transactions_table import TransactionsRow
+from ui.securities_add_dialog import SecuritiesAddDialog
 from ui.select_security_dialog import SelectSecurityDialog
 from ui.user_settings import UserSettings
 
 
-class ImportTransactionsDialog:
+class TransactionsImportDialog:
     def __init__(self, parent):
         self.parent = parent
 
@@ -51,19 +50,20 @@ class ImportTransactionsDialog:
         if security_id <= 0:
             # No security ID so manually add a new security.
             print("Security Id not found for ", security_name)
-            add_dialog = AddSecurityDialog(self.parent)
+            add_dialog = SecuritiesAddDialog(self.parent)
             add_dialog.set_description(security_name)
             add_dialog.wait()
             # Check that security ID can be found.
-            rows = database.securities.get_security(security_name)
-            num_ids = len(rows)
-            if num_ids == 1:
+            (accurate_match, rows) = database.securities.get_security(security_name)
+            if accurate_match:
                 # Exact match.
                 security_id = rows[0][0]
             else:
                 print(
                     "ERROR: Multiple matches in database for security: ", security_name
                 )
+                print(rows)
+                print("")
 
         return security_id
 
@@ -120,9 +120,9 @@ class ImportTransactionsDialog:
                 # Calculate fees.
                 costs = total - (quantity * price)
                 # Append new row.
-                database.transactions.add_row(
-                    date_obj, type, security_id, quantity, price, costs, total
-                )
+                new_row = TransactionsRow()
+                new_row.set(date_obj, type, security_id, quantity, price, costs, total)
+                database.transactions.add_row(new_row)
             except ValueError:
                 # Ignore this row.
                 pass
