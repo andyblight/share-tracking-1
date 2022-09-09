@@ -41,8 +41,10 @@ class ImportTransactionsDialog:
             )
         elif num_ids > 1 or not accurate_match:
             print("DEBUG: Choosing security id from name: ", security_name)
-            security_dialog = SelectSecurityDialog(self.parent, security_name, rows)
-            self.parent.wait_window(security_dialog.dialog)
+            security_dialog = SelectSecurityDialog(self.parent)
+            security_dialog.set_description(security_name)
+            security_dialog.set_rows(rows)
+            security_dialog.wait()
             security_id = security_dialog.get_security_id()
             print("DEBUG: Returned security_id: ", security_id)
         # If not found, then try adding the security manually.
