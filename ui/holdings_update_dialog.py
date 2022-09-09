@@ -3,7 +3,7 @@ from tkinter import ttk
 
 from datetime import date
 from database.main import database
-from database.holdings_table import HoldingsRow
+from database.holdings_table import HoldingsRow, HoldingsRows
 from database.transactions_table import TransactionsRow, TransactionsRows
 
 
@@ -42,8 +42,16 @@ class HoldingsUpdateDialog:
         self.cancel_button.grid(column=1, row=4)
 
     def _write_row(self, transaction: TransactionsRow) -> None:
+        # Translate from transaction to holdings.
         row = HoldingsRow()
-        row.set(date(2022, 5, 12), 1, 81, 4.75, 3.90, 5.95, 384.75)
+        # row.set(0, date(2022, 5, 12), 1, 81, 4.75, 3.90, 5.95, 384.75)
+        row.date_obj = transaction.date_obj
+        row.sid = transaction.security_id
+        row.quantity = transaction.quantity
+        row.total = transaction.total
+        row.stop_loss = 0.0
+        row.target = 0.0
+        row.value = 0.0
         database.holdings.add_row(row)
         self._records_updated += 1
 
@@ -66,10 +74,16 @@ class HoldingsUpdateDialog:
             "filtered transactions",
             len(filtered_transactions),
         )
-        for holding in holdings:
+        if len(holdings) == 0:
+            # No holdings, so add every transaction.
             for transaction in filtered_transactions:
-                if self._new_record_needed(holding, transaction):
-                    self._write_row(transaction)
+                self._write_row(transaction)
+        else:
+            # Some holdings exist so only update as needed.
+            for holding in holdings:
+                for transaction in filtered_transactions:
+                    if self._new_record_needed(holding, transaction):
+                        self._write_row(transaction)
 
     def cancel(self):
         # Quit dialog doing nothing.

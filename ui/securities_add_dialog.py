@@ -34,7 +34,9 @@ class SecuritiesAddDialog:
         self._description.grid(column=1, row=0, sticky="nsew", padx=10, pady=10)
         self._description.configure(state="readonly")
         # Ticker label frame
-        self._stock_ticker_label = ttk.Label(self._data_entry_label_frame, text="Ticker:")
+        self._stock_ticker_label = ttk.Label(
+            self._data_entry_label_frame, text="Ticker:"
+        )
         self._stock_ticker_label.grid(column=0, row=1, sticky="w", padx=10, pady=5)
         self._stock_ticker_entry = ttk.Entry(
             self._data_entry_label_frame, width=ticker_width_chars
@@ -60,19 +62,19 @@ class SecuritiesAddDialog:
         )
         self._cancel_button.grid(column=1, row=3, padx=10, pady=10)
 
-    def validate_ticker(self, ticker):
+    def _validate_ticker(self, ticker):
         valid = False
         if len(ticker) > 2 and len(ticker) < 20:
             valid = True
         return valid
 
-    def validate_name(self, name):
+    def _validate_name(self, name):
         valid = False
         if len(name) > 2:
             valid = True
         return valid
 
-    def add(self):
+    def _add(self):
         print("SecurityDialog Add")
         # Get info from entry boxes.
         ticker = self._stock_ticker_entry.get()
@@ -82,7 +84,7 @@ class SecuritiesAddDialog:
         database.securities.add_row(ticker, name)
         self._dialog.destroy()
 
-    def cancel(self):
+    def _cancel(self):
         # Quit dialog doing nothing.
         self._dialog.destroy()
 
