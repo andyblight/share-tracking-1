@@ -1,6 +1,4 @@
 import pandas
-import tkinter as tk
-from tkinter import ttk
 from tkinter import filedialog
 from datetime import datetime
 
@@ -56,15 +54,16 @@ class TransactionsImportDialog:
             add_dialog.set_description(security_name)
             add_dialog.wait()
             # Check that security ID can be found.
-            rows = database.securities.get_security(security_name)
-            num_ids = len(rows)
-            if num_ids == 1:
+            (accurate_match, rows) = database.securities.get_security(security_name)
+            if accurate_match:
                 # Exact match.
                 security_id = rows[0][0]
             else:
                 print(
                     "ERROR: Multiple matches in database for security: ", security_name
                 )
+                print(rows)
+                print("")
 
         return security_id
 
