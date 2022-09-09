@@ -98,7 +98,7 @@ class TransactionsTable:
         return rows
 
     def get_quantities(self):
-        """ Returns a list of tuples.
+        """ Return a list of tuples.
         Each tuple contains (security id, quantity).
         The quantity is the total of all quantities for that security where
         buy is a positive quantity and sell is a negative quantity.

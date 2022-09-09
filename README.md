@@ -5,19 +5,26 @@ selling of my shares.
 
 ## Usage
 
-To install:
+To do a fresh install:
 
 ```bash
 cd share-tracking-1
 pip install .
 ```
 
-To run the app:
+`pip` will install any dependencies for you.  The dependencies are defined in
+the `setup .py` file.
+
+To start the program:
 
 ```bash
 cd share-tracking-1
 ./gui_main.py
 ```
+
+To operate the program, guess from the menu options!
+
+TODO Add link user documentation.
 
 ## Database schema
 

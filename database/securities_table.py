@@ -62,15 +62,14 @@ class SecuritiesTable:
         self._connection.close()
         return rows
 
-    def get_security(self, security_description):
-        security_description_upper = security_description.upper()
+    def _query_security(self, security_description_upper):
         # Find existing security.
         rows = []
         cursor = self._get_cursor()
         sql_query = "SELECT * FROM " + self._table_name
-        sql_query += " WHERE name LIKE '%"
+        sql_query += " WHERE name LIKE '"
         sql_query += security_description_upper
-        sql_query += "%'"
+        sql_query += "'"
         print(sql_query)
         try:
             cursor.execute(sql_query)
@@ -79,6 +78,28 @@ class SecuritiesTable:
             print("ERROR: No table", self._table_name)
         self._connection.close()
         return rows
+
+    def get_security(self, security_description):
+        # TODO Exact match if first word is exact.
+        security_description_upper = security_description.upper()
+        # Try match for first 10 characters.
+        accurate_match = True
+        query_str = security_description_upper[:10] + "%"
+        rows = self._query_security(query_str)
+        if len(rows) < 1:
+            accurate_match = False
+            # Try for 10 character match anywhere.
+            query_str = "%" + security_description_upper[:10] + "%"
+            rows = self._query_security(query_str)
+            if len(rows) < 1:
+                # Try match of first 5 characters.
+                query_str = security_description_upper[:5] + "%"
+                rows = self._query_security(query_str)
+                if len(rows) < 1:
+                    # Try to 3 character match anywhere.
+                    query_str = "%" + security_description_upper[:3] + "%"
+                    rows = self._query_security(query_str)
+        return (accurate_match, rows)
 
     def _get_ticker(self, security_description):
         # TODO Find ticker from security name.

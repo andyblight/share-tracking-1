@@ -32,17 +32,17 @@ class ImportTransactionsDialog:
 
     def _get_security_id(self, security_name):
         security_id = 0
-        rows = database.securities.get_security(security_name[:6])
+        (accurate_match, rows) = database.securities.get_security(security_name)
         num_ids = len(rows)
-        if num_ids == 1:
-            # Exact match.
+        if num_ids == 1 and accurate_match:
             security_id = rows[0][0]
-        elif num_ids > 1:
-            print("DEBUG: multiple security_ids found")
-            security_dialog = SelectSecurityDialog(self.parent)
-            security_dialog.set_description(security_name)
-            security_dialog.set_rows(rows)
-            security_dialog.wait()
+            print(
+                "DEBUG: Exact match for security: ", security_name, " is ", rows[0][2]
+            )
+        elif num_ids > 1 or not accurate_match:
+            print("DEBUG: Choosing security id from name: ", security_name)
+            security_dialog = SelectSecurityDialog(self.parent, security_name, rows)
+            self.parent.wait_window(security_dialog.dialog)
             security_id = security_dialog.get_security_id()
             print("DEBUG: Returned security_id: ", security_id)
         # If not found, then try adding the security manually.

@@ -1,3 +1,6 @@
 *.db
 **/.vscode
 **/__pycache__
+# Created by pip install. Can be fifferent for each installation.
+# https://setuptools.pypa.io/en/latest/deprecated/python_eggs.html
+**/*.egg-info
