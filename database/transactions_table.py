@@ -6,7 +6,7 @@ from typing import List
 
 
 class TransactionsRow:
-    """ Names the elements in a single row. """
+    """Names the elements in a single row."""
 
     def __init__(self) -> None:
         self.uid = 0
@@ -158,7 +158,7 @@ class TransactionsTable:
         return rows
 
     def get_quantities(self):
-        """ Return a list of tuples.
+        """Return a list of tuples.
         Each tuple contains (security id, quantity).
         The quantity is the total of all quantities for that security where
         buy is a positive quantity and sell is a negative quantity.
@@ -214,6 +214,6 @@ class TransactionsTable:
             if security_id in active_securities:
                 if active_securities[security_id] > 0:
                     filtered_transactions.append(row)
+                    print(row.security_id, row.quantity)
         print("Filtered rows from ", len(all_rows), "to", len(filtered_transactions))
         return filtered_transactions
-

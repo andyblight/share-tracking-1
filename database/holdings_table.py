@@ -3,7 +3,7 @@ from datetime import date
 
 
 class HoldingsRow:
-    """ Used to name the row values. """
+    """Used to name the row values."""
 
     def __init__(self) -> None:
         self.date_obj = 0.0
@@ -25,7 +25,7 @@ class HoldingsRow:
 
 
 class HoldingsTable:
-    """ An interface to the SQLite holdings table. """
+    """An interface to the SQLite holdings table."""
 
     def __init__(self, file_name) -> None:
         self._file_name = file_name
