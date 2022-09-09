@@ -77,4 +77,3 @@ class SecuritiesTableView(ttk.Frame):
     def add_callback(self, callback) -> None:
         # TODO Could check if function?
         self._callback = callback
-

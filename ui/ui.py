@@ -5,11 +5,12 @@ import tkinter as tk
 from database.main import database
 from ui.tabbed_frame import TabbedFrame
 from ui.help import AboutDialog
-from ui.import_transactions_dialog import ImportTransactionsDialog
-from ui.import_securities_dialog import ImportSecuritiesDialog
-from ui.holdings_view import UpdateHoldingDialog, UpdateFromTransactionsDialog
-from ui.add_security_dialog import AddSecurityDialog
-from ui.transactions_view import AddTransactionDialog
+from ui.holdings_view import UpdateHoldingDialog
+from ui.holdings_update_dialog import HoldingsUpdateDialog
+from ui.securities_add_dialog import SecuritiesAddDialog
+from ui.securities_import_dialog import SecuritiesImportDialog
+from ui.transactions_add_dialog import TransactionsAddDialog
+from ui.transactions_import_dialog import TransactionsImportDialog
 
 
 DEFAULT_APP_WIDTH = 800
@@ -67,7 +68,7 @@ class HoldingsMenu(tk.Menu):
 
     def update(self):
         print("Holdings->Update")
-        _ = UpdateFromTransactionsDialog(self.parent)
+        _ = HoldingsUpdateDialog(self.parent)
 
 
 class SecuritiesMenu(tk.Menu):
@@ -82,10 +83,10 @@ class SecuritiesMenu(tk.Menu):
 
     def add(self):
         # Create a new dialog box.
-        _ = AddSecurityDialog(self.parent)
+        _ = SecuritiesAddDialog(self.parent)
 
     def import_file(self):
-        dialog = ImportSecuritiesDialog(self.parent)
+        dialog = SecuritiesImportDialog(self.parent)
         dialog.import_file()
 
     def show(self):
@@ -104,10 +105,10 @@ class TransactionsMenu(tk.Menu):
         menu_bar.add_cascade(label="Transactions", menu=self.menu_file)
 
     def new(self):
-        _ = AddTransactionDialog(self.parent)
+        _ = TransactionsAddDialog(self.parent)
 
     def import_file(self):
-        dialog = ImportTransactionsDialog(self.parent)
+        dialog = TransactionsImportDialog(self.parent)
         dialog.import_file()
 
     def show(self):

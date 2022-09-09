@@ -33,48 +33,7 @@ class UpdateHoldingDialog:
 
     def add(self):
         print("UpdateHoldingDialog Add")
-        # # Get info from entry boxes.
-        # ticker = self.stock_ticker_entry.get()
-        # name = self.stock_name_entry.get()
-        # print("add: " + ticker + ", " + name)
-        # # Write to database.
-        # database.securities.add_row(ticker, name)
-
-    def cancel(self):
-        # Quit dialog doing nothing.
-        self.dialog.destroy()
-
-
-class UpdateFromTransactionsDialog:
-    def __init__(self, parent):
-        # Set up new window.
-        self.parent = parent
-        self.dialog = tk.Toplevel(self.parent)
-        self.dialog.title("Update from transactions")
-        self.dialog.geometry("500x400")
-        self.dialog.grid_rowconfigure(0, pad=10, weight=1)
-        self.dialog.grid_columnconfigure(0, pad=10, weight=1)
-        # Create windows sized frame.
-        self.frame = ttk.Frame(self.dialog, borderwidth=4, relief="ridge")
-        self.frame.grid(sticky="nesw")
-        # Add data field.
-        data_entry_label_frame = ttk.LabelFrame(self.frame, text="Update")
-        data_entry_label_frame.grid(column=0, row=0, sticky="new")
-        # Buttons
-        self.update_button = tk.Button(
-            data_entry_label_frame, text="Update", command=self.update
-        )
-        self.cancel_button = tk.Button(
-            data_entry_label_frame, text="Cancel", command=self.cancel
-        )
-        # Position buttons.
-        self.update_button.grid(column=0, row=4)
-        self.cancel_button.grid(column=1, row=4)
-
-    def update(self):
-        print("UpdateFromTransactionsDialog->Add")
-        quantities = database.transactions.get_quantities()
-        print(quantities)
+        # Get info from entry boxes.
 
     def cancel(self):
         # Quit dialog doing nothing.

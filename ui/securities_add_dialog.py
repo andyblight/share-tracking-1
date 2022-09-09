@@ -4,7 +4,7 @@ from tkinter import ttk
 from database.main import database
 
 
-class AddSecurityDialog:
+class SecuritiesAddDialog:
     def __init__(self, parent) -> None:
         # Set up new window.
         self.parent = parent

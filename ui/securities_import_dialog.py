@@ -9,7 +9,7 @@ from database.main import database
 from ui.user_settings import UserSettings
 
 
-class ImportSecuritiesDialog:
+class SecuritiesImportDialog:
     def __init__(self, parent):
         self.parent = parent
 
