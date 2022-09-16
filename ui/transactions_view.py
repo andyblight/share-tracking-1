@@ -20,7 +20,7 @@ class TransactionsTableView(ttk.Frame):
             "uid",
             "date",
             "type",
-            "security_id",
+            "sid",
             "quantity",
             "price",
             "costs",
@@ -35,8 +35,8 @@ class TransactionsTableView(ttk.Frame):
         self.tree.column("date", width=160, anchor=tk.E)
         self.tree.heading("type", text="B/S")
         self.tree.column("type", width=40)
-        self.tree.heading("security_id", text="SID")
-        self.tree.column("security_id", width=40, anchor=tk.E)
+        self.tree.heading("sid", text="SID")
+        self.tree.column("sid", width=40, anchor=tk.E)
         self.tree.heading("quantity", text="Quantity")
         self.tree.column("quantity", width=80, anchor=tk.E)
         self.tree.heading("price", text="Price")

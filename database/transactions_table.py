@@ -22,7 +22,7 @@ class TransactionsRow:
         self,
         date_obj: datetime,
         type: str,
-        security_id: int,
+        sid: int,
         quantity: float,
         price: float,
         costs: float,
@@ -31,7 +31,7 @@ class TransactionsRow:
         self.uid = 0
         self.date_obj = date_obj
         self.type = type
-        self.security_id = security_id
+        self.security_id = sid
         self.quantity = quantity
         self.price = price
         self.costs = costs

@@ -46,7 +46,7 @@ class HoldingsUpdateDialog:
         row = HoldingsRow()
         # row.set(0, date(2022, 5, 12), 1, 81, 4.75, 3.90, 5.95, 384.75)
         row.date_obj = transaction.date_obj
-        row.sid = transaction.security_id
+        row.sid = transaction.sid
         row.quantity = transaction.quantity
         row.total = transaction.total
         row.stop_loss = 0.0
@@ -59,6 +59,7 @@ class HoldingsUpdateDialog:
         self, holding: HoldingsRow, transaction: TransactionsRow
     ) -> None:
         needed = False
+        print("nrn: holding.sid", holding.sid, "transaction.sid:", transaction.sid)
         if holding.sid == transaction.sid:
             # Matched security ID so start checking further.
             pass
