@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from datetime import datetime
 from database.main import database
-from database.transactions_table import TransactionsRow
 from ui.utils import float_to_currency
 
 
@@ -69,7 +67,7 @@ class TransactionsTableView(ttk.Frame):
             treeview_row.append(row.uid)
             treeview_row.append(row.date_obj)
             treeview_row.append(row.type)
-            treeview_row.append(row.security_id)
+            treeview_row.append(row.sid)
             currency_str = float_to_currency(row.quantity)
             treeview_row.append(currency_str)
             currency_str = float_to_currency(row.price)

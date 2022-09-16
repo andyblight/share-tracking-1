@@ -1,5 +1,3 @@
-from tkinter.tix import REAL
-import pandas
 import sqlite3
 from datetime import date, datetime
 from typing import List
@@ -12,7 +10,7 @@ class TransactionsRow:
         self.uid = 0
         self.date_obj = datetime(1900, 1, 1)
         self.type = ""
-        self.security_id = 0.0
+        self.sid = 0.0
         self.quantity = 0.0
         self.price = 0.0
         self.costs = 0.0
@@ -31,7 +29,7 @@ class TransactionsRow:
         self.uid = 0
         self.date_obj = date_obj
         self.type = type
-        self.security_id = sid
+        self.sid = sid
         self.quantity = quantity
         self.price = price
         self.costs = costs
@@ -41,7 +39,7 @@ class TransactionsRow:
         self.uid = raw_row[0]
         self.date_obj = raw_row[1]
         self.type = raw_row[2]
-        self.security_id = raw_row[3]
+        self.sid = raw_row[3]
         self.quantity = raw_row[4]
         self.price = raw_row[5]
         self.costs = raw_row[6]
@@ -131,7 +129,7 @@ class TransactionsTable:
         sql_query += "VALUES ('{}', '{}', {}, {}, {}, {}, {})".format(
             row.date_obj,
             row.type,
-            row.security_id,
+            row.sid,
             row.quantity,
             row.price,
             row.costs,
@@ -188,7 +186,7 @@ class TransactionsTable:
         # Find out which shares have active holdings. Store this info in a dictionary.
         active_securities = {}
         for row in date_ordered_rows:
-            security_id = row.security_id
+            security_id = row.sid
             quantity = row.quantity
             if row.type == "S":
                 quantity = -quantity
@@ -210,10 +208,10 @@ class TransactionsTable:
         # Use the dictionary to copy active securities from date_ordered_rows.
         filtered_transactions = []
         for row in date_ordered_rows:
-            security_id = row.security_id
+            security_id = row.sid
             if security_id in active_securities:
                 if active_securities[security_id] > 0:
                     filtered_transactions.append(row)
-                    print(row.security_id, row.quantity)
+                    print(row.sid, row.quantity)
         print("Filtered rows from ", len(all_rows), "to", len(filtered_transactions))
         return filtered_transactions
