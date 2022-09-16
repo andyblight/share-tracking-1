@@ -33,14 +33,6 @@ class HoldingsUpdateDialog:
             self.frame, textvariable=self._records_added
         )
         self._added_value_label.grid(column=1, row=0)
-        # Updated label.
-        self._updated_label = ttk.Label(self.frame, text="Updated:")
-        self._updated_label.grid(column=0, row=1)
-        self._records_updated = tk.IntVar()
-        self._updated_value_label = ttk.Label(
-            self.frame, textvariable=self._records_updated
-        )
-        self._updated_value_label.grid(column=1, row=1)
         # Buttons.
         self.update_button = tk.Button(self.frame, text="Update", command=self.update)
         self.update_button.grid(column=0, row=2)
@@ -53,56 +45,50 @@ class HoldingsUpdateDialog:
         # row.set(0, date(2022, 5, 12), 1, 81, 4.75, 3.90, 5.95, 384.75)
         row.date_obj = transaction.date_obj
         row.sid = transaction.sid
-        row.quantity = transaction.quantity
+        if transaction.type == "S":
+            row.quantity -= transaction.quantity
+        else:
+            row.quantity += transaction.quantity
         row.total = transaction.total
         row.stop_loss = 0.0
         row.target = 0.0
         row.value = 0.0
+        # Set total quantity.
+        row.total_quantity = database.holdings.get_total_quantity(transaction.sid)
+        row.total_quantity += row.quantity
+        print(
+            "_w_r: t.q, r.q, r.tq",
+            transaction.quantity,
+            row.quantity,
+            row.total_quantity,
+        )
+        # Add new row.
         database.holdings.add_row(row)
 
-    def _new_record_needed(
-        self, holding: HoldingsRow, transaction: TransactionsRow
-    ) -> None:
-        needed = False
-        print("nrn: holding.sid", holding.sid, "transaction.sid:", transaction.sid)
-        if holding.sid == transaction.sid:
-            # Matched security ID so start checking further.
-            pass
-        return needed
-
     def update(self) -> None:
-        """
-        This function is tricky so I had to work what I wanted it to do first
-        before coding!  See notes.md for details.
-        """
         print("UpdateFromTransactionsDialog->update")
-        filtered_transactions = database.transactions.get_current_holdings()
-        most_recent_holdings = database.holdings.get_most_recent_rows()
+        all_transactions = database.transactions.get_all_rows()
+        all_holdings = database.holdings.get_all_rows()
         print(
             "num holdings: ",
-            len(most_recent_holdings),
+            len(all_holdings),
             "filtered transactions",
-            len(filtered_transactions),
+            len(all_transactions),
         )
-        # Add and update holdings records.
-        matched = False
-        for transaction in filtered_transactions:
-            transaction_quantity = transaction[0]
-            transaction_row = transaction[1]
-            for recent_holding in most_recent_holdings:
-                if recent_holding.sid == transaction_row.sid:
-                    # We have matched the security.
-                    matched = True
-                    # Does the most recent holding quantity match the
-                    # transaction quantity?
-                    if recent_holding.quantity != transaction_quantity:
-                        # No so write a new record.
-                        self._write_row(transaction_row)
-                        self._records_updated.set(self._records_updated.get() + 1)
-            if not matched:
-                # There was no holding record for the transaction so add a new one.
-                self._write_row(transaction_row)
-                self._records_added.set(self._records_added.get() + 1)
+        for holding in all_holdings:
+            for transaction in all_transactions:
+                if (
+                    (holding.sid == transaction.sid)
+                    and (holding.date_obj == transaction.date_obj)
+                    and (abs(holding.quantity) == abs(transaction.quantity))
+                ):
+                    print(
+                        "Matched", holding.date_obj, holding.sid, abs(holding.quantity)
+                    )
+                    # pass
+                else:
+                    self._write_row(transaction)
+                    self._records_added.set(self._records_added.get() + 1)
 
     def cancel(self):
         # Quit dialog doing nothing.

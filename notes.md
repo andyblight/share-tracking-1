@@ -63,3 +63,38 @@ This looks pretty simple so now I have the following things to do:
 2. Get a filtered list of holdings with only the most recent records.  This is
 probably best done using a new SQL query.
 3. Implement the rest of the code.
+
+### Iteration 3
+
+It was after I got most of iteration 2 working that I realised that I had
+missed the whole point!
+
+#### Description
+
+After the import, there should be exactly one matching holding record for each
+transaction record.
+
+The holding record matches the transaction record when:
+
+1. The security IDs match.
+2. The dates match.
+3. The absolute quantities match.  Holdings stores the quantity as positive for
+buy and negative for sell.
+
+Other holdings records are added for valuation and tracking purposes.
+
+The only things we have to be careful about is making sure that only new
+transactions are added to the holdings and existing holdings are not modified.
+
+The holdings table will hold more records than the transactions database, so
+we should iterate over the holdings once only.
+
+#### Pre-requisites
+
+All transaction records sorted in date order, oldest first.
+
+All holdings records sorted in date order, oldest first.
+
+#### Implementation
+
+This looks much simpler than before so I'm just going to write this.

@@ -11,6 +11,7 @@ class HoldingsRow:
         self.date_obj = datetime(1900, 1, 1)
         self.sid = 0.0
         self.quantity = 0.0
+        self.total_quantity = 0.0
         self.value = 0.0
         self.stop_loss = 0.0
         self.target = 0.0
@@ -22,6 +23,7 @@ class HoldingsRow:
         date_obj: datetime,
         sid: int,
         quantity: float,
+        total_quantity: float,
         value: float,
         stop_loss: float,
         target: float,
@@ -31,6 +33,7 @@ class HoldingsRow:
         self.date_obj = date_obj
         self.sid = sid
         self.quantity = quantity
+        self.total_quantity = total_quantity
         self.value = value
         self.stop_loss = stop_loss
         self.target = target
@@ -41,10 +44,11 @@ class HoldingsRow:
         self.date_obj = raw_row[1]
         self.sid = raw_row[2]
         self.quantity = raw_row[3]
-        self.value = raw_row[4]
-        self.stop_loss = raw_row[5]
-        self.target = raw_row[6]
-        self.total = raw_row[7]
+        self.total_quantity = raw_row[4]
+        self.value = raw_row[5]
+        self.stop_loss = raw_row[6]
+        self.target = raw_row[7]
+        self.total = raw_row[8]
 
 
 HoldingsRows = List[HoldingsRow]
@@ -77,6 +81,7 @@ class HoldingsTable:
         sql_query += " date timestamp NOT NULL,"
         sql_query += " sid INTEGER NOT NULL,"
         sql_query += " quantity REAL NOT NULL, "
+        sql_query += " total_quantity REAL NOT NULL, "
         sql_query += " value REAL NOT NULL, "
         sql_query += " stop_loss REAL NOT NULL,"
         sql_query += " target REAL NOT NULL, "
@@ -92,22 +97,23 @@ class HoldingsTable:
 
     def add_test_rows(self) -> None:
         row = HoldingsRow()
-        row.set(0, date(2022, 5, 12), 1, 81, 4.75, 3.90, 5.95, 384.75)
+        row.set(0, date(2022, 5, 12), 1, 81, 81, 4.75, 3.90, 5.95, 384.75)
         self.add_row(row)
-        row.set(0, date(2022, 5, 12), 2, 100, 2.00, 1.60, 3.25, 200.00)
+        row.set(0, date(2022, 5, 12), 2, 100, 100, 2.00, 1.60, 3.25, 200.00)
         self.add_row(row)
-        row.set(0, date(2022, 5, 19), 1, 81, 4.85, 3.95, 5.95, 392.85)
+        row.set(0, date(2022, 5, 19), 1, 81, 162, 4.85, 3.95, 5.95, 392.85)
         self.add_row(row)
 
     def add_row(self, row: HoldingsRow) -> None:
         cursor = self._get_cursor()
         sql_query = "INSERT INTO {} ".format(self._table_name)
-        sql_query += "(date, sid, quantity, value, "
+        sql_query += "(date, sid, quantity, total_quantity, value, "
         sql_query += "stop_loss, target, total) "
-        sql_query += "VALUES ('{}', {}, {}, {}, {}, {}, {})".format(
+        sql_query += "VALUES ('{}', {}, {}, {}, {}, {}, {}, {})".format(
             row.date_obj,
             row.sid,
             row.quantity,
+            row.total_quantity,
             row.value,
             row.stop_loss,
             row.target,
@@ -133,8 +139,22 @@ class HoldingsTable:
         return rows
 
     def get_all_rows(self) -> HoldingsRows:
-        sql_query = "SELECT * FROM " + self._table_name
+        sql_query = "SELECT * "
+        sql_query += "FROM {} ".format(self._table_name)
         rows = self._get_rows(sql_query)
+        return rows
+
+    def get_total_quantity(self, sid: int) -> HoldingsRows:
+        """
+        Gets the most recent record for the given security ID and returns the
+        value of the total_quantity field.
+        """
+        # Based on: https://www.sqlitetutorial.net/sqlite-max/
+        sql_query = "SELECT MAX(date), sid, quantity, total_quantity "
+        sql_query += "FROM {} ".format(self._table_name)
+        sql_query += "WHERE sid = {} ".format(sid)
+        rows = self._get_rows(sql_query)
+        print("gtq:", rows)
         return rows
 
     def get_most_recent_rows(self) -> HoldingsRows:

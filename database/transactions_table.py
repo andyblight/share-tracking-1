@@ -182,9 +182,7 @@ class TransactionsTable:
         # print("UpdateFromTransactionsDialog->_filter_transactions")
         all_rows = self.get_all_rows()
         # Sort by date.
-        date_ordered_rows = sorted(
-            all_rows, key=lambda x: x.date_obj
-        )
+        date_ordered_rows = sorted(all_rows, key=lambda x: x.date_obj)
         # Find out which shares have active holdings.
         # Store this info in a dictionary.
         security_summary = {}
@@ -210,9 +208,7 @@ class TransactionsTable:
             # print("")
         print("security_summary", security_summary)
         # Copy the latest rows from the dictionary into the list.
-        reverse_ordered_rows = sorted(
-            all_rows, key=lambda x: x.date_obj, reverse=True
-        )
+        reverse_ordered_rows = sorted(all_rows, key=lambda x: x.date_obj, reverse=True)
         filtered_transactions = []
         for row in reverse_ordered_rows:
             if row.sid in security_summary:
