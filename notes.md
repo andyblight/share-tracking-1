@@ -39,9 +39,9 @@ Case 2: Filtered transactions entry has one or more holding entry.
 
 #### Pre-requisites
 
-A filtered list of the transactions is available.  This list will have a
-single record of every security bought or sold with the current number of
-shares held including securities with 0 shares.
+A list of transaction records that has a single record of every security
+bought or sold with the current quantity of shares held including securities
+with 0 shares.  Each record returned is the last transaction for that security.
 
 A filtered list of the current holdings table is available.  This list will
 only contain the most up to date holdings records (nearest datetime.now()).
@@ -57,7 +57,7 @@ Case 2: Filtered transactions entry has a matching holding entry.
     If they are different, add a new record.
     Else do nothing.
 
-So now I have the following things to do:
+This looks pretty simple so now I have the following things to do:
 
 1. Change the filtered list of transactions to include zero quantity values.
 2. Get a filtered list of holdings with only the most recent records.  This is

@@ -117,10 +117,9 @@ class HoldingsTable:
         cursor.execute(sql_query)
         self._release_cursor()
 
-    def get_all_rows(self) -> HoldingsRows:
+    def _get_rows(self, sql_query) -> HoldingsRows:
         rows = []
         cursor = self._get_cursor()
-        sql_query = "SELECT * FROM " + self._table_name
         try:
             cursor.execute(sql_query)
             for raw_row in cursor:
@@ -131,4 +130,18 @@ class HoldingsTable:
         except sqlite3.OperationalError:
             print("ERROR: No table", self._table_name)
         self._release_cursor()
+        return rows
+
+    def get_all_rows(self) -> HoldingsRows:
+        sql_query = "SELECT * FROM " + self._table_name
+        rows = self._get_rows(sql_query)
+        return rows
+
+    def get_most_recent_rows(self) -> HoldingsRows:
+        # Based on: https://www.sqlitetutorial.net/sqlite-max/
+        sql_query = "SELECT uid, MAX(date), sid, quantity, value, "
+        sql_query += "stop_loss, target, total "
+        sql_query += "FROM {} ".format(self._table_name)
+        sql_query += "GROUP BY sid "
+        rows = self._get_rows(sql_query)
         return rows

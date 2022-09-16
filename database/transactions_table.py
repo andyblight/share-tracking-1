@@ -172,27 +172,30 @@ class TransactionsTable:
         self._release_cursor()
         return quantities
 
-    def get_filtered_rows(self) -> TransactionsRows:
+    def get_current_holdings(self) -> TransactionsRows:
         """
-        Filter all rows in table so that only securities with active shares are returned.
-        Active shares are those where the number bought exceeds the number sold.
+        Returns a list of transactions rows with the number of currently
+        held shares.
         A dictionary is used so the results are accessible by the unique security ID.
         Intended for use by holdings update dialog.
         """
         # print("UpdateFromTransactionsDialog->_filter_transactions")
         all_rows = self.get_all_rows()
-        # Sort using second element of each row.
-        date_ordered_rows = sorted(all_rows, key=lambda x: x.date_obj)
-        # Find out which shares have active holdings. Store this info in a dictionary.
-        active_securities = {}
+        # Sort by date.
+        date_ordered_rows = sorted(
+            all_rows, key=lambda x: x.date_obj
+        )
+        # Find out which shares have active holdings.
+        # Store this info in a dictionary.
+        security_summary = {}
         for row in date_ordered_rows:
             security_id = row.sid
             quantity = row.quantity
             if row.type == "S":
                 quantity = -quantity
-            if security_id in active_securities:
+            if security_id in security_summary:
                 # Update the quantity of securities held.
-                old_quantity = active_securities[security_id]
+                old_quantity = security_summary[security_id]
                 quantity = old_quantity + quantity
                 # print("Quantity old: {}, new: {}".format(old_quantity, new_quantity))
             if quantity < 0:
@@ -202,16 +205,20 @@ class TransactionsTable:
                     )
                 )
             else:
-                active_securities[security_id] = quantity
+                security_summary[security_id] = quantity
                 print("Entry set to {}, {}".format(security_id, quantity))
             # print("")
-        # Use the dictionary to copy active securities from date_ordered_rows.
+        print("security_summary", security_summary)
+        # Copy the latest rows from the dictionary into the list.
+        reverse_ordered_rows = sorted(
+            all_rows, key=lambda x: x.date_obj, reverse=True
+        )
         filtered_transactions = []
-        for row in date_ordered_rows:
-            security_id = row.sid
-            if security_id in active_securities:
-                if active_securities[security_id] > 0:
-                    filtered_transactions.append(row)
-                    print(row.sid, row.quantity)
-        print("Filtered rows from ", len(all_rows), "to", len(filtered_transactions))
+        for row in reverse_ordered_rows:
+            if row.sid in security_summary:
+                quantity = security_summary[row.sid]
+                if quantity >= 0.0:
+                    filtered_transactions.append((quantity, row))
+                    security_summary[row.sid] = -1.0
+                    print(quantity, row.sid, row.type, row.quantity)
         return filtered_transactions
