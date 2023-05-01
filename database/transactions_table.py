@@ -64,11 +64,22 @@ class TransactionsTable:
         cursor = self.connection.cursor()
         return cursor
 
+    def _execute(self, sql_query) -> None:
+        cursor = self._get_cursor()
+        try:
+            cursor.execute(sql_query)
+        except sqlite3.Error as er:
+            print("SQLite error: %s" % (" ".join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print("SQLite traceback: ")
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+
     def _release_cursor(self):
         self.connection.commit()
         self.connection.close()
 
-    def _create_transactions_type_table(self, cursor):
+    def _create_transactions_type_table(self):
         # Create Transactions Type table.
         sql_query = "CREATE TABLE IF NOT EXISTS "
         sql_query += self._type_table_name
@@ -91,9 +102,9 @@ class TransactionsTable:
         sql_query += self._type_table_name
         sql_query += " (Type, Label) VALUES ('S', 'Sell');"
         print(sql_query)
-        cursor.execute(sql_query)
+        self._execute(sql_query)
 
-    def _create_transactions_table(self, cursor):
+    def _create_transactions_table(self):
         # Create Transactions table.
         sql_query = "CREATE TABLE IF NOT EXISTS "
         sql_query += self._table_name
@@ -109,13 +120,12 @@ class TransactionsTable:
         sql_query += "total REAL NOT NULL"
         sql_query += ");"
         print(sql_query)
-        cursor.execute(sql_query)
+        self._execute(sql_query)
 
     def create(self):
-        cursor = self._get_cursor()
         # Create tables if not existing.
-        self._create_transactions_type_table(cursor)
-        self._create_transactions_table(cursor)
+        self._create_transactions_type_table()
+        self._create_transactions_table()
         self._release_cursor()
 
     def add_test_rows(self):
@@ -138,8 +148,7 @@ class TransactionsTable:
             row.total,
         )
         print("Adding row [", sql_query, "]")
-        cursor = self._get_cursor()
-        cursor.execute(sql_query)
+        self._execute(sql_query)
         self._release_cursor()
 
     def get_all_rows(self) -> TransactionsRows:
@@ -157,7 +166,7 @@ class TransactionsTable:
         self._release_cursor()
         return rows
 
-    def get_row(self, security_id) -> TransactionsRows:
+    def get_row(self, security_id) -> TransactionsRow:
         cursor = self._get_cursor()
         sql_query = "SELECT * FROM {} ".format(self._table_name)
         sql_query += "WHERE security_id = {}".format(security_id)
@@ -195,49 +204,15 @@ class TransactionsTable:
         self._release_cursor()
         return quantities
 
-    def get_current_holdings(self) -> TransactionsRows:
-        """
-        Returns a list of transactions rows with the number of currently
-        held shares.
-        A dictionary is used so the results are accessible by the unique security ID.
-        Intended for use by holdings update dialog.
-        """
-        # print("UpdateFromTransactionsDialog->_filter_transactions")
-        all_rows = self.get_all_rows()
-        # Sort by date.
-        date_ordered_rows = sorted(all_rows, key=lambda x: x.date_obj)
-        # Find out which shares have active holdings.
-        # Store this info in a dictionary.
-        security_summary = {}
-        for row in date_ordered_rows:
-            security_id = row.sid
-            quantity = row.quantity
-            if row.type == "S":
-                quantity = -quantity
-            if security_id in security_summary:
-                # Update the quantity of securities held.
-                old_quantity = security_summary[security_id]
-                quantity = old_quantity + quantity
-                # print("Quantity old: {}, new: {}".format(old_quantity, new_quantity))
-            if quantity < 0:
-                print(
-                    "ERROR: Security {} has negative quantity of {}".format(
-                        security_id, quantity
-                    )
-                )
-            else:
-                security_summary[security_id] = quantity
-                print("Entry set to {}, {}".format(security_id, quantity))
-            # print("")
-        print("security_summary", security_summary)
-        # Copy the latest rows from the dictionary into the list.
-        reverse_ordered_rows = sorted(all_rows, key=lambda x: x.date_obj, reverse=True)
-        filtered_transactions = []
-        for row in reverse_ordered_rows:
-            if row.sid in security_summary:
-                quantity = security_summary[row.sid]
-                if quantity >= 0.0:
-                    filtered_transactions.append((quantity, row))
-                    security_summary[row.sid] = -1.0
-                    print(quantity, row.sid, row.type, row.quantity)
-        return filtered_transactions
+    def get_most_recent(self, security_id) -> TransactionsRow:
+        cursor = self._get_cursor()
+        sql_query = "SELECT MAX(date), security_id FROM {} ".format(self._table_name)
+        try:
+            row = TransactionsRow()
+            cursor.execute(sql_query)
+            for raw_row in cursor:
+                row.set_from_raw(raw_row)
+        except sqlite3.OperationalError:
+            print("ERROR: No table", self._table_name)
+        self._release_cursor()
+        return row

@@ -70,11 +70,22 @@ class HoldingsTable:
         cursor = self.connection.cursor()
         return cursor
 
+    def _execute(self, sql_query) -> None:
+        cursor = self._get_cursor()
+        try:
+            cursor.execute(sql_query)
+        except sqlite3.Error as er:
+            print("SQLite error: %s" % (" ".join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print("SQLite traceback: ")
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+
     def _release_cursor(self) -> None:
         self.connection.commit()
         self.connection.close()
 
-    def _create_holdings_table(self, cursor) -> None:
+    def _create_holdings_table(self) -> None:
         # Create holdings table.
         sql_query = "CREATE TABLE IF NOT EXISTS "
         sql_query += self._table_name
@@ -90,7 +101,7 @@ class HoldingsTable:
         sql_query += " total REAL NOT NULL"
         sql_query += ");"
         print(sql_query)
-        cursor.execute(sql_query)
+        self._execute(cursor, sql_query)
 
     def create(self) -> None:
         cursor = self._get_cursor()
@@ -107,7 +118,6 @@ class HoldingsTable:
         self.add_row(row)
 
     def add_row(self, row: HoldingsRow) -> None:
-        cursor = self._get_cursor()
         sql_query = "INSERT INTO {} ".format(self._table_name)
         sql_query += "(date, sid, quantity, price, value, "
         sql_query += "stop_loss, target, total) "
@@ -122,7 +132,25 @@ class HoldingsTable:
             row.total,
         )
         print("Adding row [", sql_query, "]")
-        cursor.execute(sql_query)
+        self._execute(sql_query)
+        self._release_cursor()
+
+    def replace(self, row: HoldingsRow) -> None:
+        sql_query = "REPLACE INTO {} ".format(self._table_name)
+        sql_query += "(date, sid, quantity, price, value, "
+        sql_query += "stop_loss, target, total) "
+        sql_query += "VALUES ('{}', {}, {}, {}, {}, {}, {}, {})".format(
+            row.date_obj,
+            row.sid,
+            row.quantity,
+            row.price,
+            row.value,
+            row.stop_loss,
+            row.target,
+            row.total,
+        )
+        print("Replacing row [", sql_query, "]")
+        self._execute(sql_query)
         self._release_cursor()
 
     def delete_row(self, security_id) -> None:
@@ -130,7 +158,7 @@ class HoldingsTable:
         sql_query = "DELETE FROM {} ".format(self._table_name)
         sql_query += "WHERE sid = {}".format(security_id)
         print("Deleting row [", sql_query, "]")
-        cursor.execute(sql_query)
+        self._execute(cursor, sql_query)
         self._release_cursor()
 
     def _get_rows(self, sql_query) -> HoldingsRows:
@@ -143,8 +171,12 @@ class HoldingsTable:
                 row.set_from_raw(raw_row)
                 rows.append(row)
                 # print(row.date_obj)
-        except sqlite3.OperationalError:
-            print("ERROR: No table", self._table_name)
+        except sqlite3.Error as er:
+            print("SQLite error: %s" % (" ".join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print("SQLite traceback: ")
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
         self._release_cursor()
         return rows
 
@@ -153,6 +185,24 @@ class HoldingsTable:
         sql_query += "FROM {} ".format(self._table_name)
         rows = self._get_rows(sql_query)
         return rows
+
+    def get_row(self, security_id) -> HoldingsRow:
+        cursor = self._get_cursor()
+        sql_query = "SELECT * FROM {} ".format(self._table_name)
+        sql_query += "WHERE sid = {}".format(security_id)
+        try:
+            row = HoldingsRow()
+            cursor.execute(sql_query)
+            for raw_row in cursor:
+                row.set_from_raw(raw_row)
+        except sqlite3.Error as er:
+            print("SQLite error: %s" % (" ".join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print("SQLite traceback: ")
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+        self._release_cursor()
+        return row
 
     def get_total_quantity(self, sid: int) -> HoldingsRows:
         """
