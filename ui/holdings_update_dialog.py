@@ -65,30 +65,40 @@ class HoldingsUpdateDialog:
         # Add new row.
         database.holdings.add_row(row)
 
+    def __delete_holding(self, sid) -> None:
+        print("Deleting", sid)
+        # Does nothing if no holding.
+
+    def _update_holding(self, sid) -> None:
+        print("Updating", sid)
+
     def update(self) -> None:
         print("UpdateFromTransactionsDialog->update")
-        all_transactions = database.transactions.get_all_rows()
-        all_holdings = database.holdings.get_all_rows()
+        transactions_quantities = database.transactions.get_quantities()
+        holdings_quantities = database.holdings.get_quantities()
         print(
             "num holdings: ",
-            len(all_holdings),
-            "filtered transactions",
-            len(all_transactions),
+            len(holdings_quantities),
+            ", filtered transactions:",
+            len(transactions_quantities),
         )
-        for transaction in all_transactions:
-            for holding in all_holdings:
-                if (
-                    (holding.sid == transaction.sid)
-                    and (holding.date_obj == transaction.date_obj)
-                    and (abs(holding.quantity) == abs(transaction.quantity))
-                ):
-                    print(
-                        "Matched", holding.date_obj, holding.sid, abs(holding.quantity)
-                    )
-                    # pass
-                else:
-                    self._write_row(transaction)
-                    self._records_added.set(self._records_added.get() + 1)
+        print(
+            "holdings: ",
+            holdings_quantities,
+            ", \nfiltered transactions:",
+            transactions_quantities
+        )
+        for transaction in transactions_quantities:
+            if transaction[1] == 0:
+                self._delete_holding(transaction[0])
+            elif transaction[1] > 0:
+                for holding in holdings_quantities:
+                    if holding[0] == transaction[0]:
+                        print("Matched", holding[0])
+                        if holding[1] != transaction[1]:
+                            self._update_holding(holding[0])
+            else:
+                print("ERROR: transaction.quantity < 0:", transaction.quantity)
 
     def cancel(self):
         # Quit dialog doing nothing.

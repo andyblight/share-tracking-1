@@ -98,3 +98,61 @@ All holdings records sorted in date order, oldest first.
 #### Implementation
 
 This looks much simpler than before so I'm just going to write this.
+
+### Iteration 4
+
+Got it wrong again.  Seems to be more difficult to get my head around than it
+should be.
+
+#### Analysis
+
+These are the cases that we need to consider.
+
+1. A security is only present the transactions table.
+
+    **ACTION**: Add a new record holdings record for the security,
+2. A security is present in the holdings table and occurs one or more times in
+the transactions table.
+    1. The security appears exactly once in the transaction table.
+
+        **ACTION**: Do nothing as this is correct.
+    2. The security appears more than once in the transaction table.
+        1. The total quantity for a given security held is zero.
+
+            **ACTION**: Delete the holding record.
+        2. The total quantity for a given security held is greater than zero.
+            1. The quantity held is equal to the total quantity from the
+            transaction table.
+
+            **ACTION**: Do nothing as the holdings value is correct.
+            2. The quantity held is not equal to the total quantity from the
+            transaction table.
+
+            **ACTION**: Update the holding record with:
+                    1. The quantity total from the transactions table.
+                    2. The latest date from the transactions table.
+        3. The total quantity for a given security held is less than zero.
+
+            **ACTION**: This is an error case.  The transaction may have been
+            entered incorrectly so prompt user to check the transactions for
+            this security.
+3. A security is only present in the holdings table.
+    * ACTION: This is an error case.  This should never happen.  How do we
+    handle this error condition?
+
+#### Implementation
+
+```python
+transactions_quantities = database.transactions.get_quantities()
+holdings_quantities = database.holdings.get_quantities()
+for transaction in transactions_quantities:
+    if transaction.quantity == 0:
+        # Delete holding.
+    elif transaction.quantity > 0:
+        for holding in holdings_quantities:
+            if holding.sid == transaction.sid:
+                if holding.quantity != transaction.quantity:
+                    # Update holding.
+    else:
+        # Print error message.
+```

@@ -1,3 +1,5 @@
+import sys
+import traceback
 import sqlite3
 from datetime import date, datetime
 from typing import List
@@ -165,3 +167,24 @@ class HoldingsTable:
         sql_query += "GROUP BY sid "
         rows = self._get_rows(sql_query)
         return rows
+
+    def get_quantities(self):
+        """Return a list of tuples.
+        Each tuple contains (security id, quantity).
+        """
+        quantities = []
+        cursor = self._get_cursor()
+        sql_query = "SELECT sid, quantity "
+        sql_query += "FROM {} ".format(self._table_name)
+        sql_query += "ORDER BY sid ASC"
+        try:
+            cursor.execute(sql_query)
+            quantities = cursor.fetchall()
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+        self._release_cursor()
+        return quantities

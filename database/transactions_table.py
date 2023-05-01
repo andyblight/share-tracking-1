@@ -1,3 +1,5 @@
+import sys
+import traceback
 import sqlite3
 from datetime import date, datetime
 from typing import List
@@ -163,12 +165,19 @@ class TransactionsTable:
         """
         quantities = []
         cursor = self._get_cursor()
-        sql_query = "SELECT security_id, quantity FROM " + self._table_name
+        sql_query = "SELECT security_id, SUM(quantity) "
+        sql_query += "FROM {} ".format(self._table_name)
+        sql_query += "GROUP BY security_id "
+        sql_query += "ORDER BY security_id ASC"
         try:
             cursor.execute(sql_query)
             quantities = cursor.fetchall()
-        except sqlite3.OperationalError:
-            print("ERROR: No table", self._table_name)
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
         self._release_cursor()
         return quantities
 
