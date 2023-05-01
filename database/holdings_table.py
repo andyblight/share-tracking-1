@@ -13,7 +13,7 @@ class HoldingsRow:
         self.date_obj = datetime(1900, 1, 1)
         self.sid = 0.0
         self.quantity = 0.0
-        self.total_quantity = 0.0
+        self.price = 0.0
         self.value = 0.0
         self.stop_loss = 0.0
         self.target = 0.0
@@ -25,7 +25,7 @@ class HoldingsRow:
         date_obj: datetime,
         sid: int,
         quantity: float,
-        total_quantity: float,
+        price: float,
         value: float,
         stop_loss: float,
         target: float,
@@ -35,7 +35,7 @@ class HoldingsRow:
         self.date_obj = date_obj
         self.sid = sid
         self.quantity = quantity
-        self.total_quantity = total_quantity
+        self.price = price
         self.value = value
         self.stop_loss = stop_loss
         self.target = target
@@ -46,7 +46,7 @@ class HoldingsRow:
         self.date_obj = raw_row[1]
         self.sid = raw_row[2]
         self.quantity = raw_row[3]
-        self.total_quantity = raw_row[4]
+        self.price = raw_row[4]
         self.value = raw_row[5]
         self.stop_loss = raw_row[6]
         self.target = raw_row[7]
@@ -83,7 +83,7 @@ class HoldingsTable:
         sql_query += " date timestamp NOT NULL,"
         sql_query += " sid INTEGER NOT NULL,"
         sql_query += " quantity REAL NOT NULL, "
-        sql_query += " total_quantity REAL NOT NULL, "
+        sql_query += " price REAL NOT NULL, "
         sql_query += " value REAL NOT NULL, "
         sql_query += " stop_loss REAL NOT NULL,"
         sql_query += " target REAL NOT NULL, "
@@ -109,19 +109,27 @@ class HoldingsTable:
     def add_row(self, row: HoldingsRow) -> None:
         cursor = self._get_cursor()
         sql_query = "INSERT INTO {} ".format(self._table_name)
-        sql_query += "(date, sid, quantity, total_quantity, value, "
+        sql_query += "(date, sid, quantity, price, value, "
         sql_query += "stop_loss, target, total) "
         sql_query += "VALUES ('{}', {}, {}, {}, {}, {}, {}, {})".format(
             row.date_obj,
             row.sid,
             row.quantity,
-            row.total_quantity,
+            row.price,
             row.value,
             row.stop_loss,
             row.target,
             row.total,
         )
         print("Adding row [", sql_query, "]")
+        cursor.execute(sql_query)
+        self._release_cursor()
+
+    def delete_row(self, security_id) -> None:
+        cursor = self._get_cursor()
+        sql_query = "DELETE FROM {} ".format(self._table_name)
+        sql_query += "WHERE sid = {}".format(security_id)
+        print("Deleting row [", sql_query, "]")
         cursor.execute(sql_query)
         self._release_cursor()
 
@@ -181,9 +189,9 @@ class HoldingsTable:
             cursor.execute(sql_query)
             quantities = cursor.fetchall()
         except sqlite3.Error as er:
-            print('SQLite error: %s' % (' '.join(er.args)))
+            print("SQLite error: %s" % (" ".join(er.args)))
             print("Exception class is: ", er.__class__)
-            print('SQLite traceback: ')
+            print("SQLite traceback: ")
             exc_type, exc_value, exc_tb = sys.exc_info()
             print(traceback.format_exception(exc_type, exc_value, exc_tb))
         self._release_cursor()

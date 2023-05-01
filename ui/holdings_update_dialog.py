@@ -67,13 +67,22 @@ class HoldingsUpdateDialog:
 
     def _add_holding(self, sid):
         print("Adding new", sid)
-
-    def _delete_holding(self, sid) -> None:
-        print("Deleting", sid)
-        # Does nothing if no holding.
+        transaction_row = database.transactions.get_row(sid)
+        row = HoldingsRow()
+        row.date_obj = transaction_row.date_obj
+        row.sid = sid
+        row.quantity = transaction_row.quantity
+        row.price = transaction_row.price
+        row.value = row.price
+        row.stop_loss = row.price * 0.8
+        row.target = 0.0
+        row.total = row.quantity * row.value
+        database.holdings.add_row(row)
 
     def _update_holding(self, sid) -> None:
         print("Updating", sid)
+        # Get last transaction for SID
+        # Replace holding with matching SID values date and quantity.
 
     def update(self) -> None:
         print("UpdateFromTransactionsDialog->update")
@@ -93,7 +102,7 @@ class HoldingsUpdateDialog:
         # )
         for transaction in transactions_quantities:
             if transaction[1] == 0:
-                self._delete_holding(transaction[0])
+                database.holdings.delete_row(transaction[0])
             elif transaction[1] > 0:
                 matched = False
                 for holding in holdings_quantities:

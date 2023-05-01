@@ -157,6 +157,20 @@ class TransactionsTable:
         self._release_cursor()
         return rows
 
+    def get_row(self, security_id) -> TransactionsRows:
+        cursor = self._get_cursor()
+        sql_query = "SELECT * FROM {} ".format(self._table_name)
+        sql_query += "WHERE security_id = {}".format(security_id)
+        try:
+            row = TransactionsRow()
+            cursor.execute(sql_query)
+            for raw_row in cursor:
+                row.set_from_raw(raw_row)
+        except sqlite3.OperationalError:
+            print("ERROR: No table", self._table_name)
+        self._release_cursor()
+        return row
+
     def get_quantities(self):
         """Return a list of tuples.
         Each tuple contains (security id, quantity).
@@ -173,9 +187,9 @@ class TransactionsTable:
             cursor.execute(sql_query)
             quantities = cursor.fetchall()
         except sqlite3.Error as er:
-            print('SQLite error: %s' % (' '.join(er.args)))
+            print("SQLite error: %s" % (" ".join(er.args)))
             print("Exception class is: ", er.__class__)
-            print('SQLite traceback: ')
+            print("SQLite traceback: ")
             exc_type, exc_value, exc_tb = sys.exc_info()
             print(traceback.format_exception(exc_type, exc_value, exc_tb))
         self._release_cursor()

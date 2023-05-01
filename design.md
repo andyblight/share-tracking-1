@@ -61,8 +61,7 @@ We end up with a table that looks like this:
 | Unique ID | Integer | Unique ID for each holding record. |
 | Date | Date | The date of the update. |
 | Security ID | Integer | Link to the security unique ID. |
-| Quantity | Real | The number of units from a transaction. |
-| TotalQuantity | Real | The number of units held.|
+| Quantity | Real | The total number of units held. |
 | Price | Real | The price paid per unit. |
 | Value | Real | The valuation for each unit. |
 | Gain | Real | Change in value since purchased. |

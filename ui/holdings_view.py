@@ -56,6 +56,7 @@ class HoldingsTableView(ttk.Frame):
             "date",
             "sid",
             "quantity",
+            "price",
             "value",
             "stop_loss",
             "target",
@@ -72,6 +73,8 @@ class HoldingsTableView(ttk.Frame):
         self.tree.column("sid", width=40, anchor=tk.E)
         self.tree.heading("quantity", text="Quantity")
         self.tree.column("quantity", width=80, anchor=tk.E)
+        self.tree.heading("price", text="Price")
+        self.tree.column("price", width=70, anchor=tk.E)
         self.tree.heading("value", text="Value")
         self.tree.column("value", width=70, anchor=tk.E)
         self.tree.heading("stop_loss", text="S/L")
@@ -103,6 +106,7 @@ class HoldingsTableView(ttk.Frame):
             treeview_row.append(row.date_obj)
             treeview_row.append(row.sid)
             treeview_row.append(row.quantity)
+            treeview_row.append(float_to_currency(row.price))
             treeview_row.append(float_to_currency(row.value))
             treeview_row.append(float_to_currency(row.stop_loss))
             treeview_row.append(float_to_currency(row.target))
