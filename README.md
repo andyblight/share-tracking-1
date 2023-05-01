@@ -87,7 +87,8 @@ We end up with a table that looks like this:
 | Unique ID | Integer | Unique ID for each holding record. |
 | Date | Date | The date of the update. |
 | Security ID | Integer | Link to the security unique ID. |
-| Quantity | Real | The number of units held.|
+| Quantity | Real | The number of units from a transaction. |
+| TotalQuantity | Real | The number of units held.|
 | Price | Real | The price paid per unit. |
 | Value | Real | The valuation for each unit. |
 | Gain | Real | Change in value since purchased. |
@@ -101,6 +102,24 @@ but have more fields for stop loss and target values.
 
 The valuation wil be based on share price data that is downloaded as a file.
 For now, this will be a file from EODData.com.
+
+## Reports
+
+The objective of this project is to give me better information about the
+securities I have purchased so that I can make better financial decisions.  To this end, I need the following reports.
+
+### Security value over time
+
+For each security held, I want to be able to see how the security is
+progressing.  To do this, I need this information:
+
+* Purchase price.
+* Price at the end of each week.
+* A graph of progress of each security would be ideal.
+
+### TODO
+
+TODO
 
 ## Future plans
 

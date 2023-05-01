@@ -75,8 +75,8 @@ class HoldingsUpdateDialog:
             "filtered transactions",
             len(all_transactions),
         )
-        for holding in all_holdings:
-            for transaction in all_transactions:
+        for transaction in all_transactions:
+            for holding in all_holdings:
                 if (
                     (holding.sid == transaction.sid)
                     and (holding.date_obj == transaction.date_obj)
