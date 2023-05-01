@@ -65,7 +65,10 @@ class HoldingsUpdateDialog:
         # Add new row.
         database.holdings.add_row(row)
 
-    def __delete_holding(self, sid) -> None:
+    def _add_holding(self, sid):
+        print("Adding new", sid)
+
+    def _delete_holding(self, sid) -> None:
         print("Deleting", sid)
         # Does nothing if no holding.
 
@@ -82,21 +85,25 @@ class HoldingsUpdateDialog:
             ", filtered transactions:",
             len(transactions_quantities),
         )
-        print(
-            "holdings: ",
-            holdings_quantities,
-            ", \nfiltered transactions:",
-            transactions_quantities
-        )
+        # print(
+        #     "holdings: ",
+        #     holdings_quantities,
+        #     ", \nfiltered transactions:",
+        #     transactions_quantities,
+        # )
         for transaction in transactions_quantities:
             if transaction[1] == 0:
                 self._delete_holding(transaction[0])
             elif transaction[1] > 0:
+                matched = False
                 for holding in holdings_quantities:
                     if holding[0] == transaction[0]:
                         print("Matched", holding[0])
+                        matched = True
                         if holding[1] != transaction[1]:
                             self._update_holding(holding[0])
+                if not matched:
+                    self._add_holding(transaction[0])
             else:
                 print("ERROR: transaction.quantity < 0:", transaction.quantity)
 
