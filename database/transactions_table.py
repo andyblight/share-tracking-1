@@ -39,7 +39,9 @@ class TransactionsRow:
 
     def set_from_raw(self, raw_row) -> None:
         self.uid = raw_row[0]
-        self.date_obj = raw_row[1]
+        print("tt sfr: raw: '{}'".format(raw_row[1]))
+        self.date_obj.strptime(raw_row[1], "%Y-%m-%d %H:%M:%S")
+        print("tt sfr: date_obj: ", self.date_obj)
         self.type = raw_row[2]
         self.sid = raw_row[3]
         self.quantity = raw_row[4]

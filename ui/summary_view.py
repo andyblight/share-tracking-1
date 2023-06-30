@@ -64,7 +64,8 @@ class SummaryTableView(ttk.Frame):
         for row in all_rows:
             # Convert row into correct format for treeview.
             treeview_row = []
-            treeview_row.append(row.date_obj)
+            date_string = "{:%x}".format(row.date_obj)
+            treeview_row.append(date_string)
             treeview_row.append(row.security_name)
             treeview_row.append(row.quantity)
             treeview_row.append(float_to_currency(row.price))
