@@ -11,7 +11,7 @@ from ui.user_settings import UserSettings
 
 class SecuritiesImportDialog:
     def __init__(self, parent):
-        self.parent = parent
+        self._parent = parent
 
     def import_file(self):
         # Import the CSV data into the transactions table.
@@ -25,7 +25,7 @@ class SecuritiesImportDialog:
         filetypes = (("Text files", "*.txt"), ("All files", "*.*"))
         initial_dir = UserSettings().get_import_path()
         filename = filedialog.askopenfilename(
-            parent=self.parent,
+            parent=self._parent,
             title="Open a file",
             initialdir=initial_dir,
             filetypes=filetypes,

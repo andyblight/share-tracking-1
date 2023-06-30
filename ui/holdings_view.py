@@ -56,6 +56,7 @@ class HoldingsTableView(ttk.Frame):
             "date",
             "sid",
             "quantity",
+            "price",
             "value",
             "stop_loss",
             "target",
@@ -67,19 +68,21 @@ class HoldingsTableView(ttk.Frame):
         self.tree.heading("uid", text="UID")
         self.tree.column("uid", width=40, anchor=tk.E)
         self.tree.heading("date", text="Date")
-        self.tree.column("date", width=100, anchor=tk.E)
+        self.tree.column("date", width=160, anchor=tk.E)
         self.tree.heading("sid", text="SID")
         self.tree.column("sid", width=40, anchor=tk.E)
         self.tree.heading("quantity", text="Quantity")
-        self.tree.column("quantity", width=100, anchor=tk.E)
+        self.tree.column("quantity", width=80, anchor=tk.E)
+        self.tree.heading("price", text="Price")
+        self.tree.column("price", width=70, anchor=tk.E)
         self.tree.heading("value", text="Value")
-        self.tree.column("value", width=80, anchor=tk.E)
+        self.tree.column("value", width=70, anchor=tk.E)
         self.tree.heading("stop_loss", text="S/L")
-        self.tree.column("stop_loss", width=80, anchor=tk.E)
-        self.tree.heading("target", text="target")
-        self.tree.column("target", width=80, anchor=tk.E)
+        self.tree.column("stop_loss", width=70, anchor=tk.E)
+        self.tree.heading("target", text="Target")
+        self.tree.column("target", width=70, anchor=tk.E)
         self.tree.heading("total", text="Total")
-        self.tree.column("total", width=120, anchor=tk.E)
+        self.tree.column("total", width=90, anchor=tk.E)
         # Allow scrolling.
         self.ytree_scroll = ttk.Scrollbar(
             master=self, orient=tk.VERTICAL, command=self.tree.yview
@@ -97,16 +100,16 @@ class HoldingsTableView(ttk.Frame):
             self.tree.delete(item)
         all_rows = database.holdings.get_all_rows()
         for row in all_rows:
-            # print(row)
             # Convert row into correct format for treeview.
-            row_max_index = len(row)
             treeview_row = []
-            for i in range(0, row_max_index):
-                # Convert currency values to strings so they look right.
-                if i in (3, 4, 5, 6, 7):
-                    currency_str = float_to_currency(row[i])
-                    treeview_row.append(currency_str)
-                else:
-                    treeview_row.append(row[i])
-            # print(treeview_row)
+            treeview_row.append(row.uid)
+            treeview_row.append(row.date_obj)
+            treeview_row.append(row.sid)
+            treeview_row.append(row.quantity)
+            treeview_row.append(float_to_currency(row.price))
+            treeview_row.append(float_to_currency(row.value))
+            treeview_row.append(float_to_currency(row.stop_loss))
+            treeview_row.append(float_to_currency(row.target))
+            treeview_row.append(float_to_currency(row.total))
+            # Add new row to treeview.
             self.tree.insert("", tk.END, values=treeview_row)

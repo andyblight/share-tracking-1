@@ -47,16 +47,16 @@ class SelectSecurityDialog:
         return self._security_id
 
     def cancel(self) -> None:
-        """ Quit dialog doing nothing. """
+        """Quit dialog doing nothing."""
         self.dialog.destroy()
 
     def ok(self) -> None:
-        """ Set the selected security Id for later use. """
+        """Set the selected security Id for later use."""
         self._security_id = self.securities_table_view.get_selected_uid()
         print("SSD ok set id", self._security_id)
         self.dialog.destroy()
 
     def wait(self) -> None:
-        """ Get the dialog to the top of the pile of windows and wait until closed. """
+        """Get the dialog to the top of the pile of windows and wait until closed."""
         self.dialog.attributes("-topmost", 1)
         self.dialog.wait_window()

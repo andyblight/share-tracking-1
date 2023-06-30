@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from datetime import datetime
 from database.main import database
-from database.transactions_table import TransactionsRow
 from ui.utils import float_to_currency
 
 
@@ -20,7 +18,7 @@ class TransactionsTableView(ttk.Frame):
             "uid",
             "date",
             "type",
-            "security_id",
+            "sid",
             "quantity",
             "price",
             "costs",
@@ -29,22 +27,22 @@ class TransactionsTableView(ttk.Frame):
         self.tree = ttk.Treeview(self, columns=columns, show="headings")
         self.tree.grid(column=0, row=0)
         # Define headings
-        self.tree.heading("uid", text="UID", anchor=tk.E)
-        self.tree.column("uid", width=40)
+        self.tree.heading("uid", text="UID")
+        self.tree.column("uid", width=40, anchor=tk.E)
         self.tree.heading("date", text="Date")
-        self.tree.column("date", width=120)
+        self.tree.column("date", width=160, anchor=tk.E)
         self.tree.heading("type", text="B/S")
         self.tree.column("type", width=40)
-        self.tree.heading("security_id", text="SID")
-        self.tree.column("security_id", width=40, anchor=tk.E)
+        self.tree.heading("sid", text="SID")
+        self.tree.column("sid", width=40, anchor=tk.E)
         self.tree.heading("quantity", text="Quantity")
         self.tree.column("quantity", width=80, anchor=tk.E)
         self.tree.heading("price", text="Price")
-        self.tree.column("price", width=80, anchor=tk.E)
-        self.tree.heading("costs", text="costs")
-        self.tree.column("costs", width=80, anchor=tk.E)
+        self.tree.column("price", width=70, anchor=tk.E)
+        self.tree.heading("costs", text="Costs")
+        self.tree.column("costs", width=70, anchor=tk.E)
         self.tree.heading("total", text="Total")
-        self.tree.column("total", width=80, anchor=tk.E)
+        self.tree.column("total", width=90, anchor=tk.E)
         # Add scroll bars.
         self.ytree_scroll = ttk.Scrollbar(
             master=self, orient=tk.VERTICAL, command=self.tree.yview
@@ -69,7 +67,7 @@ class TransactionsTableView(ttk.Frame):
             treeview_row.append(row.uid)
             treeview_row.append(row.date_obj)
             treeview_row.append(row.type)
-            treeview_row.append(row.security_id)
+            treeview_row.append(row.sid)
             currency_str = float_to_currency(row.quantity)
             treeview_row.append(currency_str)
             currency_str = float_to_currency(row.price)

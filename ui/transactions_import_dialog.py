@@ -89,7 +89,7 @@ class TransactionsImportDialog:
         # 6|fees|REAL|1||0
         # 7|tax|REAL|1||0
         # 8|total|REAL|1||0
-
+        #
         # Copy and convert data from the Excel DF.
         start_index = 3
         end_index = excel_df.index[-9]
