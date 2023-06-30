@@ -32,7 +32,7 @@ class SummaryTableView(ttk.Frame):
         self.tree.heading("date", text="Date")
         self.tree.column("date", width=160, anchor=tk.E)
         self.tree.heading("name", text="Security name")
-        self.tree.column("name", width=400, anchor=tk.E)
+        self.tree.column("name", width=400, anchor=tk.W)
         self.tree.heading("quantity", text="Quantity")
         self.tree.column("quantity", width=80, anchor=tk.E)
         self.tree.heading("price", text="Price")
@@ -60,12 +60,12 @@ class SummaryTableView(ttk.Frame):
     def show(self):
         for item in self.tree.get_children():
             self.tree.delete(item)
-        all_rows = database.holdings.get_all_rows()
+        all_rows = database.summary.get_all_rows()
         for row in all_rows:
             # Convert row into correct format for treeview.
             treeview_row = []
             treeview_row.append(row.date_obj)
-            treeview_row.append(row.sid)
+            treeview_row.append(row.security_name)
             treeview_row.append(row.quantity)
             treeview_row.append(float_to_currency(row.price))
             treeview_row.append(float_to_currency(row.value))

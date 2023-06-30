@@ -36,14 +36,12 @@ class SharesDatabase:
         print("SharesDB.create")
         self.holdings.create()
         self.securities.create()
-        self.summary.create()
         self.transactions.create()
 
     def add_test_rows(self):
         print("SharesDB.add test rows")
         self.holdings.add_test_rows()
         self.securities.add_test_rows()
-        self.summary.add_test_rows()
         self.transactions.add_test_rows()
 
     def _dump_table_info(self):
