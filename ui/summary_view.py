@@ -17,9 +17,8 @@ class SummaryTableView(ttk.Frame):
         self.grid(column=0, row=0)
         # Create treeview.
         columns = (
-            "uid",
             "date",
-            "sid",
+            "name",
             "quantity",
             "price",
             "value",
@@ -30,12 +29,10 @@ class SummaryTableView(ttk.Frame):
         self.tree = ttk.Treeview(self, columns=columns, show="headings")
         self.tree.grid(column=0, row=0)
         # Define headings
-        self.tree.heading("uid", text="UID")
-        self.tree.column("uid", width=40, anchor=tk.E)
         self.tree.heading("date", text="Date")
         self.tree.column("date", width=160, anchor=tk.E)
-        self.tree.heading("sid", text="SID")
-        self.tree.column("sid", width=40, anchor=tk.E)
+        self.tree.heading("name", text="Security name")
+        self.tree.column("name", width=400, anchor=tk.E)
         self.tree.heading("quantity", text="Quantity")
         self.tree.column("quantity", width=80, anchor=tk.E)
         self.tree.heading("price", text="Price")
@@ -67,7 +64,6 @@ class SummaryTableView(ttk.Frame):
         for row in all_rows:
             # Convert row into correct format for treeview.
             treeview_row = []
-            treeview_row.append(row.uid)
             treeview_row.append(row.date_obj)
             treeview_row.append(row.sid)
             treeview_row.append(row.quantity)
