@@ -3,6 +3,7 @@ import traceback
 import sqlite3
 from datetime import date, datetime
 from typing import List
+from database.utils import str_to_datetime
 
 
 class TransactionsRow:
@@ -39,7 +40,7 @@ class TransactionsRow:
 
     def set_from_raw(self, raw_row) -> None:
         self.uid = raw_row[0]
-        self.date_obj = raw_row[1]
+        self.date_obj = str_to_datetime(raw_row[1])
         self.type = raw_row[2]
         self.sid = raw_row[3]
         self.quantity = raw_row[4]
@@ -86,18 +87,18 @@ class TransactionsTable:
         sql_query += " (Type CHAR(1) PRIMARY KEY, "
         sql_query += " Label TEXT);"
         print(sql_query)
-        cursor.execute(sql_query)
+        self._execute(sql_query)
         # Insert the values.
         sql_query = "INSERT INTO "
         sql_query += self._type_table_name
         sql_query += " (Type, Label) VALUES ('B', 'Buy');"
         print(sql_query)
-        cursor.execute(sql_query)
+        self._execute(sql_query)
         sql_query = "INSERT INTO "
         sql_query += self._type_table_name
         sql_query += " (Type, Label) VALUES ('N', 'None');"
         print(sql_query)
-        cursor.execute(sql_query)
+        self._execute(sql_query)
         sql_query = "INSERT INTO "
         sql_query += self._type_table_name
         sql_query += " (Type, Label) VALUES ('S', 'Sell');"

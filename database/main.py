@@ -6,6 +6,7 @@ from pathlib import Path
 
 from database.holdings_table import HoldingsTable
 from database.securities_table import SecuritiesTable
+from database.summary_table import SummaryTable
 from database.transactions_table import TransactionsTable
 from ui.user_settings import UserSettings
 
@@ -20,6 +21,7 @@ class SharesDatabase:
         # TODO Add tables owned by this class.
         self.holdings = HoldingsTable(self._file_name)
         self.securities = SecuritiesTable(self._file_name)
+        self.summary = SummaryTable(self._file_name)
         self.transactions = TransactionsTable(self._file_name)
 
     def get_file_name(self):

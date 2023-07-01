@@ -3,7 +3,7 @@ import traceback
 import sqlite3
 from datetime import date, datetime
 from typing import List
-
+from database.utils import str_to_datetime
 
 class HoldingsRow:
     """Used to name the row values."""
@@ -43,7 +43,7 @@ class HoldingsRow:
 
     def set_from_raw(self, raw_row) -> None:
         self.uid = raw_row[0]
-        self.date_obj = raw_row[1]
+        self.date_obj = str_to_datetime(raw_row[1])
         self.sid = raw_row[2]
         self.quantity = raw_row[3]
         self.price = raw_row[4]
@@ -101,7 +101,7 @@ class HoldingsTable:
         sql_query += " total REAL NOT NULL"
         sql_query += ");"
         print(sql_query)
-        self._execute(cursor, sql_query)
+        self._execute(sql_query)
 
     def create(self) -> None:
         cursor = self._get_cursor()

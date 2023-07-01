@@ -45,6 +45,19 @@ class FileMenu(tk.Menu):
             database.add_test_rows()
 
 
+class SummaryMenu(tk.Menu):
+    def __init__(self, parent, menu_bar, tabbed_frame):
+        self.parent = parent
+        self.tabbed_frame = tabbed_frame
+        self.menu_file = tk.Menu(menu_bar)
+        self.menu_file.add_command(label="Show", command=self.show)
+        menu_bar.add_cascade(label="Summary", menu=self.menu_file)
+
+    def show(self):
+        print("Summary->Show")
+        self.tabbed_frame.show_summary()
+
+
 class HoldingsMenu(tk.Menu):
     def __init__(self, parent, menu_bar, tabbed_frame):
         self.parent = parent
@@ -139,6 +152,7 @@ class MenuBar:
         self.menu_bar = tk.Menu(parent)
         # File menu
         self.menu_file = FileMenu(self.parent, self.menu_bar)
+        self.menu_holdings = SummaryMenu(self.parent, self.menu_bar, self.tabbed_frame)
         self.menu_holdings = HoldingsMenu(self.parent, self.menu_bar, self.tabbed_frame)
         self.menu_securities = SecuritiesMenu(
             self.parent, self.menu_bar, self.tabbed_frame
