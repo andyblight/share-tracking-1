@@ -3,6 +3,7 @@ import traceback
 import sqlite3
 from datetime import date, datetime
 from typing import List
+from database.utils import str_to_datetime
 
 
 class TransactionsRow:
@@ -51,7 +52,7 @@ class TransactionsRow:
 
     def set_from_raw(self, raw_row) -> None:
         self.uid = raw_row[0]
-        self._to_datetime(raw_row[1])
+        self.date_obj.fromisoformat(raw_row[1])
         self.type = raw_row[2]
         self.sid = raw_row[3]
         self.quantity = raw_row[4]
