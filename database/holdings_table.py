@@ -3,7 +3,7 @@ import traceback
 import sqlite3
 from datetime import date, datetime
 from typing import List
-
+from database.utils import str_to_datetime
 
 class HoldingsRow:
     """Used to name the row values."""
@@ -41,21 +41,9 @@ class HoldingsRow:
         self.target = target
         self.total = total
 
-    def _to_datetime(self, raw) -> None:
-        # Raw is like this '2022-07-25 00:00:00'
-        # This should work but fails...
-        # self.date_obj.strptime(raw, "%Y-%m-%d %H:%M:%S")
-        day_str = raw[8:10]
-        month_str = raw[5:7]
-        year_str = raw[0:4]
-        year = int(year_str)
-        month = int(month_str)
-        day = int(day_str)
-        self.date_obj = datetime(year, month, day)
-
     def set_from_raw(self, raw_row) -> None:
         self.uid = raw_row[0]
-        self._to_datetime(raw_row[1])
+        self.date_obj = str_to_datetime(raw_row[1])
         self.sid = raw_row[2]
         self.quantity = raw_row[3]
         self.price = raw_row[4]
@@ -113,7 +101,7 @@ class HoldingsTable:
         sql_query += " total REAL NOT NULL"
         sql_query += ");"
         print(sql_query)
-        self._execute(cursor, sql_query)
+        self._execute(sql_query)
 
     def create(self) -> None:
         cursor = self._get_cursor()

@@ -38,21 +38,9 @@ class TransactionsRow:
         self.costs = costs
         self.total = total
 
-    def _to_datetime(self, raw) -> None:
-        # Raw is like this '2022-07-25 00:00:00'
-        # This should work but fails...
-        # self.date_obj.strptime(raw, "%Y-%m-%d %H:%M:%S")
-        day_str = raw[8:10]
-        month_str = raw[5:7]
-        year_str = raw[0:4]
-        year = int(year_str)
-        month = int(month_str)
-        day = int(day_str)
-        self.date_obj = datetime(year, month, day)
-
     def set_from_raw(self, raw_row) -> None:
         self.uid = raw_row[0]
-        self.date_obj.fromisoformat(raw_row[1])
+        self.date_obj = str_to_datetime(raw_row[1])
         self.type = raw_row[2]
         self.sid = raw_row[3]
         self.quantity = raw_row[4]
@@ -99,18 +87,18 @@ class TransactionsTable:
         sql_query += " (Type CHAR(1) PRIMARY KEY, "
         sql_query += " Label TEXT);"
         print(sql_query)
-        cursor.execute(sql_query)
+        self._execute(sql_query)
         # Insert the values.
         sql_query = "INSERT INTO "
         sql_query += self._type_table_name
         sql_query += " (Type, Label) VALUES ('B', 'Buy');"
         print(sql_query)
-        cursor.execute(sql_query)
+        self._execute(sql_query)
         sql_query = "INSERT INTO "
         sql_query += self._type_table_name
         sql_query += " (Type, Label) VALUES ('N', 'None');"
         print(sql_query)
-        cursor.execute(sql_query)
+        self._execute(sql_query)
         sql_query = "INSERT INTO "
         sql_query += self._type_table_name
         sql_query += " (Type, Label) VALUES ('S', 'Sell');"

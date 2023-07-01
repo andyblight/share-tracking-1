@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from babel.dates import format_date
 
 from database.main import database
 from ui.utils import float_to_currency
@@ -68,7 +69,7 @@ class HoldingsTableView(ttk.Frame):
         self.tree.heading("uid", text="UID")
         self.tree.column("uid", width=40, anchor=tk.E)
         self.tree.heading("date", text="Date")
-        self.tree.column("date", width=160, anchor=tk.E)
+        self.tree.column("date", width=90, anchor=tk.E)
         self.tree.heading("sid", text="SID")
         self.tree.column("sid", width=40, anchor=tk.E)
         self.tree.heading("quantity", text="Quantity")
@@ -103,7 +104,9 @@ class HoldingsTableView(ttk.Frame):
             # Convert row into correct format for treeview.
             treeview_row = []
             treeview_row.append(row.uid)
-            treeview_row.append(row.date_obj)
+            # FIXME Hardcoded date format.
+            date_string = format_date(row.date_obj, format="short", locale="en_GB")
+            treeview_row.append(date_string)
             treeview_row.append(row.sid)
             treeview_row.append(row.quantity)
             treeview_row.append(float_to_currency(row.price))
