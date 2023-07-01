@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+from babel.dates import format_date
 from database.main import database
 from ui.utils import float_to_currency
 
@@ -64,7 +65,8 @@ class SummaryTableView(ttk.Frame):
         for row in all_rows:
             # Convert row into correct format for treeview.
             treeview_row = []
-            date_string = "{:%x}".format(row.date_obj)
+            # FIXME Hardcoded date format.
+            date_string = format_date(row.date_obj, locale="en_GB")
             treeview_row.append(date_string)
             treeview_row.append(row.security_name)
             treeview_row.append(row.quantity)

@@ -38,11 +38,26 @@ class SummaryRow:
         self.target = target
         self.total = total
 
-    def set_from_raw(self, raw_row) -> None:
+    def _to_datetime(self, raw) -> None:
         # Raw is like this '2022-07-25 00:00:00'
-        print("sfr: raw: '{}'".format(raw_row[0]))
-        self.date_obj.strptime(raw_row[0], "%Y-%m-%d %H:%M:%S")
-        print("sfr: date_obj: ", self.date_obj)
+        # print("tt sfr: raw: '{}'".format(raw))
+        # print("tt sfr: raw type : ", type(raw))
+        # self.date_obj.strptime(raw, "%Y-%m-%d %H:%M:%S")
+        day_str = raw[8:10]
+        # print("tt sfr: strings d: ", raw, day_str)
+        month_str = raw[5:7]
+        # print("tt sfr: strings m: ", raw, month_str)
+        year_str = raw[0:4]
+        # print("tt sfr: strings y: ", raw, year_str)
+        year = int(year_str)
+        month = int(month_str)
+        day = int(day_str)
+        # print("tt sfr: y m d: ", year, month, day)
+        self.date_obj = datetime(year, month, day)
+        # print("tt sfr: date_obj: ", self.date_obj)
+
+    def set_from_raw(self, raw_row) -> None:
+        self._to_datetime(raw_row[0])
         self.security_name = raw_row[1]
         self.quantity = raw_row[2]
         self.price = raw_row[3]
