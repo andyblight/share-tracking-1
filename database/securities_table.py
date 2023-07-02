@@ -100,7 +100,28 @@ class SecuritiesTable:
                     rows = self._query_security(query_str)
         return (accurate_match, rows)
 
-    def _get_ticker(self, security_description):
-        # TODO Find ticker from security name.
-        ticker = "TEMP.L"
-        return ticker
+    def _query_security_ticker(self, ticker):
+        ticker_upper = ticker.upper()
+        # Find existing security.
+        rows = []
+        cursor = self._get_cursor()
+        sql_query = "SELECT * FROM " + self._table_name
+        sql_query += " WHERE ticker LIKE '"
+        sql_query += ticker_upper
+        sql_query += "'"
+        print(sql_query)
+        try:
+            cursor.execute(sql_query)
+            rows = cursor.fetchall()
+        except sqlite3.OperationalError:
+            print("ERROR: No table", self._table_name)
+        self._connection.close()
+        return rows
+
+    def get_security_from_ticker(self, ticker):
+        rows = self._query_security_ticker(ticker)
+        if len(rows) < 1:
+            # No match so try first two chars only.
+            query_str = ticker[:2] + "%"
+            rows = self._query_security_ticker(query_str)
+        return rows

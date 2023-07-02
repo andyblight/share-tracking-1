@@ -49,10 +49,10 @@ def _extract_ii_description(string) -> tuple[bool, float, float]:
 
 
 class TransactionsImportDialog:
-    def __init__(self, parent):
+    def __init__(self, parent) -> None:
         self.parent = parent
 
-    def import_file(self):
+    def import_file(self) -> None:
         filename = self._get_filename()
         print("Importing transactions file", filename)
         import_source = "II"
@@ -63,7 +63,7 @@ class TransactionsImportDialog:
             excel_df = pandas.read_excel(filename)
             self._write_csd_df_to_db(excel_df)
 
-    def _get_filename(self):
+    def _get_filename(self) -> str:
         # Open file.
         filetypes = (
             ("CSV files", "*.csv"),
@@ -79,7 +79,7 @@ class TransactionsImportDialog:
         )
         return filename
 
-    def _get_security_id(self, security_name):
+    def _get_security_id(self, security_name) -> int:
         security_id = 0
         (accurate_match, rows) = database.securities.get_security(security_name)
         num_ids = len(rows)
@@ -114,10 +114,9 @@ class TransactionsImportDialog:
                 )
                 print(rows)
                 print("")
-
         return security_id
 
-    def _write_csd_df_to_db(self, excel_df):
+    def _write_csd_df_to_db(self, excel_df) -> None:
         # The rows from the spreadsheet look like this:
         #
         # Header row: Pandas(Index=2, _1='Date', _2='Description',
@@ -177,6 +176,40 @@ class TransactionsImportDialog:
                 # Ignore this row.
                 pass
 
+    def _get_security_id_from_symbol(self, symbol) -> int:
+        security_id = 0
+        rows = database.securities.get_security_from_ticker(symbol)
+        num_ids = len(rows)
+        if num_ids == 1:
+            security_id = rows[0][0]
+            print("DEBUG: Exact match for security: ", symbol, " is ", rows[0][2])
+        elif num_ids > 1:
+            print("DEBUG: Choosing security id from name: ", symbol)
+            security_dialog = SelectSecurityDialog(self.parent)
+            security_dialog.set_description(symbol)
+            security_dialog.set_rows(rows)
+            security_dialog.wait()
+            security_id = security_dialog.get_security_id()
+            print("DEBUG: Returned security_id: ", security_id)
+        # If not found, then try adding the security manually.
+        if security_id <= 0:
+            # No security ID so manually add a new security.
+            print("Security Id not found for ", symbol)
+            add_dialog = SecuritiesAddDialog(self.parent)
+            add_dialog.set_description(symbol)
+            add_dialog.wait()
+            # Check that security ID can be found.
+            rows = database.securities.get_security_from_ticker(symbol)
+            num_ids = len(rows)
+            if num_ids == 1:
+                # Exact match.
+                security_id = rows[0][0]
+            else:
+                print("ERROR: Multiple matches in database for security: ", symbol)
+                print(rows)
+                print("")
+        return security_id
+
     def _extract_ii_data(self, row) -> None:
         # The rows from the CSV file look like this:
         # Header row
@@ -211,7 +244,7 @@ class TransactionsImportDialog:
                 # Use settlement date.
                 date_obj = datetime.strptime(row[1], "%d/%m/%Y")
                 # Security ID is from Symbol column.
-                security_id = self._get_security_id(row[2])
+                security_id = self._get_security_id_from_symbol(row[2])
                 # Buy if debit is not "n/a".
                 if row[6] != "n/a":
                     type = "B"
