@@ -1,4 +1,7 @@
+import csv
+import locale
 import pandas
+import re
 from tkinter import filedialog
 from datetime import datetime
 
@@ -9,15 +12,62 @@ from ui.select_security_dialog import SelectSecurityDialog
 from ui.user_settings import UserSettings
 
 
+def _currency_string_to_float(string) -> float:
+    # There is no pre-built way to do this.  Why not???
+    clean_string = re.sub(r"[^.0-9]", "", string)
+    try:
+        result = float(clean_string)
+    except ValueError:
+        result = 0.0
+        pass
+    # print("Input: {}, clean: {}, value {}".format(string, clean_string, result))
+    return result
+
+
+def _extract_ii_description(string) -> tuple[bool, float, float]:
+    description = string.split()
+    print("Description", description)
+    dividend = False
+    quantity = 0.0
+    price = 0.0
+    if description[0] == "Div":
+        dividend = True
+        quantity = float(description[1])
+        # This is no price for dividends.
+    else:
+        quantity = float(description[0])
+        # There are a variable number of items between quantity and price.
+        # Before the price, there is always "Del"
+        found_del = False
+        for item in description:
+            if found_del:
+                price = float(item)
+                break
+            if item == "Del":
+                found_del = True
+    return (dividend, quantity, price)
+
+
 class TransactionsImportDialog:
     def __init__(self, parent):
         self.parent = parent
 
+    def import_file(self):
+        filename = self._get_filename()
+        print("Importing transactions file", filename)
+        import_source = "II"
+        if import_source == "II":
+            self._import_ii_csv(filename)
+        elif import_source == "CSD":
+            # Import the Excel data into the transactions table.
+            excel_df = pandas.read_excel(filename)
+            self._write_csd_df_to_db(excel_df)
+
     def _get_filename(self):
         # Open file.
         filetypes = (
-            ("Excel files", "*.xlsx"),
             ("CSV files", "*.csv"),
+            ("Excel files", "*.xlsx"),
             ("All files", "*.*"),
         )
         initial_dir = UserSettings().get_import_path()
@@ -67,7 +117,7 @@ class TransactionsImportDialog:
 
         return security_id
 
-    def _write_df_to_db(self, excel_df):
+    def _write_csd_df_to_db(self, excel_df):
         # The rows from the spreadsheet look like this:
         #
         # Header row: Pandas(Index=2, _1='Date', _2='Description',
@@ -127,9 +177,71 @@ class TransactionsImportDialog:
                 # Ignore this row.
                 pass
 
-    def import_file(self):
-        # Import the CSV data into the transactions table.
-        filename = self._get_filename()
-        print("Importing transactions file", filename)
-        excel_df = pandas.read_excel(filename)
-        self._write_df_to_db(excel_df)
+    def _extract_ii_data(self, row) -> None:
+        # The rows from the CSV file look like this:
+        # Header row
+        # Date,Settlement Date,Symbol,Sedol,Description,Reference,
+        #   Debit,Credit,Running Balance
+        # One line of data:
+        # ['15/06/2023', '19/06/2023', 'NXT', '1234567',
+        #  '15 NEXT  Del   64.58 S Date 19/06/23', '12345AA6AAA',
+        #  '£973.66', 'n/a', '£1,000.00']
+        #
+        # SQLite output format.
+        # 0|uid|INTEGER|1||1
+        # 1|date|timestamp|1||0
+        # 2|type|CHAR(1)|1|'N'|0
+        # 3|security_id|INTEGER|1||0
+        # 4|quantity|REAL|1||0
+        # 5|price|REAL|1||0
+        # 6|fees|REAL|1||0
+        # 7|tax|REAL|1||0
+        # 8|total|REAL|1||0
+        #
+        # If the symbol is not "n/a" the it is buy, sell or dividend.
+        # Everything else can be ignored.
+        if row[2] != "n/a":
+            # Found one.
+            # Tease apart the description.
+            (dividend, quantity, price) = _extract_ii_description(row[4])
+            # Ignore dividends for now.
+            if dividend:
+                print("Found dividend")
+            else:
+                # Use settlement date.
+                date_obj = datetime.strptime(row[1], "%d/%m/%Y")
+                # Security ID is from Symbol column.
+                security_id = self._get_security_id(row[2])
+                # Buy if debit is not "n/a".
+                if row[6] != "n/a":
+                    type = "B"
+                    total = _currency_string_to_float(row[6])
+                else:
+                    type = "S"
+                    total = _currency_string_to_float(row[7])
+                costs = total - (quantity * price)
+                print(
+                    "Extracted",
+                    date_obj,
+                    security_id,
+                    type,
+                    quantity,
+                    price,
+                    costs,
+                    total,
+                )
+                # Append new row.
+                new_row = TransactionsRow()
+                new_row.set(date_obj, type, security_id, quantity, price, costs, total)
+                database.transactions.add_row(new_row)
+
+    def _import_ii_csv(self, filename) -> None:
+        with open(filename, newline="") as csv_file:
+            ii_reader = csv.reader(csv_file, delimiter=",", quotechar='"')
+            i = 0
+            for row in ii_reader:
+                if i > 0:
+                    # print(i, row)
+                    # Extract data from row.
+                    self._extract_ii_data(row)
+                i += 1

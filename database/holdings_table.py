@@ -102,11 +102,10 @@ class HoldingsTable:
         sql_query += ");"
         print(sql_query)
         self._execute(sql_query)
+        self._release_cursor()
 
     def create(self) -> None:
-        cursor = self._get_cursor()
-        self._create_holdings_table(cursor)
-        self._release_cursor()
+        self._create_holdings_table()
 
     def add_test_rows(self) -> None:
         row = HoldingsRow()
@@ -154,11 +153,10 @@ class HoldingsTable:
         self._release_cursor()
 
     def delete_row(self, security_id) -> None:
-        cursor = self._get_cursor()
         sql_query = "DELETE FROM {} ".format(self._table_name)
         sql_query += "WHERE sid = {}".format(security_id)
         print("Deleting row [", sql_query, "]")
-        self._execute(cursor, sql_query)
+        self._execute(sql_query)
         self._release_cursor()
 
     def _get_rows(self, sql_query) -> HoldingsRows:
