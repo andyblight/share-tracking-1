@@ -19,6 +19,7 @@ class SummaryTableView(ttk.Frame):
         # Create treeview.
         columns = (
             "date",
+            "ticker",
             "name",
             "quantity",
             "price",
@@ -32,6 +33,8 @@ class SummaryTableView(ttk.Frame):
         # Define headings
         self.tree.heading("date", text="Date")
         self.tree.column("date", width=90, anchor=tk.E)
+        self.tree.heading("ticker", text="Symbol")
+        self.tree.column("ticker", width=60, anchor=tk.W)
         self.tree.heading("name", text="Security name")
         self.tree.column("name", width=400, anchor=tk.W)
         self.tree.heading("quantity", text="Quantity")
@@ -68,6 +71,7 @@ class SummaryTableView(ttk.Frame):
             # FIXME Hardcoded date format.
             date_string = format_date(row.date_obj, format="short", locale="en_GB")
             treeview_row.append(date_string)
+            treeview_row.append(row.ticker)
             treeview_row.append(row.security_name)
             treeview_row.append(row.quantity)
             treeview_row.append(float_to_currency(row.price))

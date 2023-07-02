@@ -11,6 +11,7 @@ class SummaryRow:
 
     def __init__(self) -> None:
         self.date_obj = datetime(1900, 1, 1)
+        self.ticker = ""
         self.security_name = ""
         self.quantity = 0.0
         self.price = 0.0
@@ -22,6 +23,7 @@ class SummaryRow:
     def set(
         self,
         date_obj: datetime,
+        ticker: str,
         security_name: str,
         quantity: float,
         price: float,
@@ -31,6 +33,7 @@ class SummaryRow:
         total: float,
     ) -> None:
         self.date_obj = date_obj
+        self.ticker = ticker
         self.security_name = security_name
         self.quantity = quantity
         self.price = price
@@ -41,13 +44,14 @@ class SummaryRow:
 
     def set_from_raw(self, raw_row) -> None:
         self.date_obj = str_to_datetime(raw_row[0])
-        self.security_name = raw_row[1]
-        self.quantity = raw_row[2]
-        self.price = raw_row[3]
-        self.value = raw_row[4]
-        self.stop_loss = raw_row[5]
-        self.target = raw_row[6]
-        self.total = raw_row[7]
+        self.ticker = raw_row[1]
+        self.security_name = raw_row[2]
+        self.quantity = raw_row[3]
+        self.price = raw_row[4]
+        self.value = raw_row[5]
+        self.stop_loss = raw_row[6]
+        self.target = raw_row[7]
+        self.total = raw_row[8]
 
 
 SummaryRows = List[SummaryRow]
@@ -110,6 +114,7 @@ class SummaryTable:
     def get_all_rows(self) -> SummaryRows:
         sql_query = "SELECT "
         sql_query += "date, "
+        sql_query += "ticker, "
         sql_query += "name, "
         sql_query += "quantity, "
         sql_query += "price, "
